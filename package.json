@@ -4,9 +4,12 @@
   "description": "Android adb desktop app",
   "main": "dist/main/index.js",
   "scripts": {
+    "dev": "concurrently \"npm run dev:main\" \"npm run dev:renderer\"",
     "dev:main": "vite build --watch --config vite.main.ts --mode=development",
+    "dev:renderer": "vite",
     "format": "lsla prettier \"src/**/*.{ts,tsx,scss,css,json}\" \"*.{ts,json}\" --write",
-    "start": "electron ./dist/main/index.js"
+    "start": "electron ./dist/main/index.js",
+    "genTheme": "lsla genTheme --input src/common/theme.json --output src/renderer/theme.scss && lsla genTheme --input src/common/theme.json --output src/common/theme.ts"
   },
   "keywords": [
     "adb"
@@ -14,7 +17,11 @@
   "author": "surunzi",
   "license": "MIT",
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.2",
+    "concurrently": "^9.0.1",
+    "custom-electron-titlebar": "^4.2.8",
     "electron": "^33.0.1",
+    "licia": "^1.43.0",
     "vite": "^5.4.9"
   }
 }

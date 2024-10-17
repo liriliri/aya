@@ -4,8 +4,9 @@
   "description": "Android adb desktop app",
   "main": "dist/main/index.js",
   "scripts": {
-    "dev": "concurrently \"npm run dev:main\" \"npm run dev:renderer\"",
+    "dev": "concurrently \"npm run dev:main\" \"npm run dev:preload\" \"npm run dev:renderer\"",
     "dev:main": "vite build --watch --config vite.main.ts --mode=development",
+    "dev:preload": "vite build --watch --config vite.preload.ts --mode=development",
     "dev:renderer": "vite",
     "format": "lsla prettier \"src/**/*.{ts,tsx,scss,css,json}\" \"*.{ts,json}\" --write",
     "start": "electron ./dist/main/index.js",

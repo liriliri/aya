@@ -55,5 +55,5 @@ declare global {
   const main: typeof mainObj
   const preload: typeof preloadObj
   const node: typeof nodeObj
-  const VIVY_VERSION: string
+  const AYA_VERSION: string
 }

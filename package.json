@@ -1,0 +1,20 @@
+{
+  "name": "aya",
+  "version": "0.1.0",
+  "description": "Android adb desktop app",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "dev:main": "vite build --watch --config vite.main.ts --mode=development",
+    "format": "lsla prettier \"src/**/*.{ts,tsx,scss,css,json}\" \"*.{ts,json}\" --write",
+    "start": "electron ./dist/main/index.js"
+  },
+  "keywords": [
+    "adb"
+  ],
+  "author": "surunzi",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.1",
+    "vite": "^5.4.9"
+  }
+}

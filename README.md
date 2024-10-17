@@ -1,2 +1,3 @@
 # aya
-Android adb gui
+
+Android adb desktop app.

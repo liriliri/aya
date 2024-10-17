@@ -1,0 +1,16 @@
+{
+  "hideAya": "Hide AYA",
+  "hideOthers": "Hide Others",
+  "showAll": "Show All",
+  "quitAya": "Quit AYA",
+  "aboutAya": "About AYA",
+  "edit": "Edit",
+  "cut": "Cut",
+  "copy": "Copy",
+  "paste": "Paste",
+  "delete": "Delete",
+  "selectAll": "Select All",
+  "help": "Help",
+  "toggleDevtools": "Toggle Developer Tools",
+  "reportIssue": "Report Issue"
+}

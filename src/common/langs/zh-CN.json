@@ -1,0 +1,16 @@
+{
+  "hideAya": "隐藏 AYA",
+  "hideOthers": "隐藏其他",
+  "showAll": "显示全部",
+  "quitAya": "退出 AYA",
+  "aboutAya": "关于 AYA",
+  "edit": "编辑",
+  "cut": "剪切",
+  "copy": "复制",
+  "paste": "粘贴",
+  "delete": "删除",
+  "selectAll": "全选",
+  "help": "帮助",
+  "toggleDevtools": "切换开发人员工具",
+  "reportIssue": "报告问题"
+}

@@ -14,8 +14,8 @@ export function showWin() {
 
   win = window.create({
     name: 'main',
-    minWidth: 1280,
-    minHeight: 850,
+    minWidth: 960,
+    minHeight: 640,
     ...store.get('bounds'),
     maximized: store.get('maximized'),
     onSavePos: () => window.savePos(win, store, true),

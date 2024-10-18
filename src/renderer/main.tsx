@@ -2,6 +2,9 @@ import isMac from 'licia/isMac'
 import { lazy } from 'react'
 import ReactDOM from 'react-dom'
 import { i18n } from './lib/util'
+import './main.scss'
+import 'luna-toolbar/css'
+import './luna.scss'
 
 function renderApp() {
   const container: HTMLElement = document.getElementById('app') as HTMLElement

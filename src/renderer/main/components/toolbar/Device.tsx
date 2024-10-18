@@ -1,3 +1,9 @@
+import LunaToolbar, {
+  LunaToolbarSelect
+} from 'luna-toolbar/react'
+
 export default function Device() {
-  return <div>device</div>
+  return <LunaToolbar>
+    <LunaToolbarSelect keyName="device" value="id" options={{'a': 'id'}}/>
+  </LunaToolbar>
 }

@@ -1,0 +1,152 @@
+@use 'sass:color';
+@use './theme' as theme;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  font-size: 14px;
+  background-color: var(--aya-color-bg-container);
+  font-family: var(--aya-font-family);
+  user-select: none;
+  color: var(--aya-color-text);
+  cursor: default;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+@mixin prefix($declarations) {
+  @each $property, $value in $declarations {
+    #{'--aya-' + $property}: $value;
+  }
+}
+
+:root {
+  @include prefix(
+    (
+      font-family: theme.$font-family,
+      color-text: theme.$color-text,
+      color-primary: theme.$color-primary,
+      color-primary-bg: color.adjust(theme.$color-primary, $lightness: 60%),
+      color-primary-hover: theme.$color-primary-hover,
+      color-primary-active: theme.$color-primary-active,
+      color-border: color.adjust(theme.$color-border, $lightness: 2%),
+      color-bg-container: theme.$color-bg-container,
+      color-bg-container-darker: color.adjust(theme.$color-bg-container, $lightness: -2%),
+      color-fill-secondary: theme.$color-fill-secondary,
+      color-white: theme.$color-white,
+      color-success: theme.$color-success,
+      color-error: theme.$color-error,
+      color-error-bg: theme.$color-error-bg,
+      color-fill-alter: theme.$color-fill-alter,
+      box-shadow: theme.$box-shadow,
+      color-bg-text-hover: theme.$color-bg-text-hover,
+      color-fill-tertiary: theme.$color-fill-tertiary,
+      color-success-hover: theme.$color-success-hover,
+      color-success-active: theme.$color-success-active,
+      border-radius-x-s: #{theme.$border-radius-x-s}px,
+      border-radius-s-m: #{theme.$border-radius-s-m}px,
+    )
+  );
+}
+
+.-theme-with-dark-background {
+  color-scheme: dark;
+  @include prefix(
+    (
+      color-text: theme.$color-text-dark,
+      color-primary: theme.$color-primary-dark,
+      color-primary-bg: color.adjust(theme.$color-primary, $lightness: -25%),
+      color-primary-hover: theme.$color-primary-hover-dark,
+      color-primary-active: theme.$color-primary-active-dark,
+      color-border: color.adjust(theme.$color-border-dark, $lightness: -8%),
+      color-bg-container: theme.$color-bg-container-dark,
+      color-bg-container-darker: color.adjust(theme.$color-bg-container-dark, $lightness: -2%),
+      color-fill-secondary: theme.$color-fill-secondary-dark,
+      color-success: theme.$color-success-dark,
+      color-error: theme.$color-error-dark,
+      color-error-bg: theme.$color-error-bg-dark,
+      color-fill-alter: theme.$color-fill-alter-dark,
+      box-shadow: theme.$box-shadow-dark,
+      color-bg-text-hover: theme.$color-bg-text-hover-dark,
+      color-fill-tertiary: theme.$color-fill-tertiary-dark,
+      color-success-hover: theme.$color-success-hover-dark,
+      color-success-active: theme.$color-success-active-dark,
+    )
+  );
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background-clip: padding-box;
+  border: solid transparent;
+  border-width: 1px;
+}
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--aya-color-fill-tertiary);
+  background-clip: padding-box;
+  border: solid transparent;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--aya-color-fill-secondary);
+}
+
+.hidden {
+  display: none;
+}
+
+.hide-cet-menubar {
+  .cet-menubar {
+    display: none;
+  }
+}
+
+.toolbar-icon {
+  display: flex;
+  width: 16px;
+  align-items: center;
+  justify-content: center;
+  span {
+    padding: 2px;
+  }
+}
+
+.cet-titlebar {
+  .cet-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .cet-menubar {
+    .cet-menu-item-icon {
+      width: 0;
+    }
+    .cet-menubar-menu-button {
+      padding: 0;
+      .cet-menubar-menu-title {
+        padding: 0 8px;
+      }
+    }
+    .cet-menubar-menu-container {
+      border-radius: 0;
+      box-shadow: var(--aya-box-shadow);
+    }
+    .cet-action-menu-item {
+      margin: 0;
+      border-radius: 0;
+    }
+  }
+}

@@ -1,0 +1,47 @@
+.luna-toolbar {
+  color: var(--aya-color-text);
+  background: var(--aya-color-bg-container);
+  border-bottom-color: var(--aya-color-border);
+  .luna-toolbar-item-separator {
+    background: var(--aya-color-border);
+  }
+  .luna-toolbar-item-button {
+    button {
+      color: var(--aya-color-text);
+      &:hover,
+      &.luna-toolbar-hover {
+        background: var(--aya-color-fill-secondary);
+        border-color: var(--aya-color-border);
+      }
+      &:active,
+      &.luna-toolbar-active {
+        border-color: var(--aya-color-border);
+        background: var(--aya-color-fill-tertiary);
+      }
+    }
+  }
+  .luna-toolbar-item-select {
+    select {
+      color: var(--aya-color-text);
+      background: var(--aya-color-bg-container);
+      border-color: var(--aya-color-border);
+    }
+    &:after {
+      border-top-color: var(--aya-color-text);
+    }
+  }
+  .luna-toolbar-item-input {
+    input {
+      background: var(--aya-color-bg-container);
+      border-color: var(--aya-color-border);
+      color: var(--aya-color-text);
+    }
+  }
+  .luna-toolbar-item-number {
+    input[type='number'] {
+      background: var(--aya-color-bg-container);
+      border-color: var(--aya-color-border);
+      color: var(--aya-color-text);
+    }
+  }
+}

@@ -1,0 +1,11 @@
+.container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  :global(.luna-toolbar-item-select) {
+    select {
+      width: 200px;
+    }
+  }
+}

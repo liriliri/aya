@@ -12,5 +12,8 @@
   "selectAll": "Select All",
   "help": "Help",
   "toggleDevtools": "Toggle Developer Tools",
-  "reportIssue": "Report Issue"
+  "reportIssue": "Report Issue",
+  "logcat": "Logcat",
+  "shell": "Shell",
+  "settings": "Settings"
 }

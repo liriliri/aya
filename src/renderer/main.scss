@@ -38,7 +38,8 @@ body {
       color-primary-active: theme.$color-primary-active,
       color-border: color.adjust(theme.$color-border, $lightness: 2%),
       color-bg-container: theme.$color-bg-container,
-      color-bg-container-darker: color.adjust(theme.$color-bg-container, $lightness: -2%),
+      color-bg-container-darker:
+        color.adjust(theme.$color-bg-container, $lightness: -2%),
       color-fill-secondary: theme.$color-fill-secondary,
       color-white: theme.$color-white,
       color-success: theme.$color-success,
@@ -67,7 +68,8 @@ body {
       color-primary-active: theme.$color-primary-active-dark,
       color-border: color.adjust(theme.$color-border-dark, $lightness: -8%),
       color-bg-container: theme.$color-bg-container-dark,
-      color-bg-container-darker: color.adjust(theme.$color-bg-container-dark, $lightness: -2%),
+      color-bg-container-darker:
+        color.adjust(theme.$color-bg-container-dark, $lightness: -2%),
       color-fill-secondary: theme.$color-fill-secondary-dark,
       color-success: theme.$color-success-dark,
       color-error: theme.$color-error-dark,

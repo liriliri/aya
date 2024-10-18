@@ -10,6 +10,7 @@
     "dev:renderer": "vite",
     "format": "lsla prettier \"src/**/*.{ts,tsx,scss,css,json}\" \"*.{ts,json}\" --write",
     "start": "electron ./dist/main/index.js",
+    "genIcon": "lsla genIcon --input src/renderer/icon --output src/renderer/icon.css --name aya-icon",
     "genTheme": "lsla genTheme --input src/common/theme.json --output src/renderer/theme.scss && lsla genTheme --input src/common/theme.json --output src/common/theme.ts"
   },
   "keywords": [
@@ -24,6 +25,7 @@
     "electron": "^33.0.1",
     "fs-extra": "^11.2.0",
     "licia": "^1.43.0",
+    "luna-tab": "^0.3.2",
     "luna-toolbar": "^0.5.8",
     "mobx": "^6.13.5",
     "mobx-react-lite": "^4.0.7",

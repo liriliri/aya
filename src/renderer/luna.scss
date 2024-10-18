@@ -45,3 +45,23 @@
     }
   }
 }
+
+.luna-tab {
+  color: var(--aya-color-text);
+  background: var(--aya-color-bg-container);
+}
+
+.luna-tab-tabs-container {
+  border-color: var(--aya-color-border);
+}
+
+.luna-tab-item {
+  &.luna-tab-selected,
+  &:hover {
+    background: var(--aya-color-fill-tertiary);
+  }
+}
+
+.luna-tab-slider {
+  background: var(--aya-color-primary);
+}

@@ -2,8 +2,12 @@ import isMac from 'licia/isMac'
 import { lazy } from 'react'
 import ReactDOM from 'react-dom'
 import { i18n } from './lib/util'
+import { isDev } from '../common/util'
+import hotKey from 'licia/hotkey'
 import './main.scss'
+import './icon.css'
 import 'luna-toolbar/css'
+import 'luna-tab/css'
 import './luna.scss'
 
 function renderApp() {
@@ -15,6 +19,10 @@ function renderApp() {
   preload.setTitle(title)
 
   ReactDOM.createRoot(container).render(<App />)
+}
+
+if (isDev()) {
+  hotKey.on('f5', () => location.reload())
 }
 
 ;(async function () {

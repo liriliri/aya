@@ -22,6 +22,11 @@ export default defineConfig(async (): Promise<UserConfig> => {
       modules: {
         localsConvention: 'camelCaseOnly',
       },
+      preprocessorOptions: {
+        scss: {
+          api: 'modern',
+        },
+      },
     },
     server: {
       hmr: false,

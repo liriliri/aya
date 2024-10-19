@@ -41,6 +41,11 @@ const preloadObj = {
     }
   },
 }
+mainObj.on('refreshMenu', () => {
+  if (titleBar) {
+    titleBar.refreshMenu()
+  }
+})
 
 contextBridge.exposeInMainWorld('preload', preloadObj)
 contextBridge.exposeInMainWorld('main', mainObj)

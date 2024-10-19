@@ -3,6 +3,7 @@ import * as window from '../lib/window'
 import isMac from 'licia/isMac'
 import { t } from './language'
 import upperCase from 'licia/upperCase'
+import isWindows from 'licia/isWindows'
 
 function getTemplate(): MenuItemConstructorOptions[] {
   const hideMenu = isMac
@@ -97,12 +98,23 @@ function getTemplate(): MenuItemConstructorOptions[] {
   if (isMac) {
     template.unshift(aya, edit)
   } else {
+    template.unshift(edit)
     template.push(aya)
   }
 
   return template
 }
 
-export function init() {
+function updateMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate(getTemplate()))
+
+  if (isWindows) {
+    window.sendTo('main', 'refreshMenu')
+  }
+}
+
+export function init() {
+  updateMenu()
+
+  ipcMain.handle('updateMenu', () => updateMenu())
 }

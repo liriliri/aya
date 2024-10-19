@@ -1,6 +1,6 @@
 import isMac from 'licia/isMac'
 import { lazy } from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { i18n } from './lib/util'
 import { isDev } from '../common/util'
 import hotKey from 'licia/hotkey'
@@ -18,7 +18,7 @@ function renderApp() {
 
   preload.setTitle(title)
 
-  ReactDOM.createRoot(container).render(<App />)
+  createRoot(container).render(<App />)
 }
 
 if (isDev()) {

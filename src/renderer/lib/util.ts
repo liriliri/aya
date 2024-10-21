@@ -5,6 +5,7 @@ import h from 'licia/h'
 import LunaNotification, { INotifyOptions } from 'luna-notification'
 import enUS from '../../common/langs/en-US.json'
 import zhCN from '../../common/langs/zh-CN.json'
+import { isObservable, toJS } from 'mobx'
 
 export const i18n = new I18n('en-US', {
   'en-US': enUS,
@@ -30,4 +31,8 @@ export function notify(content: string, options?: INotifyOptions) {
   }
 
   notification.notify(content, options)
+}
+
+export async function setMainStore(name: string, val: any) {
+  await main.setMainStore(name, isObservable(val) ? toJS(val) : val)
 }

@@ -25,5 +25,6 @@
   "dark": "暗色",
   "sysPreference": "系统设置",
   "language": "语言",
-  "requireReload": "需要重新启动"
+  "requireReload": "需要重新启动",
+  "version": "版本"
 }

@@ -3,6 +3,7 @@ import isStr from 'licia/isStr'
 import find from 'licia/find'
 import BaseStore from '../../store/BaseStore'
 import { Settings } from './settings'
+import { setMainStore } from '../../lib/util'
 
 interface IDevice {
   id: string
@@ -38,12 +39,16 @@ class Store extends BaseStore {
   }
   selectPanel(panel: string) {
     this.panel = panel
+    setMainStore('panel', panel)
   }
   private async init() {
+    const panel = await main.getMainStore('panel')
+    if (panel) {
+      runInAction(() => (this.panel = panel))
+    }
+
     const devices = await main.getDevices()
-    runInAction(() => {
-      this.devices = devices
-    })
+    runInAction(() => (this.devices = devices))
   }
 }
 

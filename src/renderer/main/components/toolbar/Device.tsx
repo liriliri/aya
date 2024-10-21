@@ -31,7 +31,7 @@ export default observer(function Device() {
     >
       <LunaToolbarSelect
         keyName="device"
-        deviceDisabled={deviceDisabled}
+        disabled={deviceDisabled}
         value={store.device ? store.device.id : ''}
         options={deviceOptions}
       />

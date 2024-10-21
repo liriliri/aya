@@ -25,5 +25,6 @@
   "dark": "Dark",
   "sysPreference": "System Preference",
   "language": "Language",
-  "requireReload": "Requires reload"
+  "requireReload": "Requires reload",
+  "version": "Version"
 }

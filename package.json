@@ -20,6 +20,8 @@
   "license": "MIT",
   "devDependencies": {
     "@devicefarmer/adbkit": "^3.3.6",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.2",
     "concurrently": "^9.0.1",
     "custom-electron-titlebar": "^4.2.8",

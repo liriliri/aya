@@ -34,6 +34,8 @@ export function showWin() {
 }
 
 function initIpc() {
+  ipcMain.handle('setMainStore', (_, name, val) => store.set(name, val))
+  ipcMain.handle('getMainStore', (_, name) => store.get(name))
   ipcMain.handle('setSettingsStore', (_, name, val) => {
     settingsStore.set(name, val)
   })

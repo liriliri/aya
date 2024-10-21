@@ -1,7 +1,7 @@
 @use './theme' as theme;
 
 .luna-setting {
-  font-family: var(--aya-font-family);
+  font-family: theme.$font-family;
   color: var(--aya-color-text);
   background: var(--aya-color-bg-container);
 }
@@ -150,7 +150,7 @@
 
 .luna-modal {
   top: 28px;
-  font-family: var(--aya-font-family);
+  font-family: theme.$font-family;
   z-index: theme.$z-index-popup-base;
 }
 
@@ -189,7 +189,7 @@
 }
 
 .luna-notification-item {
-  font-family: var(--aya-font-family);
+  font-family: theme.$font-family;
   border-radius: 4px;
   color: var(--aya-color-text);
   background: var(--aya-color-bg-container);

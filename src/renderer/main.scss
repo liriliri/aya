@@ -10,7 +10,7 @@ body {
   overflow: hidden;
   font-size: 14px;
   background-color: var(--aya-color-bg-container);
-  font-family: var(--aya-font-family);
+  font-family: theme.$font-family;
   user-select: none;
   color: var(--aya-color-text);
   cursor: default;
@@ -30,7 +30,6 @@ body {
 :root {
   @include prefix(
     (
-      font-family: theme.$font-family,
       color-text: theme.$color-text,
       color-primary: theme.$color-primary,
       color-primary-bg: color.adjust(theme.$color-primary, $lightness: 60%),

@@ -1,0 +1,8 @@
+@use '../../../theme' as theme;
+
+.container {
+  width: 100%;
+  height: 100%;
+  padding-top: #{theme.$padding-x-x-s}px;
+  padding-left: #{theme.$padding-x-x-s}px;
+}

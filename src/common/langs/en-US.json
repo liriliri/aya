@@ -16,5 +16,7 @@
   "logcat": "Logcat",
   "shell": "Shell",
   "settings": "Settings",
-  "deviceNotConnected": "Device not connected"
+  "deviceNotConnected": "Device not connected",
+  "screenshot": "Screenshot",
+  "file": "File"
 }

@@ -16,5 +16,7 @@
   "logcat": "日志",
   "shell": "终端",
   "settings": "设置",
-  "deviceNotConnected": "未连接设备"
+  "deviceNotConnected": "未连接设备",
+  "screenshot": "截屏",
+  "file": "文件"
 }

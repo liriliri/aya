@@ -13,8 +13,10 @@ import {
   colorPrimary,
   colorText,
   colorTextDark,
+  fontFamilyCode,
 } from '../../../../common/theme'
 import Style from './Shell.module.scss'
+import nextTick from 'licia/nextTick'
 import '@xterm/xterm/css/xterm.css'
 
 export default observer(function Shell() {
@@ -26,7 +28,7 @@ export default observer(function Shell() {
     const term = new Terminal({
       allowProposedApi: true,
       fontSize: 14,
-      fontFamily: 'mono, courier-new, courier, monospace',
+      fontFamily: fontFamilyCode,
       theme: getTheme(store.theme === 'dark'),
     })
 
@@ -62,9 +64,11 @@ export default observer(function Shell() {
     }
   }, [])
 
-  if (fitAddonRef.current) {
-    fitAddonRef.current.fit()
-  }
+  nextTick(() => {
+    if (fitAddonRef.current) {
+      fitAddonRef.current.fit()
+    }
+  })
 
   const theme = getTheme(store.theme === 'dark')
   if (termRef.current) {

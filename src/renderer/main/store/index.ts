@@ -2,6 +2,7 @@ import { action, makeObservable, observable, runInAction } from 'mobx'
 import isStr from 'licia/isStr'
 import find from 'licia/find'
 import BaseStore from '../../store/BaseStore'
+import { Settings } from './settings'
 
 interface IDevice {
   id: string
@@ -13,6 +14,7 @@ class Store extends BaseStore {
   devices: IDevice[] = []
   device?: IDevice
   panel: string = 'logcat'
+  settings = new Settings()
   constructor() {
     super()
 
@@ -20,6 +22,7 @@ class Store extends BaseStore {
       devices: observable,
       device: observable,
       panel: observable,
+      settings: observable,
       selectDevice: action,
       selectPanel: action,
     })

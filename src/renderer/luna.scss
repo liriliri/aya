@@ -1,3 +1,85 @@
+@use './theme' as theme;
+
+.luna-setting {
+  font-family: var(--aya-font-family);
+  color: var(--aya-color-text);
+  background: var(--aya-color-bg-container);
+}
+
+.luna-setting-item {
+  &:hover,
+  &.luna-setting-selected {
+    background: none;
+  }
+  &.luna-setting-selected:focus {
+    outline: none;
+  }
+}
+
+.luna-setting-item-select {
+  .luna-setting-select {
+    select {
+      color: var(--aya-color-text);
+      border-color: var(--aya-color-border);
+      background: var(--aya-color-bg-container);
+    }
+    &:after {
+      border-top-color: var(--aya-color-text);
+    }
+  }
+}
+
+.luna-setting-item-button {
+  button {
+    color: #fff;
+    background: var(--aya-color-primary);
+    border: none;
+    padding: 2px 14px;
+    font-size: 13px;
+    &:hover {
+      background: var(--aya-color-primary-hover);
+    }
+    &:active {
+      background: var(--aya-color-primary-active);
+      border: none;
+    }
+  }
+}
+
+.luna-setting-item-number {
+  input[type='number'] {
+    background: var(--aya-color-bg-container);
+    border-color: var(--aya-color-border);
+    color: var(--aya-color-text);
+  }
+  .luna-setting-range-container {
+    .luna-setting-range-track {
+      .luna-setting-range-track-bar {
+        background: var(--aya-color-border);
+        .luna-setting-range-track-progress {
+          background: var(--aya-color-primary);
+        }
+      }
+    }
+    input::-webkit-slider-thumb {
+      border-color: var(--aya-color-border);
+      background: var(--aya-color-white);
+    }
+  }
+}
+
+.luna-setting-item-separator {
+  border-color: var(--aya-color-border);
+}
+
+.luna-setting-item-input {
+  input {
+    background: var(--aya-color-bg-container);
+    border-color: var(--aya-color-border);
+    color: var(--aya-color-text);
+  }
+}
+
 .luna-toolbar {
   color: var(--aya-color-text);
   background: var(--aya-color-bg-container);
@@ -64,4 +146,54 @@
 
 .luna-tab-slider {
   background: var(--aya-color-primary);
+}
+
+.luna-modal {
+  top: 28px;
+  font-family: var(--aya-font-family);
+  z-index: theme.$z-index-popup-base;
+}
+
+.luna-modal-body,
+.luna-modal-input {
+  color: var(--aya-color-text);
+  background: var(--aya-color-bg-container);
+}
+
+.luna-modal-input {
+  user-select: text !important;
+  border-color: var(--aya-color-border);
+}
+
+.luna-modal-button-group {
+  .luna-modal-secondary {
+    border-color: var(--aya-color-border);
+    color: var(--aya-color-text);
+    background: var(--aya-color-bg-container);
+  }
+  .luna-modal-primary {
+    background: var(--aya-color-primary);
+  }
+  .luna-modal-button {
+    &:active {
+      &::before {
+        background: var(--aya-color-primary);
+      }
+    }
+  }
+}
+
+.luna-notification {
+  padding-top: 40px;
+  z-index: theme.$z-index-popup-base;
+}
+
+.luna-notification-item {
+  font-family: var(--aya-font-family);
+  border-radius: 4px;
+  color: var(--aya-color-text);
+  background: var(--aya-color-bg-container);
+  box-shadow: var(--aya-box-shadow);
+  padding: 5px 10px;
+  border: 1px solid var(--aya-color-border);
 }

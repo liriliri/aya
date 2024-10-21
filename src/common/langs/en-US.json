@@ -18,5 +18,12 @@
   "settings": "Settings",
   "deviceNotConnected": "Device not connected",
   "screenshot": "Screenshot",
-  "file": "File"
+  "file": "File",
+  "appearance": "Appearance",
+  "theme": "Theme",
+  "light": "Light",
+  "dark": "Dark",
+  "sysPreference": "System Preference",
+  "language": "Language",
+  "requireReload": "Requires reload"
 }

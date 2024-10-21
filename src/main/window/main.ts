@@ -1,15 +1,23 @@
-import { BrowserWindow } from 'electron'
-import { getMainStore } from '../lib/store'
+import { BrowserWindow, ipcMain } from 'electron'
+import { getMainStore, getSettingsStore } from '../lib/store'
 import * as window from '../lib/window'
 
 const store = getMainStore()
+const settingsStore = getSettingsStore()
 
 let win: BrowserWindow | null = null
+
+let isIpcInit = false
 
 export function showWin() {
   if (win) {
     win.focus()
     return
+  }
+
+  if (!isIpcInit) {
+    isIpcInit = true
+    initIpc()
   }
 
   win = window.create({
@@ -23,4 +31,11 @@ export function showWin() {
   })
 
   window.loadPage(win)
+}
+
+function initIpc() {
+  ipcMain.handle('setSettingsStore', (_, name, val) => {
+    settingsStore.set(name, val)
+  })
+  ipcMain.handle('getSettingsStore', (_, name) => settingsStore.get(name))
 }

@@ -8,7 +8,11 @@ import './main.scss'
 import './icon.css'
 import 'luna-toolbar/css'
 import 'luna-tab/css'
+import 'luna-modal/css'
+import 'luna-setting/css'
+import 'luna-notification/css'
 import './luna.scss'
+import LunaModal from 'luna-modal'
 
 function renderApp() {
   const container: HTMLElement = document.getElementById('app') as HTMLElement
@@ -28,6 +32,7 @@ if (isDev()) {
 ;(async function () {
   const language = await main.getLanguage()
   i18n.locale(language)
+  LunaModal.i18n.locale(language)
 
   document.body.classList.add(`platform-${isMac ? 'mac' : 'windows'}`)
 

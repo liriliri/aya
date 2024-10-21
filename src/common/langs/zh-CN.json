@@ -15,5 +15,6 @@
   "reportIssue": "报告问题",
   "logcat": "日志",
   "shell": "终端",
-  "settings": "设置"
+  "settings": "设置",
+  "deviceNotConnected": "未连接设备"
 }

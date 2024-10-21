@@ -15,5 +15,6 @@
   "reportIssue": "Report Issue",
   "logcat": "Logcat",
   "shell": "Shell",
-  "settings": "Settings"
+  "settings": "Settings",
+  "deviceNotConnected": "Device not connected"
 }

@@ -18,4 +18,7 @@ export default defineConfig({
       external: builtins,
     },
   },
+  resolve: {
+    mainFields: ['main', 'module'],
+  },
 })

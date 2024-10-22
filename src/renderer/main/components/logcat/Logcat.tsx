@@ -7,8 +7,6 @@ export default observer(function Logcat() {
       style={{
         display: store.panel === 'logcat' ? 'block' : 'none',
       }}
-    >
-      Logcat
-    </div>
+    ></div>
   )
 })

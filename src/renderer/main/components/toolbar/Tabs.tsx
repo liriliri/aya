@@ -6,16 +6,19 @@ import Style from './Tabs.module.scss'
 import store from '../../store'
 
 export default observer(function Panels() {
-  const tabItems = map(['logcat', 'shell', 'file', 'screenshot'], (panel) => {
-    return (
-      <LunaTabItem
-        key={panel}
-        id={panel}
-        title={t(panel)}
-        selected={panel === store.panel}
-      />
-    )
-  })
+  const tabItems = map(
+    ['overview', 'app', 'file', 'screenshot', 'logcat', 'shell', 'monitor'],
+    (panel) => {
+      return (
+        <LunaTabItem
+          key={panel}
+          id={panel}
+          title={t(panel)}
+          selected={panel === store.panel}
+        />
+      )
+    }
+  )
 
   return (
     <LunaTab

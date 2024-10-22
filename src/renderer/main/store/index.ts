@@ -14,7 +14,7 @@ interface IDevice {
 class Store extends BaseStore {
   devices: IDevice[] = []
   device?: IDevice
-  panel: string = 'logcat'
+  panel: string = 'overview'
   settings = new Settings()
   constructor() {
     super()

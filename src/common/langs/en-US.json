@@ -26,5 +26,8 @@
   "sysPreference": "System Preference",
   "language": "Language",
   "requireReload": "Requires reload",
-  "version": "Version"
+  "version": "Version",
+  "overview": "Overview",
+  "app": "App",
+  "monitor": "Monitor"
 }

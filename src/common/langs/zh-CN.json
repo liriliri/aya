@@ -26,5 +26,8 @@
   "sysPreference": "系统设置",
   "language": "语言",
   "requireReload": "需要重新启动",
-  "version": "版本"
+  "version": "版本",
+  "overview": "概览",
+  "app": "应用",
+  "monitor": "监控"
 }

@@ -1,10 +1,12 @@
 import Toolbar from './components/toolbar/Toolbar'
 import Logcat from './components/logcat/Logcat'
 import Shell from './components/shell/Shell'
+import File from './components/file/File'
+import Screenshot from './components/screenshot/Screenshot'
 import Style from './App.module.scss'
 import LunaModal from 'luna-modal/react'
 import { t } from '../lib/util'
-import { useState, useEffect, lazy } from 'react'
+import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 
 export default function App() {
@@ -25,6 +27,8 @@ export default function App() {
         <div className={Style.panel}>
           <Logcat />
           <Shell />
+          <File />
+          <Screenshot />
         </div>
       </div>
       {createPortal(

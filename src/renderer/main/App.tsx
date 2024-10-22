@@ -10,7 +10,7 @@ import { createPortal } from 'react-dom'
 import store from './store'
 import { observer } from 'mobx-react-lite'
 
-export default function App() {
+export default observer(function App() {
   const [aboutVisible, setAboutVisible] = useState(false)
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function App() {
     <>
       <Toolbar />
       <div className={Style.workspace}>
-        <div className={Style.panels} key={store.panel}>
+        <div className={Style.panels} key={store.device ? store.device.id : ''}>
           <Panel panel="overview">
             <Overview />
           </Panel>
@@ -55,7 +55,7 @@ export default function App() {
       )}
     </>
   )
-}
+})
 
 interface IPanelProps {
   panel: string

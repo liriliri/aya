@@ -15,7 +15,6 @@ import {
   fontFamilyCode,
 } from '../../../../common/theme'
 import Style from './Shell.module.scss'
-import nextTick from 'licia/nextTick'
 import '@xterm/xterm/css/xterm.css'
 
 export default observer(function Shell() {

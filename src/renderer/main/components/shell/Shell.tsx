@@ -20,7 +20,6 @@ import '@xterm/xterm/css/xterm.css'
 
 export default observer(function Shell() {
   const terminalRef = useRef<HTMLDivElement>(null)
-  const fitAddonRef = useRef<FitAddon>()
   const termRef = useRef<Terminal>()
 
   useEffect(() => {
@@ -33,7 +32,6 @@ export default observer(function Shell() {
 
     const fitAddon = new FitAddon()
     term.loadAddon(fitAddon)
-    fitAddonRef.current = fitAddon
     const fit = () => fitAddon.fit()
     fit()
     window.addEventListener('resize', fit)
@@ -55,12 +53,6 @@ export default observer(function Shell() {
       window.removeEventListener('resize', fit)
     }
   }, [])
-
-  nextTick(() => {
-    if (fitAddonRef.current) {
-      fitAddonRef.current.fit()
-    }
-  })
 
   const theme = getTheme(store.theme === 'dark')
   if (termRef.current) {

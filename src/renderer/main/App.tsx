@@ -1,13 +1,14 @@
 import Toolbar from './components/toolbar/Toolbar'
 import Logcat from './components/logcat/Logcat'
 import Shell from './components/shell/Shell'
-import File from './components/file/File'
-import Screenshot from './components/screenshot/Screenshot'
+import Overview from './components/overview/Overview'
 import Style from './App.module.scss'
 import LunaModal from 'luna-modal/react'
 import { t } from '../lib/util'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, PropsWithChildren, FC } from 'react'
 import { createPortal } from 'react-dom'
+import store from './store'
+import { observer } from 'mobx-react-lite'
 
 export default function App() {
   const [aboutVisible, setAboutVisible] = useState(false)
@@ -24,11 +25,16 @@ export default function App() {
     <>
       <Toolbar />
       <div className={Style.workspace}>
-        <div className={Style.panel}>
-          <Logcat />
-          <Shell />
-          <File />
-          <Screenshot />
+        <div className={Style.panels} key={store.panel}>
+          <Panel panel="overview">
+            <Overview />
+          </Panel>
+          <Panel panel="logcat">
+            <Logcat />
+          </Panel>
+          <Panel panel="shell">
+            <Shell />
+          </Panel>
         </div>
       </div>
       {createPortal(
@@ -50,3 +56,20 @@ export default function App() {
     </>
   )
 }
+
+interface IPanelProps {
+  panel: string
+}
+
+const Panel: FC<PropsWithChildren<IPanelProps>> = observer(function Panel(
+  props
+) {
+  return (
+    <div
+      className={Style.panel}
+      style={{ visibility: store.panel !== props.panel ? 'hidden' : 'visible' }}
+    >
+      {props.children}
+    </div>
+  )
+})

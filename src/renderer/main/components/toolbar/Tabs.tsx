@@ -7,7 +7,11 @@ import store from '../../store'
 
 export default observer(function Panels() {
   const tabItems = map(
-    ['overview', 'app', 'file', 'screenshot', 'logcat', 'shell', 'monitor'],
+    [
+      'overview',
+      /*'app', 'file', 'screenshot',*/ 'logcat',
+      'shell' /*'monitor'*/,
+    ],
     (panel) => {
       return (
         <LunaTabItem

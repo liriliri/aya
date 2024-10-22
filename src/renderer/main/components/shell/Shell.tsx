@@ -5,7 +5,6 @@ import { FitAddon } from '@xterm/addon-fit'
 import { CanvasAddon } from '@xterm/addon-canvas'
 import { WebglAddon } from '@xterm/addon-webgl'
 import { Unicode11Addon } from '@xterm/addon-unicode11'
-import { LocalEchoAddon } from '@kobakazu0429/xterm-local-echo'
 import { useEffect, useRef } from 'react'
 import {
   colorBgContainer,
@@ -47,13 +46,6 @@ export default observer(function Shell() {
     } catch (e) {
       term.loadAddon(new CanvasAddon())
     }
-
-    const localEcho = new LocalEchoAddon()
-    term.loadAddon(localEcho)
-
-    localEcho.read('~$ ').then((input) => {
-      console.log(input)
-    })
 
     term.open(terminalRef.current!)
     termRef.current = term

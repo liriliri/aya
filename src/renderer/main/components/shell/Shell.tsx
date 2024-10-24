@@ -32,7 +32,6 @@ export default observer(function Shell() {
     const fitAddon = new FitAddon()
     term.loadAddon(fitAddon)
     const fit = () => fitAddon.fit()
-    fit()
     window.addEventListener('resize', fit)
 
     term.loadAddon(new Unicode11Addon())
@@ -47,7 +46,31 @@ export default observer(function Shell() {
     term.open(terminalRef.current!)
     termRef.current = term
 
+    let sessionId = ''
+    function onShellData(_, id, data) {
+      if (sessionId !== id) {
+        return
+      }
+      term.write(data)
+    }
+
+    if (store.device) {
+      main.createShell(store.device.id).then((id) => {
+        sessionId = id
+        term.onData((data) => main.writeShell(sessionId, data))
+        term.onResize((size) => {
+          main.resizeShell(sessionId, size.cols, size.rows)
+        })
+        fit()
+        main.on('shellData', onShellData)
+      })
+    }
+
     return () => {
+      if (sessionId) {
+        main.off('shellData', onShellData)
+        main.killShell(sessionId)
+      }
       term.dispose()
       window.removeEventListener('resize', fit)
     }

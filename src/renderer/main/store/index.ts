@@ -4,6 +4,7 @@ import find from 'licia/find'
 import BaseStore from '../../store/BaseStore'
 import { Settings } from './settings'
 import { setMainStore } from '../../lib/util'
+import isEmpty from 'licia/isEmpty'
 
 interface IDevice {
   id: string
@@ -49,6 +50,9 @@ class Store extends BaseStore {
 
     const devices = await main.getDevices()
     runInAction(() => (this.devices = devices))
+    if (!isEmpty(devices) && !this.device) {
+      this.selectDevice(devices[0])
+    }
   }
 }
 

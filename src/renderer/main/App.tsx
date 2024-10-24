@@ -5,7 +5,7 @@ import Overview from './components/overview/Overview'
 import Style from './App.module.scss'
 import LunaModal from 'luna-modal/react'
 import { t } from '../lib/util'
-import { useState, useEffect, PropsWithChildren, FC } from 'react'
+import { CSSProperties, useState, useEffect, PropsWithChildren, FC } from 'react'
 import { createPortal } from 'react-dom'
 import store from './store'
 import { observer } from 'mobx-react-lite'
@@ -64,12 +64,27 @@ interface IPanelProps {
 const Panel: FC<PropsWithChildren<IPanelProps>> = observer(function Panel(
   props
 ) {
+  const [used, setUsed] = useState(false)
+  const [visible, setVisible] = useState(false)
+
+  const style: CSSProperties = {}
+  if (!visible) {
+    style.visibility = 'hidden'
+    style.pointerEvents = 'none'
+  }
+
+  useEffect(() => {
+    if (store.panel === props.panel) {
+      setUsed(true)
+      setVisible(true)
+    } else {
+      setVisible(false)
+    }
+  }, [store.panel])
+
   return (
-    <div
-      className={Style.panel}
-      style={{ visibility: store.panel !== props.panel ? 'hidden' : 'visible' }}
-    >
-      {props.children}
+    <div className={Style.panel} style={style}>
+      {used ? props.children : null}
     </div>
   )
 })

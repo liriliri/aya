@@ -1,4 +1,49 @@
+@use '../../../theme' as theme;
+
 .container {
   width: 100%;
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info {
+  font-size: #{theme.$font-size-l-g}px;
+  display: flex;
+  min-width: 600px;
+  max-width: 80%;
+  padding: #{theme.$padding-l-g}px;
+  border: 1px solid var(--aya-color-border);
+  border-radius: #{theme.$border-radius-s-m}px;
+  flex-direction: column;
+  row-gap: #{theme.$margin-m-d}px;
+}
+
+.row {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  column-gap: #{theme.$margin-x-l}px;
+}
+
+.item {
+  width: 33.3%;
+  flex: 1;
+  overflow: hidden;
+}
+
+.title,
+.value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.title {
+  margin-bottom: #{theme.$margin-x-x-s}px;
+}
+
+.value {
+  user-select: text;
 }

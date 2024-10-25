@@ -105,6 +105,13 @@ body {
   background-color: var(--aya-color-fill-secondary);
 }
 
+[class^='icon-'],
+[class*=' icon-'] {
+  &::before {
+    vertical-align: middle;
+  }
+}
+
 .hidden {
   display: none;
 }

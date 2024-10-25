@@ -24,6 +24,52 @@ async function getDevices() {
   )
 }
 
+async function getOverview(_, deviceId: string) {
+  const device = await client.getDevice(deviceId)
+  const properties = await device.getProperties()
+
+  let name = properties['ro.product.name']
+  if (properties['ro.oppo.market.name']) {
+    name = properties['ro.oppo.market.name']
+  }
+
+  return {
+    name,
+    processor: properties['ro.product.board'],
+    abi: properties['ro.product.cpu.abi'],
+    brand: properties['ro.product.brand'],
+    model: properties['ro.product.model'],
+    androidVersion: properties['ro.build.version.release'],
+    sdkVersion: properties['ro.build.version.sdk'],
+    ...(await getMemory(deviceId)),
+  }
+}
+
+async function getMemory(deviceId: string) {
+  const memInfo = await shell(deviceId, 'cat /proc/meminfo')
+  let memTotal = 0
+  let memFree = 0
+
+  const totalMatch = memInfo.match(/MemTotal:\s+(\d+)/)
+  const freeMatch = memInfo.match(/MemFree:\s+(\d+)/)
+  if (totalMatch && freeMatch) {
+    memTotal = parseInt(totalMatch[1], 10) * 1024
+    memFree = parseInt(freeMatch[1], 10) * 1024
+  }
+
+  return {
+    memTotal,
+    memUsed: memTotal - memFree,
+  }
+}
+
+async function shell(deviceId: string, cmd: string) {
+  const device = await client.getDevice(deviceId)
+  const socket = await device.shell(cmd)
+  const output = await Adb.util.readAll(socket)
+  return output.toString()
+}
+
 class ShellProtocol {
   static STDIN = 0
   static STDOUT = 1
@@ -158,6 +204,7 @@ export function init() {
   client = Adb.createClient()
 
   ipcMain.handle('getDevices', getDevices)
+  ipcMain.handle('getOverview', getOverview)
   ipcMain.handle('createShell', createShell)
   ipcMain.handle('writeShell', writeShell)
   ipcMain.handle('resizeShell', resizeShell)

@@ -29,5 +29,11 @@
   "version": "Version",
   "overview": "Overview",
   "app": "App",
-  "monitor": "Monitor"
+  "monitor": "Monitor",
+  "model": "Model",
+  "androidVersion": "Android Version",
+  "brand": "Brand",
+  "name": "Name",
+  "processor": "Processor",
+  "memory": "Memory"
 }

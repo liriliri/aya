@@ -11,12 +11,18 @@ export default {
   setSettingsStore: (name, val) => {
     return ipcRenderer.invoke('setSettingsStore', name, val)
   },
-  createShell: (deviceId: string) =>
-    ipcRenderer.invoke('createShell', deviceId),
-  writeShell: (sessionId: string, data: string) =>
-    ipcRenderer.invoke('writeShell', sessionId, data),
-  resizeShell: (sessionId: string, cols: number, rows: number) =>
-    ipcRenderer.invoke('resizeShell', sessionId, cols, rows),
+  getOverview: (deviceId: string) => {
+    return ipcRenderer.invoke('getOverview', deviceId)
+  },
+  createShell: (deviceId: string) => {
+    return ipcRenderer.invoke('createShell', deviceId)
+  },
+  writeShell: (sessionId: string, data: string) => {
+    return ipcRenderer.invoke('writeShell', sessionId, data)
+  },
+  resizeShell: (sessionId: string, cols: number, rows: number) => {
+    return ipcRenderer.invoke('resizeShell', sessionId, cols, rows)
+  },
   killShell: (sessionId: string) => ipcRenderer.invoke('killShell', sessionId),
   on: (event: string, cb: types.AnyFn) => ipcRenderer.on(event, cb),
   off: (event: string, cb: types.AnyFn) => ipcRenderer.off(event, cb),

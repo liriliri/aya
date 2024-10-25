@@ -71,22 +71,21 @@ const Panel: FC<PropsWithChildren<IPanelProps>> = observer(function Panel(
   props
 ) {
   const [used, setUsed] = useState(false)
-  const [visible, setVisible] = useState(false)
+
+  let visible = false
+
+  if (store.panel === props.panel) {
+    if (!used) {
+      setUsed(true)
+    }
+    visible = true
+  }
 
   const style: CSSProperties = {}
   if (!visible) {
     style.visibility = 'hidden'
     style.pointerEvents = 'none'
   }
-
-  useEffect(() => {
-    if (store.panel === props.panel) {
-      setUsed(true)
-      setVisible(true)
-    } else {
-      setVisible(false)
-    }
-  }, [store.panel])
 
   return (
     <div className={Style.panel} style={style}>

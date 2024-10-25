@@ -81,15 +81,15 @@ export default observer(function Shell() {
     termRef.current.options.theme = theme
   }
 
-  return (
-    <div
-      className={Style.container}
-      ref={terminalRef}
-      style={{
-        display: store.panel === 'shell' ? 'block' : 'none',
-      }}
-    ></div>
-  )
+  if (store.panel === 'shell') {
+    setTimeout(() => {
+      if (termRef.current) {
+        termRef.current.focus()
+      }
+    }, 500)
+  }
+
+  return <div className={Style.container} ref={terminalRef}></div>
 })
 
 function getTheme(dark = false) {

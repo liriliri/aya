@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite'
 import Style from './Screenshot.module.scss'
-import LunaToolbar from 'luna-toolbar/react'
+import LunaToolbar, { LunaToolbarButton } from 'luna-toolbar/react'
 import dataUrl from 'licia/dataUrl'
 import toBool from 'licia/toBool'
 import convertBin from 'licia/convertBin'
@@ -10,6 +10,8 @@ import ToolbarIcon from '../../../components/ToolbarIcon'
 import { useEffect, useState } from 'react'
 import store from '../../store'
 import { t } from '../../../lib/util'
+import CopyButton from '../../../components/CopyButton'
+import { copyData } from '../../lib/util'
 
 export default observer(function Screenshot() {
   const [image, setImage] = useState<string>('')
@@ -22,6 +24,11 @@ export default observer(function Screenshot() {
     const { data } = dataUrl.parse(image)!
     const blob = convertBin(data, 'Blob')
     download(blob, 'screenshot.png', 'image/png')
+  }
+
+  function copy() {
+    const { data } = dataUrl.parse(image)!
+    copyData(data, 'image/png')
   }
 
   async function recapture() {
@@ -48,6 +55,9 @@ export default observer(function Screenshot() {
           onClick={save}
           disabled={!hasImage}
         />
+        <LunaToolbarButton onClick={() => {}}>
+          <CopyButton className="toolbar-icon" onClick={copy} />
+        </LunaToolbarButton>
       </LunaToolbar>
       {image && (
         <LunaImageViewer

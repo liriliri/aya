@@ -25,12 +25,18 @@ export default observer(function Screenshot() {
   return (
     <div className={Style.container}>
       <LunaToolbar className={Style.toolbar}>
-        <ToolbarIcon icon="refresh" onClick={recapture} disabled={!toBool(store.device)}/>
+        <ToolbarIcon
+          icon="refresh"
+          onClick={recapture}
+          disabled={!toBool(store.device)}
+        />
       </LunaToolbar>
-      {image && <LunaImageViewer
-        className={Style.imageViewer}
-        image={image}
-      ></LunaImageViewer>}
+      {image && (
+        <LunaImageViewer
+          className={Style.imageViewer}
+          image={image}
+        ></LunaImageViewer>
+      )}
     </div>
   )
 })

@@ -49,7 +49,7 @@ async function screencap(_, deviceId: string) {
   const device = await client.getDevice(deviceId)
   const data = await device.screencap()
   const buf = await Adb.util.readAll(data)
-  
+
   return buf.toString('base64')
 }
 

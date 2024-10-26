@@ -39,5 +39,7 @@
   "recapture": "重新截图",
   "save": "保存",
   "rotateLeft": "向左旋转",
-  "rotateRight": "向右旋转"
+  "rotateRight": "向右旋转",
+  "zoomIn": "放大",
+  "zoomOut": "缩小"
 }

@@ -66,14 +66,26 @@ export default observer(function Screenshot() {
         <LunaToolbarSeparator />
         <ToolbarIcon
           icon="rotate-left"
-          title={t('rotate-left')}
+          title={t('rotateLeft')}
           onClick={() => imageViewerRef.current?.rotate(-90)}
           disabled={!hasImage}
         />
         <ToolbarIcon
           icon="rotate-right"
-          title={t('rotate-right')}
+          title={t('rotateRight')}
           onClick={() => imageViewerRef.current?.rotate(90)}
+          disabled={!hasImage}
+        />
+        <ToolbarIcon
+          icon="zoom-in"
+          title={t('zoomIn')}
+          onClick={() => imageViewerRef.current?.zoom(0.1)}
+          disabled={!hasImage}
+        />
+        <ToolbarIcon
+          icon="zoom-out"
+          title={t('zoomOut')}
+          onClick={() => imageViewerRef.current?.zoom(-0.1)}
           disabled={!hasImage}
         />
       </LunaToolbar>

@@ -39,5 +39,7 @@
   "recapture": "Recapture",
   "save": "Save",
   "rotateLeft": "Rotate Left",
-  "rotateRight": "Rotate Right"
+  "rotateRight": "Rotate Right",
+  "zoomIn": "Zoom In",
+  "zoomOut": "Zoom Out"
 }

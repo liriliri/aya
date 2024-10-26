@@ -33,6 +33,12 @@
   width: 33.3%;
   flex: 1;
   overflow: hidden;
+  [class^='icon-'],
+  [class*=' icon-'] {
+    &::before {
+      vertical-align: middle;
+    }
+  }
 }
 
 .title,

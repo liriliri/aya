@@ -6,9 +6,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--aya-color-bg-container-darker);
 }
 
 .info {
+  background: var(--aya-color-bg-container);
   font-size: #{theme.$font-size-l-g}px;
   display: flex;
   min-width: 660px;

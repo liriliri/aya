@@ -37,5 +37,7 @@
   "processor": "处理器",
   "memory": "内存",
   "recapture": "重新截图",
-  "save": "保存"
+  "save": "保存",
+  "rotateLeft": "向左旋转",
+  "rotateRight": "向右旋转"
 }

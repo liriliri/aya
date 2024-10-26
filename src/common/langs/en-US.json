@@ -37,5 +37,7 @@
   "processor": "Processor",
   "memory": "Memory",
   "recapture": "Recapture",
-  "save": "Save"
+  "save": "Save",
+  "rotateLeft": "Rotate Left",
+  "rotateRight": "Rotate Right"
 }

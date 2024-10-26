@@ -1,13 +1,17 @@
 import { observer } from 'mobx-react-lite'
 import Style from './Screenshot.module.scss'
-import LunaToolbar, { LunaToolbarButton } from 'luna-toolbar/react'
+import LunaToolbar, {
+  LunaToolbarButton,
+  LunaToolbarSeparator,
+} from 'luna-toolbar/react'
 import dataUrl from 'licia/dataUrl'
 import toBool from 'licia/toBool'
 import convertBin from 'licia/convertBin'
 import download from 'licia/download'
 import LunaImageViewer from 'luna-image-viewer/react'
+import ImageViewer from 'luna-image-viewer'
 import ToolbarIcon from '../../../components/ToolbarIcon'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import store from '../../store'
 import { t } from '../../../lib/util'
 import CopyButton from '../../../components/CopyButton'
@@ -15,6 +19,7 @@ import { copyData } from '../../lib/util'
 
 export default observer(function Screenshot() {
   const [image, setImage] = useState<string>('')
+  const imageViewerRef = useRef<ImageViewer>()
 
   useEffect(() => {
     recapture()
@@ -58,11 +63,25 @@ export default observer(function Screenshot() {
         <LunaToolbarButton onClick={() => {}}>
           <CopyButton className="toolbar-icon" onClick={copy} />
         </LunaToolbarButton>
+        <LunaToolbarSeparator />
+        <ToolbarIcon
+          icon="rotate-left"
+          title={t('rotate-left')}
+          onClick={() => imageViewerRef.current?.rotate(-90)}
+          disabled={!hasImage}
+        />
+        <ToolbarIcon
+          icon="rotate-right"
+          title={t('rotate-right')}
+          onClick={() => imageViewerRef.current?.rotate(90)}
+          disabled={!hasImage}
+        />
       </LunaToolbar>
       {image && (
         <LunaImageViewer
           className={Style.imageViewer}
           image={image}
+          onCreate={(imageViewer) => (imageViewerRef.current = imageViewer)}
         ></LunaImageViewer>
       )}
     </div>

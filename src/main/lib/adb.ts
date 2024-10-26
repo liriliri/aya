@@ -45,6 +45,14 @@ async function getOverview(_, deviceId: string) {
   }
 }
 
+async function screencap(_, deviceId: string) {
+  const device = await client.getDevice(deviceId)
+  const data = await device.screencap()
+  const buf = await Adb.util.readAll(data)
+  
+  return buf.toString('base64')
+}
+
 async function getMemory(deviceId: string) {
   const memInfo = await shell(deviceId, 'cat /proc/meminfo')
   let memTotal = 0
@@ -209,4 +217,5 @@ export function init() {
   ipcMain.handle('writeShell', writeShell)
   ipcMain.handle('resizeShell', resizeShell)
   ipcMain.handle('killShell', killShell)
+  ipcMain.handle('screencap', screencap)
 }

@@ -9,7 +9,8 @@ export default observer(function Panels() {
   const tabItems = map(
     [
       'overview',
-      /*'app', 'file', 'screenshot',*/ 'logcat',
+      'screenshot',
+      /*'app', 'file', ,*/ 'logcat',
       'shell' /*'monitor'*/,
     ],
     (panel) => {

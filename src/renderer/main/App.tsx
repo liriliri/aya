@@ -2,6 +2,7 @@ import Toolbar from './components/toolbar/Toolbar'
 import Logcat from './components/logcat/Logcat'
 import Shell from './components/shell/Shell'
 import Overview from './components/overview/Overview'
+import Screenshot from './components/screenshot/Screenshot'
 import Style from './App.module.scss'
 import LunaModal from 'luna-modal/react'
 import { t } from '../lib/util'
@@ -34,6 +35,9 @@ export default observer(function App() {
         <div className={Style.panels} key={store.device ? store.device.id : ''}>
           <Panel panel="overview">
             <Overview />
+          </Panel>
+          <Panel panel="screenshot">
+            <Screenshot />
           </Panel>
           <Panel panel="logcat">
             <Logcat />
@@ -83,7 +87,7 @@ const Panel: FC<PropsWithChildren<IPanelProps>> = observer(function Panel(
 
   const style: CSSProperties = {}
   if (!visible) {
-    style.visibility = 'hidden'
+    style.opacity = 0
     style.pointerEvents = 'none'
   }
 

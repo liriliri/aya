@@ -24,6 +24,7 @@ export default {
     return ipcRenderer.invoke('resizeShell', sessionId, cols, rows)
   },
   killShell: (sessionId: string) => ipcRenderer.invoke('killShell', sessionId),
+  screencap: (deviceId: string) => ipcRenderer.invoke('screencap', deviceId),
   on: (event: string, cb: types.AnyFn) => ipcRenderer.on(event, cb),
   off: (event: string, cb: types.AnyFn) => ipcRenderer.off(event, cb),
 }

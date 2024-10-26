@@ -35,5 +35,7 @@
   "brand": "Brand",
   "name": "Name",
   "processor": "Processor",
-  "memory": "Memory"
+  "memory": "Memory",
+  "recapture": "Recapture",
+  "save": "Save"
 }

@@ -35,5 +35,7 @@
   "brand": "品牌",
   "name": "名称",
   "processor": "处理器",
-  "memory": "内存"
+  "memory": "内存",
+  "recapture": "重新截图",
+  "save": "保存"
 }

@@ -3,10 +3,13 @@ import Style from './Screenshot.module.scss'
 import LunaToolbar from 'luna-toolbar/react'
 import dataUrl from 'licia/dataUrl'
 import toBool from 'licia/toBool'
+import convertBin from 'licia/convertBin'
+import download from 'licia/download'
 import LunaImageViewer from 'luna-image-viewer/react'
 import ToolbarIcon from '../../../components/ToolbarIcon'
 import { useEffect, useState } from 'react'
 import store from '../../store'
+import { t } from '../../../lib/util'
 
 export default observer(function Screenshot() {
   const [image, setImage] = useState<string>('')
@@ -15,6 +18,12 @@ export default observer(function Screenshot() {
     recapture()
   }, [])
 
+  function save() {
+    const { data } = dataUrl.parse(image)!
+    const blob = convertBin(data, 'Blob')
+    download(blob, 'screenshot.png', 'image/png')
+  }
+
   async function recapture() {
     if (store.device) {
       const data = await main.screencap(store.device.id)
@@ -22,13 +31,22 @@ export default observer(function Screenshot() {
     }
   }
 
+  const hasImage = toBool(image)
+
   return (
     <div className={Style.container}>
       <LunaToolbar className={Style.toolbar}>
         <ToolbarIcon
           icon="refresh"
+          title={t('recapture')}
           onClick={recapture}
           disabled={!toBool(store.device)}
+        />
+        <ToolbarIcon
+          icon="save"
+          title={t('save')}
+          onClick={save}
+          disabled={!hasImage}
         />
       </LunaToolbar>
       {image && (

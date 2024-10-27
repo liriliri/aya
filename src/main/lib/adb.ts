@@ -2,6 +2,7 @@ import Adb, { Client, Device } from '@devicefarmer/adbkit'
 import { ipcMain } from 'electron'
 import map from 'licia/map'
 import types from 'licia/types'
+import filter from 'licia/filter'
 import Emitter from 'licia/Emitter'
 import uniqId from 'licia/uniqId'
 import * as window from './window'
@@ -9,7 +10,8 @@ import * as window from './window'
 let client: Client
 
 async function getDevices() {
-  const devices = await client.listDevices()
+  let devices = await client.listDevices()
+  devices = filter(devices, (device: Device) => device.type !== 'offline')
 
   return Promise.all(
     map(devices, async (device: Device) => {
@@ -21,7 +23,7 @@ async function getDevices() {
         model: properties['ro.product.model'],
       }
     })
-  )
+  ).catch(() => [])
 }
 
 async function getOverview(_, deviceId: string) {
@@ -208,8 +210,15 @@ async function killShell(_, sessionId: string) {
   delete ptys[sessionId]
 }
 
-export function init() {
+export async function init() {
   client = Adb.createClient()
+
+  const tracker = await client.trackDevices()
+  function onDeviceChange() {
+    setTimeout(() => window.sendTo('main', 'deviceChange'), 2000)
+  }
+  tracker.on('add', onDeviceChange)
+  tracker.on('remove', onDeviceChange)
 
   ipcMain.handle('getDevices', getDevices)
   ipcMain.handle('getOverview', getOverview)

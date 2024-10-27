@@ -38,7 +38,7 @@
     "luna-notification": "^0.3.2",
     "luna-setting": "^2.0.1",
     "luna-tab": "^0.3.2",
-    "luna-toolbar": "^0.5.8",
+    "luna-toolbar": "^0.6.0",
     "mobx": "^6.13.5",
     "mobx-react-lite": "^4.0.7",
     "react": "^18.3.1",

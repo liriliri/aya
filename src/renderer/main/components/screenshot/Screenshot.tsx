@@ -3,11 +3,16 @@ import Style from './Screenshot.module.scss'
 import LunaToolbar, {
   LunaToolbarButton,
   LunaToolbarSeparator,
+  LunaToolbarSpace,
+  LunaToolbarText,
 } from 'luna-toolbar/react'
 import dataUrl from 'licia/dataUrl'
 import toBool from 'licia/toBool'
+import fileSize from 'licia/fileSize'
+import base64 from 'licia/base64'
 import convertBin from 'licia/convertBin'
 import download from 'licia/download'
+import loadImg from 'licia/loadImg'
 import LunaImageViewer from 'luna-image-viewer/react'
 import ImageViewer from 'luna-image-viewer'
 import ToolbarIcon from '../../../components/ToolbarIcon'
@@ -18,7 +23,13 @@ import CopyButton from '../../../components/CopyButton'
 import { copyData } from '../../lib/util'
 
 export default observer(function Screenshot() {
-  const [image, setImage] = useState<string>('')
+  const [image, setImage] = useState<{
+    data: string
+    url: string
+    width: number
+    height: number
+    size: number
+  } | null>(null)
   const imageViewerRef = useRef<ImageViewer>()
 
   useEffect(() => {
@@ -26,20 +37,27 @@ export default observer(function Screenshot() {
   }, [])
 
   function save() {
-    const { data } = dataUrl.parse(image)!
-    const blob = convertBin(data, 'Blob')
+    const blob = convertBin(image!.data, 'Blob')
     download(blob, 'screenshot.png', 'image/png')
   }
 
   function copy() {
-    const { data } = dataUrl.parse(image)!
-    copyData(data, 'image/png')
+    copyData(image!.data, 'image/png')
   }
 
   async function recapture() {
     if (store.device) {
       const data = await main.screencap(store.device.id)
-      setImage(dataUrl.stringify(data, 'image/png'))
+      const url = dataUrl.stringify(data, 'image/png')
+      loadImg(url, (err, img) => {
+        setImage({
+          data,
+          url,
+          width: img.width,
+          height: img.height,
+          size: base64.decode(data).length,
+        })
+      })
     }
   }
 
@@ -100,11 +118,19 @@ export default observer(function Screenshot() {
           onClick={() => imageViewerRef.current?.reset()}
           disabled={!hasImage}
         />
+        <LunaToolbarSpace />
+        <LunaToolbarText
+          text={
+            hasImage
+              ? `${image!.width}x${image!.height} PNG ${fileSize(image!.size)}B`
+              : ''
+          }
+        />
       </LunaToolbar>
       {image && (
         <LunaImageViewer
           className={Style.imageViewer}
-          image={image}
+          image={image.url}
           onCreate={(imageViewer) => (imageViewerRef.current = imageViewer)}
         ></LunaImageViewer>
       )}

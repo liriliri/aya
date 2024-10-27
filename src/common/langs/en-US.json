@@ -41,5 +41,7 @@
   "rotateLeft": "Rotate Left",
   "rotateRight": "Rotate Right",
   "zoomIn": "Zoom In",
-  "zoomOut": "Zoom Out"
+  "zoomOut": "Zoom Out",
+  "reset": "Reset",
+  "actualSize": "Actual Size"
 }

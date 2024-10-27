@@ -88,6 +88,18 @@ export default observer(function Screenshot() {
           onClick={() => imageViewerRef.current?.zoom(-0.1)}
           disabled={!hasImage}
         />
+        <ToolbarIcon
+          icon="original"
+          title={t('actualSize')}
+          onClick={() => imageViewerRef.current?.zoomTo(1)}
+          disabled={!hasImage}
+        />
+        <ToolbarIcon
+          icon="reset"
+          title={t('reset')}
+          onClick={() => imageViewerRef.current?.reset()}
+          disabled={!hasImage}
+        />
       </LunaToolbar>
       {image && (
         <LunaImageViewer

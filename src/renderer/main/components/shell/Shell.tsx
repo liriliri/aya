@@ -39,6 +39,7 @@ export default observer(function Shell() {
 
     try {
       term.loadAddon(new WebglAddon())
+      /* eslint-disable @typescript-eslint/no-unused-vars */
     } catch (e) {
       term.loadAddon(new CanvasAddon())
     }

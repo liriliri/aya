@@ -220,11 +220,12 @@ export async function init() {
   tracker.on('add', onDeviceChange)
   tracker.on('remove', onDeviceChange)
 
-  ipcMain.handle('getDevices', getDevices)
-  ipcMain.handle('getOverview', getOverview)
   ipcMain.handle('createShell', createShell)
   ipcMain.handle('writeShell', writeShell)
   ipcMain.handle('resizeShell', resizeShell)
   ipcMain.handle('killShell', killShell)
+
+  ipcMain.handle('getDevices', getDevices)
+  ipcMain.handle('getOverview', getOverview)
   ipcMain.handle('screencap', screencap)
 }

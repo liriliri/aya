@@ -210,6 +210,40 @@ async function killShell(_, sessionId: string) {
   delete ptys[sessionId]
 }
 
+class Logcat extends Emitter {
+  private reader: any
+  constructor(reader: any) {
+    super()
+
+    this.reader = reader
+  }
+  async init() {}
+  close() {
+    this.reader.end()
+  }
+}
+
+const logcats: types.PlainObj<Logcat> = {}
+
+async function openLogcat(_, id: string) {
+  const device = await client.getDevice(id)
+  const reader = await device.openLogcat()
+  const logcat = new Logcat(reader)
+  await logcat.init()
+  const logcatId = uniqId('logcat')
+  logcat.on('entry', (entry) => {
+    window.sendTo('main', 'logcatEntry', logcatId, entry)
+  })
+  logcats[logcatId] = logcat
+
+  return logcatId
+}
+
+async function closeLogcat(_, logcatId: string) {
+  logcats[logcatId].close()
+  delete logcats[logcatId]
+}
+
 export async function init() {
   client = Adb.createClient()
 
@@ -224,6 +258,9 @@ export async function init() {
   ipcMain.handle('writeShell', writeShell)
   ipcMain.handle('resizeShell', resizeShell)
   ipcMain.handle('killShell', killShell)
+
+  ipcMain.handle('openLogcat', openLogcat)
+  ipcMain.handle('closeLogcat', closeLogcat)
 
   ipcMain.handle('getDevices', getDevices)
   ipcMain.handle('getOverview', getOverview)

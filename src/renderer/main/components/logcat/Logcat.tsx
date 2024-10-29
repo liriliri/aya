@@ -3,6 +3,7 @@ import LunaToolbar, {
   LunaToolbarInput,
   LunaToolbarSelect,
   LunaToolbarSeparator,
+  LunaToolbarSpace,
 } from 'luna-toolbar/react'
 import LunaLogcat from 'luna-logcat/react'
 import Logcat from 'luna-logcat'
@@ -11,6 +12,7 @@ import Style from './Logcat.module.scss'
 import store from '../../store'
 import toBool from 'licia/toBool'
 import { t } from '../../../lib/util'
+import ToolbarIcon from '../../../components/ToolbarIcon'
 
 export default observer(function Logcat() {
   const [view, setView] = useState<'compact' | 'standard'>('standard')
@@ -65,6 +67,12 @@ export default observer(function Logcat() {
           keyName="package"
           placeholder="package name"
           value=""
+        />
+        <LunaToolbarSpace />
+        <ToolbarIcon
+          icon="delete"
+          title={t('clear')}
+          onClick={() => logcatRef.current?.clear()}
         />
       </LunaToolbar>
       <LunaLogcat

@@ -45,5 +45,6 @@
   "reset": "Reset",
   "actualSize": "Actual Size",
   "standardView": "Standard View",
-  "compactView": "Compact View"
+  "compactView": "Compact View",
+  "clear": "Clear"
 }

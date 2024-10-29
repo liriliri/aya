@@ -45,5 +45,6 @@
   "reset": "重置",
   "actualSize": "实际大小",
   "standardView": "标准视图",
-  "compactView": "紧凑视图"
+  "compactView": "紧凑视图",
+  "clear": "清空"
 }

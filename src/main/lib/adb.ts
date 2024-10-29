@@ -5,6 +5,7 @@ import types from 'licia/types'
 import filter from 'licia/filter'
 import Emitter from 'licia/Emitter'
 import uniqId from 'licia/uniqId'
+import each from 'licia/each'
 import * as window from './window'
 
 let client: Client
@@ -212,20 +213,37 @@ async function killShell(_, sessionId: string) {
 
 class Logcat extends Emitter {
   private reader: any
+  private pidNames: types.PlainObj<string> = {}
   constructor(reader: any) {
     super()
 
     this.reader = reader
   }
-  async init() {
+  async init(deviceId: string) {
     const { reader } = this
+
+    await this.getPackages(deviceId)
+
     reader.on('entry', (entry) => {
-      entry.package = `pid-${entry.pid}`
+      entry.package = this.pidNames[entry.pid] || `pid-${entry.pid}`
       this.emit('entry', entry)
     })
   }
   close() {
     this.reader.end()
+  }
+  private async getPackages(deviceId: string) {
+    const { pidNames } = this
+
+    const result: string = await shell(deviceId, 'ps -A')
+    const lines = result.split('\n')
+    const headers = lines[0].split(/\s+/)
+    const pidIndex = headers.indexOf('PID')
+    const nameIndex = headers.indexOf('NAME')
+    each(lines, (line) => {
+      const parts = line.split(/\s+/)
+      pidNames[parts[pidIndex]] = parts[nameIndex]
+    })
   }
 }
 
@@ -235,7 +253,7 @@ async function openLogcat(_, id: string) {
   const device = await client.getDevice(id)
   const reader = await device.openLogcat()
   const logcat = new Logcat(reader)
-  await logcat.init()
+  await logcat.init(id)
   const logcatId = uniqId('logcat')
   logcat.on('entry', (entry) => {
     window.sendTo('main', 'logcatEntry', logcatId, entry)

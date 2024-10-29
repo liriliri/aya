@@ -48,5 +48,7 @@
   "compactView": "紧凑视图",
   "clear": "清空",
   "pause": "暂停",
-  "resume": "继续"
+  "resume": "继续",
+  "package": "包名",
+  "tag": "标签"
 }

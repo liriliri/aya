@@ -66,9 +66,10 @@ export default observer(function Logcat() {
         <LunaToolbarSeparator />
         <LunaToolbarInput
           keyName="package"
-          placeholder="package name"
+          placeholder={t('package')}
           value=""
         />
+        <LunaToolbarInput keyName="tag" placeholder={t('tag')} value="" />
         <LunaToolbarSpace />
         <ToolbarIcon
           icon={paused ? 'play' : 'pause'}

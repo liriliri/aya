@@ -48,5 +48,7 @@
   "compactView": "Compact View",
   "clear": "Clear",
   "pause": "Pause",
-  "resume": "Resume"
+  "resume": "Resume",
+  "package": "Package",
+  "tag": "Tag"
 }

@@ -43,5 +43,7 @@
   "zoomIn": "Zoom In",
   "zoomOut": "Zoom Out",
   "reset": "Reset",
-  "actualSize": "Actual Size"
+  "actualSize": "Actual Size",
+  "standardView": "Standard View",
+  "compactView": "Compact View"
 }

@@ -1,12 +1,19 @@
 import { observer } from 'mobx-react-lite'
-import LunaToolbar, { LunaToolbarInput } from 'luna-toolbar/react'
+import LunaToolbar, {
+  LunaToolbarInput,
+  LunaToolbarSelect,
+  LunaToolbarSeparator,
+} from 'luna-toolbar/react'
 import LunaLogcat from 'luna-logcat/react'
 import Logcat from 'luna-logcat'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Style from './Logcat.module.scss'
 import store from '../../store'
+import toBool from 'licia/toBool'
+import { t } from '../../../lib/util'
 
 export default observer(function Logcat() {
+  const [view, setView] = useState<'compact' | 'standard'>('standard')
   const logcatRef = useRef<Logcat>()
 
   useEffect(() => {
@@ -36,7 +43,24 @@ export default observer(function Logcat() {
 
   return (
     <div className={Style.container}>
-      <LunaToolbar className={Style.toolbar}>
+      <LunaToolbar
+        className={Style.toolbar}
+        onChange={(key, val) => {
+          if (key === 'view') {
+            setView(val)
+          }
+        }}
+      >
+        <LunaToolbarSelect
+          keyName="view"
+          disabled={!toBool(store.device)}
+          value={view}
+          options={{
+            [t('standardView')]: 'standard',
+            [t('compactView')]: 'compact',
+          }}
+        />
+        <LunaToolbarSeparator />
         <LunaToolbarInput
           keyName="package"
           placeholder="package name"
@@ -46,6 +70,7 @@ export default observer(function Logcat() {
       <LunaLogcat
         className={Style.logcat}
         maxNum={2000}
+        view={view}
         onCreate={(logcat) => (logcatRef.current = logcat)}
       />
     </div>

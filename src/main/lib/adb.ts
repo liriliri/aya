@@ -217,7 +217,13 @@ class Logcat extends Emitter {
 
     this.reader = reader
   }
-  async init() {}
+  async init() {
+    const { reader } = this
+    reader.on('entry', (entry) => {
+      entry.package = `pid-${entry.pid}`
+      this.emit('entry', entry)
+    })
+  }
   close() {
     this.reader.end()
   }

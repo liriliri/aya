@@ -26,8 +26,15 @@ export default {
   killShell: (sessionId: string) => ipcRenderer.invoke('killShell', sessionId),
   screencap: (deviceId: string) => ipcRenderer.invoke('screencap', deviceId),
   openLogcat: (deviceId: string) => ipcRenderer.invoke('openLogcat', deviceId),
-  closeLogcat: (logcatId: string) =>
-    ipcRenderer.invoke('closeLogcat', logcatId),
+  closeLogcat: (logcatId: string) => {
+    return ipcRenderer.invoke('closeLogcat', logcatId)
+  },
+  pauseLogcat: (logcatId: string) => {
+    return ipcRenderer.invoke('pauseLogcat', logcatId)
+  },
+  resumeLogcat: (logcatId: string) => {
+    return ipcRenderer.invoke('resumeLogcat', logcatId)
+  },
   on: (event: string, cb: types.AnyFn) => ipcRenderer.on(event, cb),
   off: (event: string, cb: types.AnyFn) => ipcRenderer.off(event, cb),
 }

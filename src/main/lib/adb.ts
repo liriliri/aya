@@ -213,6 +213,7 @@ async function killShell(_, sessionId: string) {
 
 class Logcat extends Emitter {
   private reader: any
+  private paused = false
   private pidNames: types.PlainObj<string> = {}
   constructor(reader: any) {
     super()
@@ -225,12 +226,21 @@ class Logcat extends Emitter {
     await this.getPackages(deviceId)
 
     reader.on('entry', (entry) => {
+      if (this.paused) {
+        return
+      }
       entry.package = this.pidNames[entry.pid] || `pid-${entry.pid}`
       this.emit('entry', entry)
     })
   }
   close() {
     this.reader.end()
+  }
+  pause() {
+    this.paused = true
+  }
+  resume() {
+    this.paused = false
   }
   private async getPackages(deviceId: string) {
     const { pidNames } = this
@@ -263,6 +273,14 @@ async function openLogcat(_, id: string) {
   return logcatId
 }
 
+async function pauseLogcat(_, logcatId: string) {
+  logcats[logcatId].pause()
+}
+
+async function resumeLogcat(_, logcatId: string) {
+  logcats[logcatId].resume()
+}
+
 async function closeLogcat(_, logcatId: string) {
   logcats[logcatId].close()
   delete logcats[logcatId]
@@ -285,6 +303,8 @@ export async function init() {
 
   ipcMain.handle('openLogcat', openLogcat)
   ipcMain.handle('closeLogcat', closeLogcat)
+  ipcMain.handle('pauseLogcat', pauseLogcat)
+  ipcMain.handle('resumeLogcat', resumeLogcat)
 
   ipcMain.handle('getDevices', getDevices)
   ipcMain.handle('getOverview', getOverview)

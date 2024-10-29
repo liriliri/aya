@@ -208,3 +208,33 @@
   color: var(--aya-color-text);
   background: var(--aya-color-bg-container);
 }
+
+.luna-logcat-W {
+  .luna-logcat-priority {
+    background: var(--aya-color-warning-text);
+  }
+  .luna-logcat-message {
+    color: var(--aya-color-warning-text);
+  }
+}
+
+.luna-logcat-E {
+  .luna-logcat-priority {
+    background: var(--aya-color-error-text);
+  }
+  .luna-logcat-message {
+    color: var(--aya-color-error-text);
+  }
+}
+
+.luna-logcat-D {
+  .luna-logcat-priority {
+    background: var(--aya-color-success-text);
+  }
+}
+
+.I {
+  .luna-logcat-priority {
+    background: var(--aya-color-info-text);
+  }
+}

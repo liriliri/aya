@@ -16,12 +16,13 @@ import ToolbarIcon from '../../../components/ToolbarIcon'
 
 export default observer(function Logcat() {
   const [view, setView] = useState<'compact' | 'standard'>('standard')
+  const [paused, setPaused] = useState(false)
   const logcatRef = useRef<Logcat>()
+  const logcatIdRef = useRef('')
 
   useEffect(() => {
-    let logcatId = ''
     function onLogcatEntry(_, id, entry) {
-      if (logcatId !== id) {
+      if (logcatIdRef.current !== id) {
         return
       }
       if (logcatRef.current) {
@@ -30,15 +31,15 @@ export default observer(function Logcat() {
     }
     if (store.device) {
       main.openLogcat(store.device.id).then((id) => {
-        logcatId = id
+        logcatIdRef.current = id
       })
       main.on('logcatEntry', onLogcatEntry)
     }
 
     return () => {
-      if (logcatId) {
+      if (logcatIdRef.current) {
         main.off('logcatEntry', onLogcatEntry)
-        main.closeLogcat(logcatId)
+        main.closeLogcat(logcatIdRef.current)
       }
     }
   }, [])
@@ -69,6 +70,18 @@ export default observer(function Logcat() {
           value=""
         />
         <LunaToolbarSpace />
+        <ToolbarIcon
+          icon={paused ? 'play' : 'pause'}
+          title={t(paused ? 'resume' : 'pause')}
+          onClick={() => {
+            if (paused) {
+              main.resumeLogcat(logcatIdRef.current)
+            } else {
+              main.pauseLogcat(logcatIdRef.current)
+            }
+            setPaused(!paused)
+          }}
+        />
         <ToolbarIcon
           icon="delete"
           title={t('clear')}

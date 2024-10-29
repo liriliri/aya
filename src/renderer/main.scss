@@ -31,6 +31,10 @@ body {
   @include prefix(
     (
       color-text: theme.$color-text,
+      color-error-text: theme.$color-error-text,
+      color-surccess-text: theme.$color-success-text,
+      color-warning-text: theme.$color-warning-text,
+      color-info-text: theme.$color-info-text,
       color-primary: theme.$color-primary,
       color-primary-bg: color.adjust(theme.$color-primary, $lightness: 60%),
       color-primary-hover: theme.$color-primary-hover,
@@ -61,6 +65,10 @@ body {
   @include prefix(
     (
       color-text: theme.$color-text-dark,
+      color-error-text: theme.$color-error-text-dark,
+      color-surccess-text: theme.$color-success-text-dark,
+      color-warning-text: theme.$color-warning-text-dark,
+      color-info-text: theme.$color-info-text-dark,
       color-primary: theme.$color-primary-dark,
       color-primary-bg: color.adjust(theme.$color-primary, $lightness: -25%),
       color-primary-hover: theme.$color-primary-hover-dark,

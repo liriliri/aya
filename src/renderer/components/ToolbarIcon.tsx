@@ -7,6 +7,7 @@ interface IProps {
   title?: string
   toolbar?: LunaToolbar
   disabled?: boolean
+  state?: '' | 'hover' | 'active'
   onClick: () => void
 }
 
@@ -15,6 +16,7 @@ export default function (props: PropsWithChildren<IProps>) {
     <LunaToolbarButton
       toolbar={props.toolbar}
       disabled={props.disabled}
+      state={props.state || ''}
       onClick={props.onClick}
     >
       <div className="icon toolbar-icon">

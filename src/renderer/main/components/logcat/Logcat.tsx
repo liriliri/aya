@@ -16,6 +16,7 @@ import ToolbarIcon from '../../../components/ToolbarIcon'
 
 export default observer(function Logcat() {
   const [view, setView] = useState<'compact' | 'standard'>('standard')
+  const [softWrap, setSoftWrap] = useState(false)
   const [paused, setPaused] = useState(false)
   const logcatRef = useRef<Logcat>()
   const logcatIdRef = useRef('')
@@ -84,6 +85,12 @@ export default observer(function Logcat() {
         <LunaToolbarInput keyName="tag" placeholder={t('tag')} value="" />
         <LunaToolbarSpace />
         <ToolbarIcon
+          icon="soft-wrap"
+          state={softWrap ? 'hover' : ''}
+          title={t('softWrap')}
+          onClick={() => setSoftWrap(!softWrap)}
+        />
+        <ToolbarIcon
           icon="scroll-end"
           title={t('scrollToEnd')}
           onClick={() => logcatRef.current?.scrollToEnd()}
@@ -124,6 +131,7 @@ export default observer(function Logcat() {
       <LunaLogcat
         className={Style.logcat}
         maxNum={2000}
+        wrapLongLines={softWrap}
         view={view}
         onCreate={(logcat) => (logcatRef.current = logcat)}
       />

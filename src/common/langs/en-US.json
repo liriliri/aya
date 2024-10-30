@@ -52,5 +52,6 @@
   "package": "Package",
   "tag": "Tag",
   "scrollToEnd": "Scroll to End",
-  "restart": "Restart"
+  "restart": "Restart",
+  "softWrap": "Soft Wrap"
 }

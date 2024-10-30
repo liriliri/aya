@@ -51,5 +51,6 @@
   "resume": "Resume",
   "package": "Package",
   "tag": "Tag",
-  "scrollToEnd": "Scroll to End"
+  "scrollToEnd": "Scroll to End",
+  "restart": "Restart"
 }

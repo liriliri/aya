@@ -21,6 +21,8 @@ export default observer(function Shell() {
   const terminalRef = useRef<HTMLDivElement>(null)
   const termRef = useRef<Terminal>()
 
+  const { device } = store
+
   useEffect(() => {
     const term = new Terminal({
       allowProposedApi: true,
@@ -48,28 +50,28 @@ export default observer(function Shell() {
     termRef.current = term
 
     let sessionId = ''
-    function onShellData(_, id, data) {
+    function onShellData(id, data) {
       if (sessionId !== id) {
         return
       }
       term.write(data)
     }
+    const offShellData = main.on('shellData', onShellData)
 
-    if (store.device) {
-      main.createShell(store.device.id).then((id) => {
+    if (device) {
+      main.createShell(device.id).then((id) => {
         sessionId = id
         term.onData((data) => main.writeShell(sessionId, data))
         term.onResize((size) => {
           main.resizeShell(sessionId, size.cols, size.rows)
         })
         fit()
-        main.on('shellData', onShellData)
       })
     }
 
     return () => {
+      offShellData()
       if (sessionId) {
-        main.off('shellData', onShellData)
         main.killShell(sessionId)
       }
       term.dispose()

@@ -35,6 +35,9 @@ export default {
   resumeLogcat: (logcatId: string) => {
     return ipcRenderer.invoke('resumeLogcat', logcatId)
   },
-  on: (event: string, cb: types.AnyFn) => ipcRenderer.on(event, cb),
-  off: (event: string, cb: types.AnyFn) => ipcRenderer.off(event, cb),
+  on: (event: string, cb: types.AnyFn) => {
+    const listener = (e, ...args) => cb(...args)
+    ipcRenderer.on(event, listener)
+    return () => ipcRenderer.off(event, listener)
+  },
 }

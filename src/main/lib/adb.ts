@@ -261,7 +261,9 @@ const logcats: types.PlainObj<Logcat> = {}
 
 async function openLogcat(_, id: string) {
   const device = await client.getDevice(id)
-  const reader = await device.openLogcat()
+  const reader = await device.openLogcat({
+    clear: true,
+  })
   const logcat = new Logcat(reader)
   await logcat.init(id)
   const logcatId = uniqId('logcat')

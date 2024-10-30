@@ -20,8 +20,10 @@ export default observer(function Logcat() {
   const logcatRef = useRef<Logcat>()
   const logcatIdRef = useRef('')
 
+  const { device } = store
+
   useEffect(() => {
-    function onLogcatEntry(_, id, entry) {
+    function onLogcatEntry(id, entry) {
       if (logcatIdRef.current !== id) {
         return
       }
@@ -29,16 +31,16 @@ export default observer(function Logcat() {
         logcatRef.current.append(entry)
       }
     }
-    if (store.device) {
-      main.openLogcat(store.device.id).then((id) => {
+    const offLogcatEntry = main.on('logcatEntry', onLogcatEntry)
+    if (device) {
+      main.openLogcat(device.id).then((id) => {
         logcatIdRef.current = id
       })
-      main.on('logcatEntry', onLogcatEntry)
     }
 
     return () => {
+      offLogcatEntry()
       if (logcatIdRef.current) {
-        main.off('logcatEntry', onLogcatEntry)
         main.closeLogcat(logcatIdRef.current)
       }
     }
@@ -66,7 +68,7 @@ export default observer(function Logcat() {
       >
         <LunaToolbarSelect
           keyName="view"
-          disabled={!toBool(store.device)}
+          disabled={!toBool(device)}
           value={view}
           options={{
             [t('standardView')]: 'standard',
@@ -85,6 +87,21 @@ export default observer(function Logcat() {
           icon="scroll-end"
           title={t('scrollToEnd')}
           onClick={() => logcatRef.current?.scrollToEnd()}
+        />
+        <ToolbarIcon
+          icon="reset"
+          title={t('restart')}
+          onClick={() => {
+            if (logcatIdRef.current) {
+              main.closeLogcat(logcatIdRef.current)
+              logcatRef.current?.clear()
+            }
+            if (device) {
+              main.openLogcat(device.id).then((id) => {
+                logcatIdRef.current = id
+              })
+            }
+          }}
         />
         <ToolbarIcon
           icon={paused ? 'play' : 'pause'}

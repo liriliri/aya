@@ -77,6 +77,18 @@ export default observer(function Logcat() {
           }}
         />
         <LunaToolbarSeparator />
+        <LunaToolbarSelect
+          keyName="priority"
+          disabled={!toBool(device)}
+          value="2"
+          options={{
+            VERBOSE: '2',
+            DEBUG: '3',
+            INFO: '4',
+            WARNING: '5',
+            ERROR: '6',
+          }}
+        />
         <LunaToolbarInput
           keyName="package"
           placeholder={t('package')}
@@ -122,6 +134,7 @@ export default observer(function Logcat() {
             setPaused(!paused)
           }}
         />
+        <LunaToolbarSeparator />
         <ToolbarIcon
           icon="delete"
           title={t('clear')}

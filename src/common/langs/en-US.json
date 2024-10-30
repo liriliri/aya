@@ -50,5 +50,6 @@
   "pause": "Pause",
   "resume": "Resume",
   "package": "Package",
-  "tag": "Tag"
+  "tag": "Tag",
+  "scrollToEnd": "Scroll to End"
 }

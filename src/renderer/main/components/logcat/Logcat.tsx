@@ -44,6 +44,16 @@ export default observer(function Logcat() {
     }
   }, [])
 
+  if (store.panel !== 'logcat') {
+    if (!paused && logcatIdRef.current) {
+      main.pauseLogcat(logcatIdRef.current)
+    }
+  } else {
+    if (!paused && logcatIdRef.current) {
+      main.resumeLogcat(logcatIdRef.current)
+    }
+  }
+
   return (
     <div className={Style.container}>
       <LunaToolbar
@@ -71,6 +81,11 @@ export default observer(function Logcat() {
         />
         <LunaToolbarInput keyName="tag" placeholder={t('tag')} value="" />
         <LunaToolbarSpace />
+        <ToolbarIcon
+          icon="scroll-end"
+          title={t('scrollToEnd')}
+          onClick={() => logcatRef.current?.scrollToEnd()}
+        />
         <ToolbarIcon
           icon={paused ? 'play' : 'pause'}
           title={t(paused ? 'resume' : 'pause')}

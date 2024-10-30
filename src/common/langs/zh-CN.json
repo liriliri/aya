@@ -50,5 +50,6 @@
   "pause": "暂停",
   "resume": "继续",
   "package": "包名",
-  "tag": "标签"
+  "tag": "标签",
+  "scrollToEnd": "滚动到底部"
 }

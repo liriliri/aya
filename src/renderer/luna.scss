@@ -205,6 +205,7 @@
 
 .luna-logcat {
   border: none;
+  user-select: text;
   color: var(--aya-color-text);
   background: var(--aya-color-bg-container);
 }

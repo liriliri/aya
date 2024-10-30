@@ -7,6 +7,7 @@ import LunaToolbar, {
 } from 'luna-toolbar/react'
 import LunaLogcat from 'luna-logcat/react'
 import Logcat from 'luna-logcat'
+import toNum from 'licia/toNum'
 import { useEffect, useRef, useState } from 'react'
 import Style from './Logcat.module.scss'
 import store from '../../store'
@@ -18,6 +19,11 @@ export default observer(function Logcat() {
   const [view, setView] = useState<'compact' | 'standard'>('standard')
   const [softWrap, setSoftWrap] = useState(false)
   const [paused, setPaused] = useState(false)
+  const [filter, setFilter] = useState<{
+    priority?: number
+    package?: string
+    tag?: string
+  }>({})
   const logcatRef = useRef<Logcat>()
   const logcatIdRef = useRef('')
 
@@ -62,8 +68,28 @@ export default observer(function Logcat() {
       <LunaToolbar
         className={Style.toolbar}
         onChange={(key, val) => {
-          if (key === 'view') {
-            setView(val)
+          switch (key) {
+            case 'view':
+              setView(val)
+              break
+            case 'priority':
+              setFilter({
+                ...filter,
+                priority: toNum(val),
+              })
+              break
+            case 'package':
+              setFilter({
+                ...filter,
+                package: val,
+              })
+              break
+            case 'tag':
+              setFilter({
+                ...filter,
+                tag: val,
+              })
+              break
           }
         }}
       >
@@ -144,6 +170,7 @@ export default observer(function Logcat() {
       <LunaLogcat
         className={Style.logcat}
         maxNum={2000}
+        filter={filter}
         wrapLongLines={softWrap}
         view={view}
         onCreate={(logcat) => (logcatRef.current = logcat)}

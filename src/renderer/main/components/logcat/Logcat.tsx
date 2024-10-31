@@ -12,8 +12,10 @@ import { useEffect, useRef, useState } from 'react'
 import Style from './Logcat.module.scss'
 import store from '../../store'
 import toBool from 'licia/toBool'
+import copy from 'licia/copy'
 import { t } from '../../../lib/util'
 import ToolbarIcon from '../../../components/ToolbarIcon'
+import contextMenu from '../../../lib/contextMenu'
 
 export default observer(function Logcat() {
   const [view, setView] = useState<'compact' | 'standard'>('standard')
@@ -61,6 +63,31 @@ export default observer(function Logcat() {
     if (!paused && logcatIdRef.current) {
       main.resumeLogcat(logcatIdRef.current)
     }
+  }
+
+  const onContextMenu = (e: React.MouseEvent) => {
+    const logcat = logcatRef.current!
+    const template: any[] = [
+      {
+        label: t('copy'),
+        click: () => {
+          if (logcat.hasSelection()) {
+            copy(logcat.getSelection())
+          }
+        },
+      },
+      {
+        type: 'separator',
+      },
+      {
+        label: t('clear'),
+        click: () => {
+          logcat.clear()
+        },
+      },
+    ]
+
+    contextMenu(e, template)
   }
 
   return (
@@ -172,6 +199,7 @@ export default observer(function Logcat() {
         maxNum={2000}
         filter={filter}
         wrapLongLines={softWrap}
+        onContextMenu={onContextMenu}
         view={view}
         onCreate={(logcat) => (logcatRef.current = logcat)}
       />

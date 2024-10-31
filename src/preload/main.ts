@@ -35,6 +35,14 @@ export default {
   resumeLogcat: (logcatId: string) => {
     return ipcRenderer.invoke('resumeLogcat', logcatId)
   },
+  showContextMenu: (x: number, y: number, template: any) => {
+    ipcRenderer.invoke(
+      'showContextMenu',
+      Math.round(x),
+      Math.round(y),
+      template
+    )
+  },
   on: (event: string, cb: types.AnyFn) => {
     const listener = (e, ...args) => cb(...args)
     ipcRenderer.on(event, listener)

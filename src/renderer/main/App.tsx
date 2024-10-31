@@ -10,6 +10,7 @@ import { useState, useEffect, PropsWithChildren, FC } from 'react'
 import { createPortal } from 'react-dom'
 import store from './store'
 import { observer } from 'mobx-react-lite'
+import icon from '../assets/icon.png'
 
 export default observer(function App() {
   const [aboutVisible, setAboutVisible] = useState(false)
@@ -49,6 +50,7 @@ export default observer(function App() {
           onClose={() => setAboutVisible(false)}
         >
           <div className={Style.about}>
+            <img className={Style.icon} src={icon} />
             <div>AYA</div>
             <div>
               {t('version')} {AYA_VERSION}

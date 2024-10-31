@@ -1,5 +1,5 @@
 {
-  "name": "aya",
+  "name": "AYA",
   "version": "0.1.0",
   "description": "Android adb desktop app",
   "main": "dist/main/index.js",
@@ -8,7 +8,12 @@
     "dev:main": "vite build --watch --config vite.main.ts --mode=development",
     "dev:preload": "vite build --watch --config vite.preload.ts --mode=development",
     "dev:renderer": "vite",
-    "format": "lsla prettier \"src/**/*.{ts,tsx,scss,css,json}\" \"*.{js,ts,json}\" --write",
+    "build:main": "vite build --config vite.main.ts",
+    "build:preload": "vite build --config vite.preload.ts",
+    "build:renderer": "vite build",
+    "build": "zx script/build.mjs",
+    "pack": "zx script/pack.mjs",
+    "format": "lsla prettier \"src/**/*.{ts,tsx,scss,css,json}\" \"*.{js,ts,json}\" \"script/*.mjs\" --write",
     "start": "electron ./dist/main/index.js",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "genIcon": "lsla genIcon --input src/renderer/icon --output src/renderer/icon.css --name aya-icon",
@@ -32,6 +37,7 @@
     "concurrently": "^9.0.1",
     "custom-electron-titlebar": "^4.2.8",
     "electron": "^33.0.1",
+    "electron-builder": "^25.1.8",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
     "fs-extra": "^11.2.0",
@@ -51,6 +57,7 @@
     "react-dom": "^18.3.1",
     "sass": "^1.80.2",
     "typescript-eslint": "^8.11.0",
-    "vite": "^5.4.9"
+    "vite": "^5.4.9",
+    "zx": "^8.1.9"
   }
 }

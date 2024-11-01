@@ -41,9 +41,8 @@ class Store extends BaseStore {
     } else {
       this.device = device
     }
-    if (this.device) {
-      setMainStore('device', this.device)
-    }
+
+    setMainStore('device', this.device)
   }
   selectPanel(panel: string) {
     this.panel = panel

@@ -1,12 +1,19 @@
 import Adb, { Client, Device } from '@devicefarmer/adbkit'
+import { resolveUnpack } from '../lib/util'
 import { ipcMain } from 'electron'
 import map from 'licia/map'
 import types from 'licia/types'
 import filter from 'licia/filter'
 import Emitter from 'licia/Emitter'
+import isStrBlank from 'licia/isStrBlank'
 import uniqId from 'licia/uniqId'
 import each from 'licia/each'
 import * as window from './window'
+import fs from 'fs-extra'
+import { getSettingsStore } from './store'
+import isWindows from 'licia/isWindows'
+
+const settingsStore = getSettingsStore()
 
 let client: Client
 
@@ -289,7 +296,17 @@ async function closeLogcat(_, logcatId: string) {
 }
 
 export async function init() {
-  client = Adb.createClient()
+  let bin = isWindows ? resolveUnpack('adb/adb.exe') : resolveUnpack('adb/adb')
+  const adbPath = settingsStore.get('adbPath')
+  if (
+    adbPath === 'adb' ||
+    (!isStrBlank(adbPath) && (await fs.exists(adbPath)))
+  ) {
+    bin = adbPath
+  }
+  client = Adb.createClient({
+    bin,
+  })
 
   const tracker = await client.trackDevices()
   function onDeviceChange() {

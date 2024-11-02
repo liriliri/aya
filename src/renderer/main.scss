@@ -113,6 +113,40 @@ body {
   background-color: var(--aya-color-fill-secondary);
 }
 
+.button {
+  border: none;
+  text-align: center;
+  padding: 6px;
+  border-radius: var(--aya-border-radius-s-m);
+  background: var(--aya-color-fill-tertiary);
+  &:hover {
+    background: var(--aya-color-fill-secondary);
+  }
+  &.disabled {
+    pointer-events: none;
+  }
+  &.primary {
+    color: #fff;
+    background: var(--aya-color-primary);
+    &:hover {
+      background: var(--aya-color-primary-hover);
+    }
+    &:active {
+      background: var(--aya-color-primary-active);
+    }
+  }
+  &.success {
+    color: #fff;
+    background: var(--aya-color-success);
+    &:hover {
+      background: var(--aya-color-success-hover);
+    }
+    &:active {
+      background: var(--aya-color-success-active);
+    }
+  }
+}
+
 .hidden {
   display: none;
 }

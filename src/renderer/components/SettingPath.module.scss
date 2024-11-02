@@ -1,0 +1,22 @@
+.item-path {
+  padding: 10px 0;
+  width: 100%;
+  input {
+    color: var(--aya-color-text);
+    background: var(--aya-color-bg-container);
+    border: 1px solid var(--aya-color-border, transparent);
+    min-width: 300px;
+    border-right: none;
+    padding: 4px 6px;
+    outline: none;
+    height: 25px;
+  }
+  :global(.button) {
+    height: 25px;
+    line-height: 25px;
+    padding: 0 14px;
+    font-size: 12px;
+    margin: 0;
+    border-radius: 0;
+  }
+}

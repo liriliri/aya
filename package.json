@@ -13,6 +13,7 @@
     "build:renderer": "vite build",
     "build": "zx script/build.mjs",
     "pack": "zx script/pack.mjs",
+    "adb": "zx script/adb.mjs",
     "format": "lsla prettier \"src/**/*.{ts,tsx,scss,css,json}\" \"*.{js,ts,json}\" \"script/*.mjs\" --write",
     "start": "electron ./dist/main/index.js",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",

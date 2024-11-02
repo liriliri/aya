@@ -53,5 +53,7 @@
   "tag": "Tag",
   "scrollToEnd": "Scroll to End",
   "restart": "Restart",
-  "softWrap": "Soft Wrap"
+  "softWrap": "Soft Wrap",
+  "adbPath": "ADB Path",
+  "browse": "Browse"
 }

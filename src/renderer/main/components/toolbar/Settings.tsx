@@ -12,6 +12,7 @@ import { createPortal } from 'react-dom'
 import { observer } from 'mobx-react-lite'
 import contain from 'licia/contain'
 import debounce from 'licia/debounce'
+import SettingPath from '../../../components/SettingPath'
 import store from '../../store'
 
 export default function Settings() {
@@ -79,6 +80,18 @@ const SettingsModal = observer(function SettingsModal(
             [t('sysPreference')]: 'system',
             English: 'en-US',
             ['中文']: 'zh-CN',
+          }}
+        />
+        <LunaSettingTitle title="ADB" />
+        <SettingPath
+          title={t('adbPath')}
+          value={store.settings.adbPath}
+          onChange={(val) => {
+            notifyRequireReload()
+            store.settings.set('adbPath', val)
+          }}
+          options={{
+            properties: ['openFile'],
           }}
         />
       </LunaSetting>

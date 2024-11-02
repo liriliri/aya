@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron'
+import { dialog, ipcMain, OpenDialogOptions } from 'electron'
 import contextMenu from './contextMenu'
 
 export function init() {
@@ -7,5 +7,8 @@ export function init() {
     (_, x: number, y: number, template: any) => {
       contextMenu(x, y, template)
     }
+  )
+  ipcMain.handle('showOpenDialog', (_, options: OpenDialogOptions = {}) =>
+    dialog.showOpenDialog(options)
   )
 }

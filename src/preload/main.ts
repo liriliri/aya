@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, OpenDialogOptions } from 'electron'
 import types from 'licia/types'
 
 export default {
@@ -42,6 +42,9 @@ export default {
       Math.round(y),
       template
     )
+  },
+  showOpenDialog: (options: OpenDialogOptions = {}) => {
+    return ipcRenderer.invoke('showOpenDialog', options)
   },
   on: (event: string, cb: types.AnyFn) => {
     const listener = (e, ...args) => cb(...args)

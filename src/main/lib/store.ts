@@ -22,5 +22,6 @@ export const getSettingsStore = memoize(function () {
   return new FileStore(getUserDataPath('data/settings.json'), {
     language: 'system',
     theme: 'system',
+    adbPath: '',
   })
 })

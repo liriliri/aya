@@ -40,11 +40,11 @@ export default observer(function Overview() {
             'processor'
           )}
           {item(
-            t('memory'),
-            `${fileSize(overview.memUsed as number)} / ${fileSize(
-              overview.memTotal as number
+            t('storage'),
+            `${fileSize(overview.storageUsed as number)} / ${fileSize(
+              overview.storageTotal as number
             )}`,
-            'memory'
+            'storage'
           )}
         </div>
       </div>

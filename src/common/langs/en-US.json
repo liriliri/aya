@@ -55,5 +55,6 @@
   "restart": "Restart",
   "softWrap": "Soft Wrap",
   "adbPath": "ADB Path",
-  "browse": "Browse"
+  "browse": "Browse",
+  "storage": "Storage"
 }

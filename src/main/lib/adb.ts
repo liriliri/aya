@@ -51,7 +51,7 @@ async function getOverview(deviceId: string) {
     model: properties['ro.product.model'],
     androidVersion: properties['ro.build.version.release'],
     sdkVersion: properties['ro.build.version.sdk'],
-    ...(await getMemory(deviceId)),
+    ...(await getStorage(deviceId)),
   }
 }
 
@@ -78,6 +78,23 @@ async function getMemory(deviceId: string) {
   return {
     memTotal,
     memUsed: memTotal - memFree,
+  }
+}
+
+async function getStorage(deviceId: string) {
+  const storageInfo = await shell(deviceId, 'dumpsys diskstats')
+  let storageTotal = 0
+  let storageFree = 0
+
+  const match = storageInfo.match(new RegExp('Data-Free: (\\d+)K / (\\d+)K'))
+  if (match) {
+    storageFree = parseInt(match[1], 10) * 1024
+    storageTotal = parseInt(match[2], 10) * 1024
+  }
+
+  return {
+    storageTotal,
+    storageUsed: storageTotal - storageFree,
   }
 }
 
@@ -311,12 +328,13 @@ export async function init() {
     bin,
   })
 
-  const tracker = await client.trackDevices()
+  client.trackDevices().then((tracker) => {
+    tracker.on('add', onDeviceChange)
+    tracker.on('remove', onDeviceChange)
+  })
   function onDeviceChange() {
     setTimeout(() => window.sendTo('main', 'deviceChange'), 2000)
   }
-  tracker.on('add', onDeviceChange)
-  tracker.on('remove', onDeviceChange)
 
   handleEvent('createShell', createShell)
   handleEvent('writeShell', writeShell)
@@ -331,4 +349,5 @@ export async function init() {
   handleEvent('getDevices', getDevices)
   handleEvent('getOverview', getOverview)
   handleEvent('screencap', screencap)
+  handleEvent('getMemory', getMemory)
 }

@@ -55,5 +55,6 @@
   "restart": "重启",
   "softWrap": "自动换行",
   "adbPath": "ADB 位置",
-  "browse": "浏览"
+  "browse": "浏览",
+  "storage": "存储"
 }

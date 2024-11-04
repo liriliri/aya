@@ -4,7 +4,8 @@ import zhCN from '../../common/langs/zh-CN.json'
 import I18n from 'licia/I18n'
 import defaults from 'licia/defaults'
 import types from 'licia/types'
-import { app, ipcMain } from 'electron'
+import { app } from 'electron'
+import { handleEvent } from './util'
 
 const store = getSettingsStore()
 
@@ -27,5 +28,5 @@ export function init() {
   const systemLanguage = app.getLocale() === 'zh-CN' ? 'zh-CN' : 'en-US'
   language = lang === 'system' ? systemLanguage : lang
   i18n.locale(language)
-  ipcMain.handle('getLanguage', () => get())
+  handleEvent('getLanguage', get)
 }

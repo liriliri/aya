@@ -1,6 +1,7 @@
 import path from 'path'
 import contain from 'licia/contain'
-import { app, nativeTheme } from 'electron'
+import types from 'licia/types'
+import { app, ipcMain, nativeTheme } from 'electron'
 import { isDev } from '../../common/util'
 import { fileURLToPath } from 'url'
 
@@ -35,4 +36,8 @@ export function getTheme() {
   }
 
   return nativeTheme.themeSource
+}
+
+export function handleEvent(channel: string, listener: types.AnyFn) {
+  ipcMain.handle(channel, (event: any, ...args) => listener(...args))
 }

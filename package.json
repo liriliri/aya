@@ -43,7 +43,7 @@
     "eslint-config-prettier": "^9.1.0",
     "fs-extra": "^11.2.0",
     "globals": "^15.11.0",
-    "licia": "^1.43.0",
+    "licia": "^1.44.0",
     "luna-image-viewer": "^0.5.2",
     "luna-logcat": "^0.4.1",
     "luna-menu": "^0.1.3",

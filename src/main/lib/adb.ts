@@ -1,6 +1,5 @@
 import Adb, { Client, Device } from '@devicefarmer/adbkit'
-import { resolveUnpack } from '../lib/util'
-import { ipcMain } from 'electron'
+import { resolveUnpack, handleEvent } from './util'
 import map from 'licia/map'
 import types from 'licia/types'
 import filter from 'licia/filter'
@@ -8,6 +7,7 @@ import Emitter from 'licia/Emitter'
 import isStrBlank from 'licia/isStrBlank'
 import uniqId from 'licia/uniqId'
 import each from 'licia/each'
+import singleton from 'licia/singleton'
 import * as window from './window'
 import fs from 'fs-extra'
 import { getSettingsStore } from './store'
@@ -34,7 +34,7 @@ async function getDevices() {
   ).catch(() => [])
 }
 
-async function getOverview(_, deviceId: string) {
+async function getOverview(deviceId: string) {
   const device = await client.getDevice(deviceId)
   const properties = await device.getProperties()
 
@@ -55,7 +55,7 @@ async function getOverview(_, deviceId: string) {
   }
 }
 
-async function screencap(_, deviceId: string) {
+async function screencap(deviceId: string) {
   const device = await client.getDevice(deviceId)
   const data = await device.screencap()
   const buf = await Adb.util.readAll(data)
@@ -190,7 +190,7 @@ class AdbPty extends Emitter {
 
 const ptys: types.PlainObj<AdbPty> = {}
 
-async function createShell(_, id: string) {
+async function createShell(id: string) {
   const device = await client.getDevice(id)
 
   const transport = await device.transport()
@@ -205,15 +205,15 @@ async function createShell(_, id: string) {
   return sessionId
 }
 
-async function writeShell(_, sessionId: string, data: string) {
+async function writeShell(sessionId: string, data: string) {
   ptys[sessionId].write(data)
 }
 
-async function resizeShell(_, sessionId: string, cols: number, rows: number) {
+async function resizeShell(sessionId: string, cols: number, rows: number) {
   ptys[sessionId].resize(cols, rows)
 }
 
-async function killShell(_, sessionId: string) {
+async function killShell(sessionId: string) {
   ptys[sessionId].kill()
   delete ptys[sessionId]
 }
@@ -230,11 +230,14 @@ class Logcat extends Emitter {
   async init(deviceId: string) {
     const { reader } = this
 
-    await this.getPackages(deviceId)
+    await getPackages(deviceId)
 
-    reader.on('entry', (entry) => {
+    reader.on('entry', async (entry) => {
       if (this.paused) {
         return
+      }
+      if (!this.pidNames[entry.pid]) {
+        this.pidNames = await getPackages(deviceId)
       }
       entry.package = this.pidNames[entry.pid] || `pid-${entry.pid}`
       this.emit('entry', entry)
@@ -249,24 +252,27 @@ class Logcat extends Emitter {
   resume() {
     this.paused = false
   }
-  private async getPackages(deviceId: string) {
-    const { pidNames } = this
-
-    const result: string = await shell(deviceId, 'ps -A')
-    const lines = result.split('\n')
-    const headers = lines[0].split(/\s+/)
-    const pidIndex = headers.indexOf('PID')
-    const nameIndex = headers.indexOf('NAME')
-    each(lines, (line) => {
-      const parts = line.split(/\s+/)
-      pidNames[parts[pidIndex]] = parts[nameIndex]
-    })
-  }
 }
+
+const getPackages = singleton(async (deviceId: string) => {
+  const pidNames: types.PlainObj<string> = {}
+
+  const result: string = await shell(deviceId, 'ps -A')
+  const lines = result.split('\n')
+  const headers = lines[0].split(/\s+/)
+  const pidIndex = headers.indexOf('PID')
+  const nameIndex = headers.indexOf('NAME')
+  each(lines, (line) => {
+    const parts = line.split(/\s+/)
+    pidNames[parts[pidIndex]] = parts[nameIndex]
+  })
+
+  return pidNames
+})
 
 const logcats: types.PlainObj<Logcat> = {}
 
-async function openLogcat(_, id: string) {
+async function openLogcat(id: string) {
   const device = await client.getDevice(id)
   const reader = await device.openLogcat({
     clear: true,
@@ -282,15 +288,15 @@ async function openLogcat(_, id: string) {
   return logcatId
 }
 
-async function pauseLogcat(_, logcatId: string) {
+async function pauseLogcat(logcatId: string) {
   logcats[logcatId].pause()
 }
 
-async function resumeLogcat(_, logcatId: string) {
+async function resumeLogcat(logcatId: string) {
   logcats[logcatId].resume()
 }
 
-async function closeLogcat(_, logcatId: string) {
+async function closeLogcat(logcatId: string) {
   logcats[logcatId].close()
   delete logcats[logcatId]
 }
@@ -298,10 +304,7 @@ async function closeLogcat(_, logcatId: string) {
 export async function init() {
   let bin = isWindows ? resolveUnpack('adb/adb.exe') : resolveUnpack('adb/adb')
   const adbPath = settingsStore.get('adbPath')
-  if (
-    adbPath === 'adb' ||
-    (!isStrBlank(adbPath) && (await fs.exists(adbPath)))
-  ) {
+  if (adbPath === 'adb' || (!isStrBlank(adbPath) && fs.existsSync(adbPath))) {
     bin = adbPath
   }
   client = Adb.createClient({
@@ -315,17 +318,17 @@ export async function init() {
   tracker.on('add', onDeviceChange)
   tracker.on('remove', onDeviceChange)
 
-  ipcMain.handle('createShell', createShell)
-  ipcMain.handle('writeShell', writeShell)
-  ipcMain.handle('resizeShell', resizeShell)
-  ipcMain.handle('killShell', killShell)
+  handleEvent('createShell', createShell)
+  handleEvent('writeShell', writeShell)
+  handleEvent('resizeShell', resizeShell)
+  handleEvent('killShell', killShell)
 
-  ipcMain.handle('openLogcat', openLogcat)
-  ipcMain.handle('closeLogcat', closeLogcat)
-  ipcMain.handle('pauseLogcat', pauseLogcat)
-  ipcMain.handle('resumeLogcat', resumeLogcat)
+  handleEvent('openLogcat', openLogcat)
+  handleEvent('closeLogcat', closeLogcat)
+  handleEvent('pauseLogcat', pauseLogcat)
+  handleEvent('resumeLogcat', resumeLogcat)
 
-  ipcMain.handle('getDevices', getDevices)
-  ipcMain.handle('getOverview', getOverview)
-  ipcMain.handle('screencap', screencap)
+  handleEvent('getDevices', getDevices)
+  handleEvent('getOverview', getOverview)
+  handleEvent('screencap', screencap)
 }

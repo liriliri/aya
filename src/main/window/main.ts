@@ -1,5 +1,6 @@
-import { BrowserWindow, ipcMain } from 'electron'
+import { BrowserWindow } from 'electron'
 import { getMainStore, getSettingsStore } from '../lib/store'
+import { handleEvent } from '../lib/util'
 import * as window from '../lib/window'
 
 const store = getMainStore()
@@ -34,10 +35,10 @@ export function showWin() {
 }
 
 function initIpc() {
-  ipcMain.handle('setMainStore', (_, name, val) => store.set(name, val))
-  ipcMain.handle('getMainStore', (_, name) => store.get(name))
-  ipcMain.handle('setSettingsStore', (_, name, val) => {
+  handleEvent('setMainStore', (name, val) => store.set(name, val))
+  handleEvent('getMainStore', (name) => store.get(name))
+  handleEvent('setSettingsStore', (name, val) => {
     settingsStore.set(name, val)
   })
-  ipcMain.handle('getSettingsStore', (_, name) => settingsStore.get(name))
+  handleEvent('getSettingsStore', (name) => settingsStore.get(name))
 }

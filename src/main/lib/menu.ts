@@ -1,9 +1,10 @@
-import { Menu, MenuItemConstructorOptions, app, ipcMain, shell } from 'electron'
+import { Menu, MenuItemConstructorOptions, app, shell } from 'electron'
 import * as window from '../lib/window'
 import isMac from 'licia/isMac'
 import { t } from './language'
 import upperCase from 'licia/upperCase'
 import isWindows from 'licia/isWindows'
+import { handleEvent } from './util'
 
 function getTemplate(): MenuItemConstructorOptions[] {
   const hideMenu = isMac
@@ -116,5 +117,5 @@ function updateMenu() {
 export function init() {
   updateMenu()
 
-  ipcMain.handle('updateMenu', () => updateMenu())
+  handleEvent('updateMenu', updateMenu)
 }

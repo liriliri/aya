@@ -1,6 +1,6 @@
-import { ipcMain, nativeTheme } from 'electron'
+import { nativeTheme } from 'electron'
 import { getSettingsStore } from './store'
-import { getTheme } from './util'
+import { getTheme, handleEvent } from './util'
 import * as window from './window'
 
 type Theme = 'system' | 'light' | 'dark'
@@ -17,7 +17,7 @@ function set(theme: Theme) {
 
 export function init() {
   set(store.get('theme'))
-  ipcMain.handle('getTheme', () => get())
+  handleEvent('getTheme', get)
   nativeTheme.on('updated', () => {
     if (nativeTheme.themeSource === 'system') {
       window.sendAll('updateTheme')

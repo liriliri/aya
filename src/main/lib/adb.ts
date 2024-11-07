@@ -207,8 +207,8 @@ class AdbPty extends Emitter {
 
 const ptys: types.PlainObj<AdbPty> = {}
 
-async function createShell(id: string) {
-  const device = await client.getDevice(id)
+async function createShell(deviceId: string) {
+  const device = await client.getDevice(deviceId)
 
   const transport = await device.transport()
   const adbPty = new AdbPty(transport)
@@ -289,13 +289,13 @@ const getPackages = singleton(async (deviceId: string) => {
 
 const logcats: types.PlainObj<Logcat> = {}
 
-async function openLogcat(id: string) {
-  const device = await client.getDevice(id)
+async function openLogcat(deviceId: string) {
+  const device = await client.getDevice(deviceId)
   const reader = await device.openLogcat({
     clear: true,
   })
   const logcat = new Logcat(reader)
-  await logcat.init(id)
+  await logcat.init(deviceId)
   const logcatId = uniqId('logcat')
   logcat.on('entry', (entry) => {
     window.sendTo('main', 'logcatEntry', logcatId, entry)

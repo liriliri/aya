@@ -333,7 +333,7 @@ export async function init() {
     tracker.on('remove', onDeviceChange)
   })
   function onDeviceChange() {
-    setTimeout(() => window.sendTo('main', 'deviceChange'), 2000)
+    setTimeout(() => window.sendTo('main', 'changeDevice'), 2000)
   }
 
   handleEvent('createShell', createShell)

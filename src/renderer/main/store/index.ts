@@ -79,7 +79,7 @@ class Store extends BaseStore {
     }
   }
   private bindEvent() {
-    main.on('deviceChange', this.getDevices)
+    main.on('changeDevice', this.getDevices)
   }
 }
 

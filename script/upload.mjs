@@ -21,9 +21,9 @@ const client = new S3Client({
   },
 })
 
-let Key = `AYA-${version}-arm64.dmg`
+let Key = `AYA-${version}-mac-arm64.dmg`
 if (isWindows) {
-  Key = `AYA-${version}-win.exe`
+  Key = `AYA-${version}-win-x64.exe`
 }
 
 const listObjects = new ListObjectsCommand({

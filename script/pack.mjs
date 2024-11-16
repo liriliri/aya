@@ -10,6 +10,7 @@ const config = {
   },
   files: ['main', 'preload', 'renderer', 'adb'],
   asarUnpack: ['adb/**/*'],
+  artifactName: '${name}-${version}-${os}-${arch}.${ext}',
   win: {
     target: [
       {

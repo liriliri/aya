@@ -30,6 +30,7 @@ export default observer(function Overview() {
           {item(t('model'), overview.model, 'model')}
         </div>
         <div className={Style.row}>
+          {item(t('serialNum'), overview.serialNumber, 'serial-number')}
           {item(
             t('androidVersion'),
             `Android ${overview.androidVersion} (API ${overview.sdkVersion})`,
@@ -40,6 +41,13 @@ export default observer(function Overview() {
             `${overview.processor} (${overview.abi})`,
             'processor'
           )}
+        </div>
+        <div className={Style.row}>
+          {item(
+            t('resolution'),
+            `${overview.resolution} (${overview.density}dpi)`,
+            'phone'
+          )}
           {item(
             t('storage'),
             `${fileSize(overview.storageUsed as number)} / ${fileSize(
@@ -47,6 +55,7 @@ export default observer(function Overview() {
             )}`,
             'storage'
           )}
+          {item(t('memory'), fileSize(overview.memTotal as number), 'memory')}
         </div>
       </div>
     </div>

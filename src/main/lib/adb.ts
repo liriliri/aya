@@ -8,6 +8,7 @@ import isStrBlank from 'licia/isStrBlank'
 import uniqId from 'licia/uniqId'
 import each from 'licia/each'
 import singleton from 'licia/singleton'
+import trim from 'licia/trim'
 import * as window from './window'
 import fs from 'fs-extra'
 import { getSettingsStore } from './store'
@@ -51,7 +52,10 @@ async function getOverview(deviceId: string) {
     model: properties['ro.product.model'],
     androidVersion: properties['ro.build.version.release'],
     sdkVersion: properties['ro.build.version.sdk'],
+    serialNumber: properties['ro.serialno'],
     ...(await getStorage(deviceId)),
+    ...(await getMemory(deviceId)),
+    ...(await getScreen(deviceId)),
   }
 }
 
@@ -61,6 +65,16 @@ async function screencap(deviceId: string) {
   const buf = await Adb.util.readAll(data)
 
   return buf.toString('base64')
+}
+
+async function getScreen(deviceId: string) {
+  const resolution = await shell(deviceId, 'wm size')
+  const density = await shell(deviceId, 'wm density')
+
+  return {
+    resolution: trim(resolution.split(':')[1]),
+    density: trim(density.split(':')[1]),
+  }
 }
 
 async function getMemory(deviceId: string) {

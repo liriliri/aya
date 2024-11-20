@@ -57,5 +57,7 @@
   "adbPath": "ADB Path",
   "browse": "Browse",
   "storage": "Storage",
-  "copied": "Copied"
+  "copied": "Copied",
+  "resolution": "Resolution",
+  "serialNum": "Serial Number"
 }

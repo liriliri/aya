@@ -56,5 +56,6 @@
   "softWrap": "自动换行",
   "adbPath": "ADB 位置",
   "browse": "浏览",
-  "storage": "存储"
+  "storage": "存储",
+  "copied": "已复制"
 }

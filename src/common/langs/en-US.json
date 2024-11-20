@@ -56,5 +56,6 @@
   "softWrap": "Soft Wrap",
   "adbPath": "ADB Path",
   "browse": "Browse",
-  "storage": "Storage"
+  "storage": "Storage",
+  "copied": "Copied"
 }

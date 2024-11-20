@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react'
 import isEmpty from 'licia/isEmpty'
 import fileSize from 'licia/fileSize'
 import types from 'licia/types'
-import { t } from '../../../lib/util'
+import { notify, t } from '../../../lib/util'
 import store from '../../store'
+import copy from 'licia/copy'
 
 export default observer(function Overview() {
   const [overview, setOverview] = useState<types.PlainObj<string | number>>({})
@@ -53,13 +54,18 @@ export default observer(function Overview() {
 })
 
 function item(title, value, icon = 'info') {
+  function copyValue() {
+    copy(value)
+    notify(t('copied'), { icon: 'info' })
+  }
+
   return (
-    <div className={Style.item}>
+    <div className={Style.item} onDoubleClick={copyValue}>
       <div className={Style.title}>
         <span className={`icon-${icon}`}></span>
         &nbsp;{title}
       </div>
-      <div className={Style.value}>{value}</div>
+      <div>{value}</div>
     </div>
   )
 }

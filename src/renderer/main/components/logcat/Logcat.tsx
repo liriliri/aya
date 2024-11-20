@@ -7,12 +7,17 @@ import LunaToolbar, {
 } from 'luna-toolbar/react'
 import LunaLogcat from 'luna-logcat/react'
 import Logcat from 'luna-logcat'
+import map from 'licia/map'
+import rpad from 'licia/rpad'
+import dateFormat from 'licia/dateFormat'
 import toNum from 'licia/toNum'
+import trim from 'licia/trim'
 import { useEffect, useRef, useState } from 'react'
 import Style from './Logcat.module.scss'
 import store from '../../store'
 import toBool from 'licia/toBool'
 import copy from 'licia/copy'
+import download from 'licia/download'
 import { t } from '../../../lib/util'
 import ToolbarIcon from '../../../components/ToolbarIcon'
 import contextMenu from '../../../lib/contextMenu'
@@ -27,6 +32,7 @@ export default observer(function Logcat() {
     tag?: string
   }>({})
   const logcatRef = useRef<Logcat>()
+  const entriesRef = useRef<any[]>([])
   const logcatIdRef = useRef('')
 
   const { device } = store
@@ -38,6 +44,7 @@ export default observer(function Logcat() {
       }
       if (logcatRef.current) {
         logcatRef.current.append(entry)
+        entriesRef.current.push(entry)
       }
     }
     const offLogcatEntry = main.on('logcatEntry', onLogcatEntry)
@@ -65,6 +72,32 @@ export default observer(function Logcat() {
     }
   }
 
+  function save() {
+    const data = map(entriesRef.current, (entry) => {
+      return trim(
+        `${dateFormat(entry.date, 'mm-dd HH:MM:ss.l')} ${rpad(
+          entry.pid,
+          5,
+          ' '
+        )} ${rpad(entry.tid, 5, ' ')} ${toLetter(entry.priority)} ${
+          entry.tag
+        }: ${entry.message}`
+      )
+    }).join('\n')
+    const name = `${store.device ? store.device.model : 'logcat'}.${dateFormat(
+      'yyyymmddHH'
+    )}.txt`
+
+    download(data, name, 'text/plain')
+  }
+
+  function clear() {
+    if (logcatRef.current) {
+      logcatRef.current.clear()
+    }
+    entriesRef.current = []
+  }
+
   const onContextMenu = (e: React.MouseEvent) => {
     const logcat = logcatRef.current!
     const template: any[] = [
@@ -81,9 +114,7 @@ export default observer(function Logcat() {
       },
       {
         label: t('clear'),
-        click: () => {
-          logcat.clear()
-        },
+        click: clear,
       },
     ]
 
@@ -149,6 +180,8 @@ export default observer(function Logcat() {
         />
         <LunaToolbarInput keyName="tag" placeholder={t('tag')} value="" />
         <LunaToolbarSpace />
+        <ToolbarIcon icon="save" title={t('save')} onClick={save} />
+        <LunaToolbarSeparator />
         <ToolbarIcon
           icon="soft-wrap"
           state={softWrap ? 'hover' : ''}
@@ -166,7 +199,7 @@ export default observer(function Logcat() {
           onClick={() => {
             if (logcatIdRef.current) {
               main.closeLogcat(logcatIdRef.current)
-              logcatRef.current?.clear()
+              clear()
             }
             if (device) {
               main.openLogcat(device.id).then((id) => {
@@ -188,11 +221,7 @@ export default observer(function Logcat() {
           }}
         />
         <LunaToolbarSeparator />
-        <ToolbarIcon
-          icon="delete"
-          title={t('clear')}
-          onClick={() => logcatRef.current?.clear()}
-        />
+        <ToolbarIcon icon="delete" title={t('clear')} onClick={clear} />
       </LunaToolbar>
       <LunaLogcat
         className={Style.logcat}
@@ -206,3 +235,7 @@ export default observer(function Logcat() {
     </div>
   )
 })
+
+function toLetter(priority: number) {
+  return ['?', '?', 'V', 'D', 'I', 'W', 'E'][priority]
+}

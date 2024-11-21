@@ -46,6 +46,7 @@ export default {
   showOpenDialog: (options: OpenDialogOptions = {}) => {
     return ipcRenderer.invoke('showOpenDialog', options)
   },
+  relaunch: () => ipcRenderer.invoke('relaunch'),
   on: (event: string, cb: types.AnyFn) => {
     const listener = (e, ...args) => cb(...args)
     ipcRenderer.on(event, listener)

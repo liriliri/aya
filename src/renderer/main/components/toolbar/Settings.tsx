@@ -1,6 +1,7 @@
 import LunaToolbar from 'luna-toolbar/react'
 import LunaModal from 'luna-modal/react'
 import LunaSetting, {
+  LunaSettingButton,
   LunaSettingSelect,
   LunaSettingTitle,
 } from 'luna-setting/react'
@@ -93,6 +94,10 @@ const SettingsModal = observer(function SettingsModal(
           options={{
             properties: ['openFile'],
           }}
+        />
+        <LunaSettingButton
+          description={t('restartAya')}
+          onClick={() => main.relaunch()}
         />
       </LunaSetting>
     </LunaModal>,

@@ -59,5 +59,6 @@
   "storage": "Storage",
   "copied": "Copied",
   "resolution": "Resolution",
-  "serialNum": "Serial Number"
+  "serialNum": "Serial Number",
+  "restartAya": "Restart AYA"
 }

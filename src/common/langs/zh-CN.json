@@ -59,5 +59,6 @@
   "storage": "存储",
   "copied": "已复制",
   "resolution": "分辨率",
-  "serialNum": "序列号"
+  "serialNum": "序列号",
+  "restartAya": "重启 AYA"
 }

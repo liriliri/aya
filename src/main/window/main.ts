@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron'
+import { app, BrowserWindow } from 'electron'
 import { getMainStore, getSettingsStore } from '../lib/store'
 import { handleEvent } from '../lib/util'
 import * as window from '../lib/window'
@@ -41,4 +41,8 @@ function initIpc() {
     settingsStore.set(name, val)
   })
   handleEvent('getSettingsStore', (name) => settingsStore.get(name))
+  handleEvent('relaunch', () => {
+    app.relaunch()
+    app.exit()
+  })
 }

@@ -14,5 +14,17 @@ Android adb desktop app.
 
 <img src="https://aya.liriliri.io/screenshot.png" style="width:100%">
 
- AYA is a desktop application for easily controlling android devices, which can be considered as a GUI wrapper for ADB.
+AYA is a desktop application for easily controlling android devices, which can be considered as a GUI wrapper for ADB.
+
+## Screenshot
+
+![screencap](https://aya.liriliri.io/screencap.png)
+
+## Logcat
+
+![logcat](https://aya.liriliri.io/logcat.png)
+
+## Shell
+
+![shell](https://aya.liriliri.io/shell.png)
  

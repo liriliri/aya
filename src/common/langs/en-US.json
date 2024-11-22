@@ -64,5 +64,7 @@
   "process": "Process",
   "processName": "Process Name",
   "user": "User",
-  "cpuTime": "CPU Time"
+  "cpuTime": "CPU Time",
+  "filter": "Filter",
+  "totalProcess": "{{total}} total processes"
 }

@@ -3,13 +3,16 @@ import { useEffect, useState } from 'react'
 import store from '../../store'
 import LunaDataGrid from 'luna-data-grid/react'
 import Style from './Process.module.scss'
-import LunaToolbar from 'luna-toolbar/react'
+import LunaToolbar, { LunaToolbarInput, LunaToolbarSpace, LunaToolbarText } from 'luna-toolbar/react'
 import ToolbarIcon from '../../../components/ToolbarIcon'
+import endWith from 'licia/endWith'
 import { t } from '../../../lib/util'
 
 export default observer(function Process() {
   const [processes, setProcesses] = useState([])
   const [listHeight, setListHeight] = useState(0)
+  const [selected, setSelected] = useState<any>(null)
+  const [filter, setFilter] = useState('')
 
   const { device } = store
 
@@ -18,8 +21,10 @@ export default observer(function Process() {
 
     async function getProcesses() {
       if (device) {
-        const processes = await main.getProcesses(device.id)
-        setProcesses(processes)
+        if (store.panel === 'process') {
+          const processes = await main.getProcesses(device.id)
+          setProcesses(processes)
+        }
       }
       timer = setTimeout(getProcesses, 5000)
     }
@@ -46,9 +51,25 @@ export default observer(function Process() {
   return (
     <div className={Style.container}>
       <LunaToolbar className={Style.toolbar}>
-        <ToolbarIcon icon="delete" title={t('clear')} onClick={() => {}} />
+        <LunaToolbarInput
+          keyName="filter"
+          value={filter}
+          placeholder={t('filter')}
+          onChange={(val) => setFilter(val)}
+        />
+        <LunaToolbarText text={t('totalProcess', { total: processes.length})}/>
+        <LunaToolbarSpace />
+        <ToolbarIcon
+          disabled={selected === null}
+          icon="delete"
+          title={t('clear')}
+          onClick={() => {}}
+        />
       </LunaToolbar>
       <LunaDataGrid
+        onSelect={(node) => setSelected(node.data)}
+        onDeselect={() => setSelected(null)}
+        filter={filter}
         className={Style.processes}
         data={processes}
         columns={columns}
@@ -82,6 +103,7 @@ const columns = [
     id: 'res',
     title: t('memory'),
     sortable: true,
+    comparator: (a, b) => toBytes(a) - toBytes(b),
   },
   {
     id: 'pid',
@@ -94,3 +116,16 @@ const columns = [
     sortable: true,
   },
 ]
+
+function toBytes(memory: string) {
+  let num = parseFloat(memory)
+  if (endWith(memory, 'K')) {
+    num *= 1024
+  } else if (endWith(memory, 'M')) {
+    num *= 1024 * 1024
+  } else if (endWith(memory, 'G')) {
+    num *= 1024 * 1024 * 1024
+  }
+
+  return num
+}

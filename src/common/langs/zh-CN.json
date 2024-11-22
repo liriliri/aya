@@ -64,5 +64,7 @@
   "process": "进程",
   "processName": "进程名称",
   "user": "用户",
-  "cpuTime": "CPU 时间"
+  "cpuTime": "CPU 时间",
+  "filter": "过滤",
+  "totalProcess": "共 {{total}} 个进程"
 }

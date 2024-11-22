@@ -3,6 +3,7 @@ import Logcat from './components/logcat/Logcat'
 import Shell from './components/shell/Shell'
 import Overview from './components/overview/Overview'
 import Screenshot from './components/screenshot/Screenshot'
+import Process from './components/process/Process'
 import Style from './App.module.scss'
 import LunaModal from 'luna-modal/react'
 import { t } from '../lib/util'
@@ -39,6 +40,9 @@ export default observer(function App() {
           </Panel>
           <Panel panel="shell">
             <Shell />
+          </Panel>
+          <Panel panel="process">
+            <Process />
           </Panel>
         </div>
       </div>

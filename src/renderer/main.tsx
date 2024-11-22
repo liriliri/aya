@@ -13,6 +13,7 @@ import 'luna-setting/css'
 import 'luna-notification/css'
 import 'luna-image-viewer/css'
 import 'luna-logcat/css'
+import 'luna-data-grid/css'
 import './luna.scss'
 import LunaModal from 'luna-modal'
 

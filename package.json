@@ -46,6 +46,7 @@
     "fs-extra": "^11.2.0",
     "globals": "^15.11.0",
     "licia": "^1.44.0",
+    "luna-data-grid": "^1.2.1",
     "luna-image-viewer": "^0.5.2",
     "luna-logcat": "^0.4.1",
     "luna-menu": "^0.1.3",

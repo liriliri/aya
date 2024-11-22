@@ -35,6 +35,9 @@ export default {
   resumeLogcat: (logcatId: string) => {
     return ipcRenderer.invoke('resumeLogcat', logcatId)
   },
+  getProcesses: (deviceId: string) => {
+    return ipcRenderer.invoke('getProcesses', deviceId)
+  },
   showContextMenu: (x: number, y: number, template: any) => {
     ipcRenderer.invoke(
       'showContextMenu',

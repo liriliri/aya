@@ -9,6 +9,7 @@ import uniqId from 'licia/uniqId'
 import each from 'licia/each'
 import singleton from 'licia/singleton'
 import trim from 'licia/trim'
+import startWith from 'licia/startWith'
 import * as window from './window'
 import fs from 'fs-extra'
 import { getSettingsStore } from './store'
@@ -301,6 +302,47 @@ const getPackages = singleton(async (deviceId: string) => {
   return pidNames
 })
 
+const getProcesses = singleton(async (deviceId: string) => {
+  const columns = ['pid', '%cpu', 'time+', 'res', 'user', 'args']
+  let command = 'top -b -n 1'
+  each(columns, (column) => {
+    command += ` -o ${column}`
+  })
+
+  const result: string = await shell(deviceId, command)
+  let lines = result.split('\n')
+  let start = 0
+  for (let i = 0, len = lines.length; i < len; i++) {
+    if (startWith(trim(lines[i]), 'PID')) {
+      start = i + 1
+      break
+    }
+  }
+  lines = lines.slice(start)
+  const processes: any[] = []
+  each(lines, (line) => {
+    line = trim(line)
+    if (!line) {
+      return
+    }
+    const parts = line.split(/\s+/)
+    const process: any = {}
+    each(columns, (column, index) => {
+      if (column === 'args') {
+        process[column] = parts.slice(index).join(' ')
+      } else {
+        process[column] = parts[index] || ''
+      }
+    })
+    if (process.args === command) {
+      return
+    }
+    processes.push(process)
+  })
+
+  return processes
+})
+
 const logcats: types.PlainObj<Logcat> = {}
 
 async function openLogcat(deviceId: string) {
@@ -364,4 +406,5 @@ export async function init() {
   handleEvent('getOverview', getOverview)
   handleEvent('screencap', screencap)
   handleEvent('getMemory', getMemory)
+  handleEvent('getProcesses', getProcesses)
 }

@@ -10,8 +10,9 @@ export default observer(function Panels() {
     [
       'overview',
       'screenshot',
-      /*'app', 'file', ,*/ 'logcat',
-      'shell' /*'monitor'*/,
+      /*'app', 'file',*/ 'logcat',
+      'shell',
+      'process' /*'monitor'*/,
     ],
     (panel) => {
       return (

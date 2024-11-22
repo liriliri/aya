@@ -60,5 +60,9 @@
   "copied": "Copied",
   "resolution": "Resolution",
   "serialNum": "Serial Number",
-  "restartAya": "Restart AYA"
+  "restartAya": "Restart AYA",
+  "process": "Process",
+  "processName": "Process Name",
+  "user": "User",
+  "cpuTime": "CPU Time"
 }

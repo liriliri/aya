@@ -262,14 +262,12 @@ class Logcat extends Emitter {
   async init(deviceId: string) {
     const { reader } = this
 
-    await getPackages(deviceId)
-
     reader.on('entry', async (entry) => {
       if (this.paused) {
         return
       }
       if (!this.pidNames[entry.pid]) {
-        this.pidNames = await getPackages(deviceId)
+        await this.getPidNames(deviceId)
       }
       entry.package = this.pidNames[entry.pid] || `pid-${entry.pid}`
       this.emit('entry', entry)
@@ -284,26 +282,24 @@ class Logcat extends Emitter {
   resume() {
     this.paused = false
   }
+  private async getPidNames(deviceId: string) {
+    const processes = await getProcesses(deviceId)
+    const pidNames = {}
+    each(processes, (process) => {
+      pidNames[process.pid] = process.name
+    })
+    this.pidNames = pidNames
+  }
 }
 
 const getPackages = singleton(async (deviceId: string) => {
-  const pidNames: types.PlainObj<string> = {}
+  const result: string = await shell(deviceId, 'pm list packages')
 
-  const result: string = await shell(deviceId, 'ps -A')
-  const lines = result.split('\n')
-  const headers = lines[0].split(/\s+/)
-  const pidIndex = headers.indexOf('PID')
-  const nameIndex = headers.indexOf('NAME')
-  each(lines, (line) => {
-    const parts = line.split(/\s+/)
-    pidNames[parts[pidIndex]] = parts[nameIndex]
-  })
-
-  return pidNames
+  return map(trim(result).split('\n'), (line) => line.slice(8))
 })
 
 const getProcesses = singleton(async (deviceId: string) => {
-  const columns = ['pid', '%cpu', 'time+', 'res', 'user', 'args']
+  const columns = ['pid', '%cpu', 'time+', 'res', 'user', 'name', 'args']
   let command = 'top -b -n 1'
   each(columns, (column) => {
     command += ` -o ${column}`
@@ -342,6 +338,10 @@ const getProcesses = singleton(async (deviceId: string) => {
 
   return processes
 })
+
+async function stopPackage(deviceId: string, pid: number) {
+  await shell(deviceId, `am force-stop ${pid}`)
+}
 
 const logcats: types.PlainObj<Logcat> = {}
 
@@ -401,6 +401,9 @@ export async function init() {
   handleEvent('closeLogcat', closeLogcat)
   handleEvent('pauseLogcat', pauseLogcat)
   handleEvent('resumeLogcat', resumeLogcat)
+
+  handleEvent('getPackages', getPackages)
+  handleEvent('stopPackage', stopPackage)
 
   handleEvent('getDevices', getDevices)
   handleEvent('getOverview', getOverview)

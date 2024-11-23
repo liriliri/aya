@@ -66,5 +66,7 @@
   "user": "User",
   "cpuTime": "CPU Time",
   "filter": "Filter",
-  "totalProcess": "{{total}} total processes"
+  "totalProcess": "{{total}} total processes",
+  "stop": "Stop",
+  "stopPackageConfirm": "Are you sure you want to stop {{name}}?"
 }

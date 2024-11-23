@@ -38,6 +38,12 @@ export default {
   getProcesses: (deviceId: string) => {
     return ipcRenderer.invoke('getProcesses', deviceId)
   },
+  stopPackage: (deviceId: string, pkg: string) => {
+    return ipcRenderer.invoke('stopPackage', deviceId, pkg)
+  },
+  getPackages: (deviceId: string) => {
+    return ipcRenderer.invoke('getPackages', deviceId)
+  },
   showContextMenu: (x: number, y: number, template: any) => {
     ipcRenderer.invoke(
       'showContextMenu',

@@ -3,10 +3,16 @@ import { useEffect, useState } from 'react'
 import store from '../../store'
 import LunaDataGrid from 'luna-data-grid/react'
 import Style from './Process.module.scss'
-import LunaToolbar, { LunaToolbarInput, LunaToolbarSpace, LunaToolbarText } from 'luna-toolbar/react'
+import LunaToolbar, {
+  LunaToolbarInput,
+  LunaToolbarSpace,
+  LunaToolbarText,
+} from 'luna-toolbar/react'
 import ToolbarIcon from '../../../components/ToolbarIcon'
 import endWith from 'licia/endWith'
+import contain from 'licia/contain'
 import { t } from '../../../lib/util'
+import LunaModal from 'luna-modal'
 
 export default observer(function Process() {
   const [processes, setProcesses] = useState([])
@@ -48,6 +54,18 @@ export default observer(function Process() {
     }
   }, [])
 
+  async function stop() {
+    if (!selected) {
+      return
+    }
+    const result = await LunaModal.confirm(
+      t('stopPackageConfirm', { name: selected.args })
+    )
+    if (result) {
+      await main.stopPackage(device!.id, selected.args)
+    }
+  }
+
   return (
     <div className={Style.container}>
       <LunaToolbar className={Style.toolbar}>
@@ -57,17 +75,26 @@ export default observer(function Process() {
           placeholder={t('filter')}
           onChange={(val) => setFilter(val)}
         />
-        <LunaToolbarText text={t('totalProcess', { total: processes.length})}/>
+        <LunaToolbarText
+          text={t('totalProcess', { total: processes.length })}
+        />
         <LunaToolbarSpace />
         <ToolbarIcon
           disabled={selected === null}
           icon="delete"
-          title={t('clear')}
-          onClick={() => {}}
+          title={t('stop')}
+          onClick={stop}
         />
       </LunaToolbar>
       <LunaDataGrid
-        onSelect={(node) => setSelected(node.data)}
+        onSelect={async (node) => {
+          const packages = await main.getPackages(device!.id)
+          if (contain(packages, node.data.name)) {
+            setSelected(node.data)
+          } else {
+            setSelected(null)
+          }
+        }}
         onDeselect={() => setSelected(null)}
         filter={filter}
         className={Style.processes}
@@ -84,7 +111,7 @@ export default observer(function Process() {
 
 const columns = [
   {
-    id: 'args',
+    id: 'name',
     title: t('processName'),
     sortable: true,
     weight: 30,

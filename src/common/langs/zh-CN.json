@@ -66,5 +66,7 @@
   "user": "用户",
   "cpuTime": "CPU 时间",
   "filter": "过滤",
-  "totalProcess": "共 {{total}} 个进程"
+  "totalProcess": "共 {{total}} 个进程",
+  "stop": "停止",
+  "stopPackageConfirm": "确定要退出 {{name}} 吗？"
 }

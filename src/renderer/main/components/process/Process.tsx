@@ -16,6 +16,7 @@ import LunaModal from 'luna-modal'
 
 export default observer(function Process() {
   const [processes, setProcesses] = useState([])
+  const [packages, setPackages] = useState([])
   const [listHeight, setListHeight] = useState(0)
   const [selected, setSelected] = useState<any>(null)
   const [filter, setFilter] = useState('')
@@ -28,8 +29,8 @@ export default observer(function Process() {
     async function getProcesses() {
       if (device) {
         if (store.panel === 'process') {
-          const processes = await main.getProcesses(device.id)
-          setProcesses(processes)
+          setProcesses(await main.getProcesses(device.id))
+          setPackages(await main.getPackages(device.id))
         }
       }
       timer = setTimeout(getProcesses, 5000)
@@ -80,21 +81,14 @@ export default observer(function Process() {
         />
         <LunaToolbarSpace />
         <ToolbarIcon
-          disabled={selected === null}
+          disabled={selected === null || !contain(packages, selected.name)}
           icon="delete"
           title={t('stop')}
           onClick={stop}
         />
       </LunaToolbar>
       <LunaDataGrid
-        onSelect={async (node) => {
-          const packages = await main.getPackages(device!.id)
-          if (contain(packages, node.data.name)) {
-            setSelected(node.data)
-          } else {
-            setSelected(null)
-          }
-        }}
+        onSelect={async (node) => setSelected(node.data)}
         onDeselect={() => setSelected(null)}
         filter={filter}
         className={Style.processes}

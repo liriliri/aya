@@ -28,3 +28,6 @@ AYA is a desktop application for easily controlling android devices, which can b
 
 ![shell](https://aya.liriliri.io/shell.png)
  
+## Process
+
+![process](https://aya.liriliri.io/process.png)

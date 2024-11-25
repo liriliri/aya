@@ -74,7 +74,7 @@ function item(title, value, icon = 'info') {
         <span className={`icon-${icon}`}></span>
         &nbsp;{title}
       </div>
-      <div>{value}</div>
+      <div>{value || t('unknown')}</div>
     </div>
   )
 }

@@ -53,7 +53,7 @@ async function getOverview(deviceId: string) {
     model: properties['ro.product.model'],
     androidVersion: properties['ro.build.version.release'],
     sdkVersion: properties['ro.build.version.sdk'],
-    serialNumber: properties['ro.serialno'],
+    serialNumber: properties['ro.serialno'] || '',
     ...(await getStorage(deviceId)),
     ...(await getMemory(deviceId)),
     ...(await getScreen(deviceId)),

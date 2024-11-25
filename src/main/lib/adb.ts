@@ -175,46 +175,65 @@ class Protocol {
 
 class AdbPty extends Emitter {
   private connection: any
+  private useV2 = true
   constructor(connection: any) {
     super()
 
     this.connection = connection
   }
-  async init() {
+  async init(useV2 = true) {
     const { connection } = this
 
-    connection.write(Protocol.encodeData(Buffer.from('shell,v2,pty:')))
+    this.useV2 = useV2
+    const protocol = useV2 ? 'shell,v2:' : 'shell:'
+    connection.write(Protocol.encodeData(Buffer.from(protocol)))
     const result = await connection.parser.readAscii(4)
     if (result !== Protocol.OKAY) {
       throw new Error('Failed to create shell')
     }
 
-    const { socket } = connection
-    socket.on('readable', () => {
-      const buf = socket.read()
-      if (buf) {
-        const packets = ShellProtocol.decodeData(buf)
-        for (let i = 0, len = packets.length; i < len; i++) {
-          const { id, data } = packets[i]
-          if (id === ShellProtocol.STDOUT) {
-            this.emit('data', data.toString('utf8'))
+    if (useV2) {
+      const { socket } = connection
+      socket.on('readable', () => {
+        const buf = socket.read()
+        if (buf) {
+          const packets = ShellProtocol.decodeData(buf)
+          for (let i = 0, len = packets.length; i < len; i++) {
+            const { id, data } = packets[i]
+            if (id === ShellProtocol.STDOUT) {
+              this.emit('data', data.toString('utf8'))
+            }
           }
         }
-      }
-    })
+      })
+    } else {
+      const { socket } = connection
+      socket.on('readable', () => {
+        const buf = socket.read()
+        if (buf) {
+          this.emit('data', buf.toString('utf8'))
+        }
+      })
+    }
   }
   resize(cols: number, rows: number) {
-    this.connection.socket.write(
-      ShellProtocol.encodeData(
-        ShellProtocol.WINDOW_SIZE_CHANGE,
-        Buffer.from(`${rows}x${cols},0x0\0`)
+    if (this.useV2) {
+      this.connection.socket.write(
+        ShellProtocol.encodeData(
+          ShellProtocol.WINDOW_SIZE_CHANGE,
+          Buffer.from(`${rows}x${cols},0x0\0`)
+        )
       )
-    )
+    }
   }
   write(data: string) {
-    this.connection.socket.write(
-      ShellProtocol.encodeData(ShellProtocol.STDIN, Buffer.from(data))
-    )
+    if (this.useV2) {
+      this.connection.socket.write(
+        ShellProtocol.encodeData(ShellProtocol.STDIN, Buffer.from(data))
+      )
+    } else {
+      this.connection.socket.write(Buffer.from(data))
+    }
   }
   kill() {
     this.connection.end()
@@ -227,8 +246,15 @@ async function createShell(deviceId: string) {
   const device = await client.getDevice(deviceId)
 
   const transport = await device.transport()
-  const adbPty = new AdbPty(transport)
-  await adbPty.init()
+  let adbPty = new AdbPty(transport)
+  try {
+    await adbPty.init()
+  } catch (e) {
+    adbPty.kill()
+    const transport = await device.transport()
+    adbPty = new AdbPty(transport)
+    await adbPty.init(false)
+  }
   const sessionId = uniqId('shell')
   adbPty.on('data', (data) => {
     window.sendTo('main', 'shellData', sessionId, data)

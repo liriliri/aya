@@ -38,7 +38,7 @@ export default observer(function Overview() {
           )}
           {item(
             t('processor'),
-            `${overview.processor} (${overview.abi})`,
+            `${overview.processor || t('unknown')} (${overview.abi})`,
             'processor'
           )}
         </div>

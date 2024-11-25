@@ -10,6 +10,7 @@ import each from 'licia/each'
 import singleton from 'licia/singleton'
 import trim from 'licia/trim'
 import startWith from 'licia/startWith'
+import lowerCase from 'licia/lowerCase'
 import * as window from './window'
 import fs from 'fs-extra'
 import { getSettingsStore } from './store'
@@ -47,7 +48,7 @@ async function getOverview(deviceId: string) {
 
   return {
     name,
-    processor: properties['ro.product.board'],
+    processor: properties['ro.product.board'] || '',
     abi: properties['ro.product.cpu.abi'],
     brand: properties['ro.product.brand'],
     model: properties['ro.product.model'],
@@ -299,7 +300,7 @@ const getPackages = singleton(async (deviceId: string) => {
 })
 
 const getProcesses = singleton(async (deviceId: string) => {
-  const columns = ['pid', '%cpu', 'time+', 'res', 'user', 'name', 'args']
+  let columns = ['pid', '%cpu', 'time+', 'res', 'user', 'name', 'args']
   let command = 'top -b -n 1'
   each(columns, (column) => {
     command += ` -o ${column}`
@@ -307,13 +308,39 @@ const getProcesses = singleton(async (deviceId: string) => {
 
   const result: string = await shell(deviceId, command)
   let lines = result.split('\n')
-  let start = 0
+  let start = -1
   for (let i = 0, len = lines.length; i < len; i++) {
     if (startWith(trim(lines[i]), 'PID')) {
       start = i + 1
       break
     }
   }
+
+  // older version of top command
+  if (start < 0) {
+    const result: string = await shell(deviceId, 'top -n 1')
+    lines = result.split('\n')
+    for (let i = 0, len = lines.length; i < len; i++) {
+      const line = trim(lines[i])
+      if (startWith(line, 'PID')) {
+        columns = line.split(/\s+/)
+        columns = map(columns, (column) => {
+          column = lowerCase(column)
+          if (column === 'cpu%') {
+            column = '%cpu'
+          } else if (column === 'uid') {
+            column = 'user'
+          } else if (column === 'rss') {
+            column = 'res'
+          }
+          return column
+        })
+        start = i + 1
+        break
+      }
+    }
+  }
+
   lines = lines.slice(start)
   const processes: any[] = []
   each(lines, (line) => {

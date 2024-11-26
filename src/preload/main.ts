@@ -14,6 +14,9 @@ export default {
   getOverview: (deviceId: string) => {
     return ipcRenderer.invoke('getOverview', deviceId)
   },
+  getPerformance: (deviceId: string) => {
+    return ipcRenderer.invoke('getPerformance', deviceId)
+  },
   createShell: (deviceId: string) => {
     return ipcRenderer.invoke('createShell', deviceId)
   },

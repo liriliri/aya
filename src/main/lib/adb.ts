@@ -61,6 +61,12 @@ async function getOverview(deviceId: string) {
   }
 }
 
+async function getPerformance(deviceId: string) {
+  return {
+    ...(await getMemory(deviceId)),
+  }
+}
+
 async function screencap(deviceId: string) {
   const device = await client.getDevice(deviceId)
   const data = await device.screencap()
@@ -249,6 +255,7 @@ async function createShell(deviceId: string) {
   let adbPty = new AdbPty(transport)
   try {
     await adbPty.init()
+    /* eslint-disable @typescript-eslint/no-unused-vars */
   } catch (e) {
     adbPty.kill()
     const transport = await device.transport()
@@ -463,4 +470,5 @@ export async function init() {
   handleEvent('screencap', screencap)
   handleEvent('getMemory', getMemory)
   handleEvent('getProcesses', getProcesses)
+  handleEvent('getPerformance', getPerformance)
 }

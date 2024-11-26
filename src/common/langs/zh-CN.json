@@ -69,5 +69,6 @@
   "totalProcess": "共 {{total}} 个进程",
   "stop": "停止",
   "stopPackageConfirm": "确定要退出 {{name}} 吗？",
-  "unknown": "未知"
+  "unknown": "未知",
+  "performance": "性能"
 }

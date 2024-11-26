@@ -12,7 +12,8 @@ export default observer(function Panels() {
       'screenshot',
       /*'app', 'file',*/ 'logcat',
       'shell',
-      'process' /*'monitor'*/,
+      'process',
+      'performance',
     ],
     (panel) => {
       return (

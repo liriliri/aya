@@ -1,0 +1,5 @@
+@use '../../../theme' as theme;
+
+.container {
+  padding: #{theme.$padding-x-x-s}px;
+}

@@ -69,5 +69,6 @@
   "totalProcess": "{{total}} total processes",
   "stop": "Stop",
   "stopPackageConfirm": "Are you sure you want to stop {{name}}?",
-  "unknown": "Unknown"
+  "unknown": "Unknown",
+  "performance": "Performance"
 }

@@ -27,6 +27,7 @@ export default observer(function Process() {
     let timer: NodeJS.Timeout | null = null
 
     async function getProcesses() {
+      timer = null
       if (device) {
         if (store.panel === 'process') {
           setProcesses(await main.getProcesses(device.id))

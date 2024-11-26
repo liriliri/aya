@@ -4,6 +4,7 @@ import Shell from './components/shell/Shell'
 import Overview from './components/overview/Overview'
 import Screenshot from './components/screenshot/Screenshot'
 import Process from './components/process/Process'
+import Performance from './components/performance/Performance'
 import Style from './App.module.scss'
 import LunaModal from 'luna-modal/react'
 import { t } from '../lib/util'
@@ -43,6 +44,9 @@ export default observer(function App() {
           </Panel>
           <Panel panel="process">
             <Process />
+          </Panel>
+          <Panel panel="performance">
+            <Performance />
           </Panel>
         </div>
       </div>

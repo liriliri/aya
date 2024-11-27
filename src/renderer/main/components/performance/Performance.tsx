@@ -2,7 +2,10 @@ import { observer } from 'mobx-react-lite'
 import { useCallback, useEffect, useRef } from 'react'
 import store from '../../store'
 import LunaPerformanceMonitor from 'luna-performance-monitor/react'
-import { colorPrimary, colorPrimaryDark } from '../../../../common/theme'
+import {
+  colorWarningText,
+  colorWarningTextDark,
+} from '../../../../common/theme'
 import { t } from '../../../lib/util'
 import Style from './Performance.module.scss'
 
@@ -40,7 +43,7 @@ export default observer(function Performance() {
     }
   }, [])
 
-  const color = store.theme === 'dark' ? colorPrimaryDark : colorPrimary
+  const isDark = store.theme === 'dark'
 
   return (
     <div className={Style.container}>
@@ -48,7 +51,7 @@ export default observer(function Performance() {
         title={t('memory')}
         data={memData}
         theme={store.theme}
-        color={color}
+        color={isDark ? colorWarningTextDark : colorWarningText}
         unit="MB"
       />
     </div>

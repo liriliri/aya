@@ -9,7 +9,7 @@ import LunaToolbar, {
   LunaToolbarText,
 } from 'luna-toolbar/react'
 import ToolbarIcon from '../../../components/ToolbarIcon'
-import endWith from 'licia/endWith'
+import fileSize from 'licia/fileSize'
 import contain from 'licia/contain'
 import { t } from '../../../lib/util'
 import LunaModal from 'luna-modal'
@@ -125,7 +125,7 @@ const columns = [
     id: 'res',
     title: t('memory'),
     sortable: true,
-    comparator: (a, b) => toBytes(a) - toBytes(b),
+    comparator: (a: string, b: string) => fileSize(a) - fileSize(b),
   },
   {
     id: 'pid',
@@ -138,16 +138,3 @@ const columns = [
     sortable: true,
   },
 ]
-
-function toBytes(memory: string) {
-  let num = parseFloat(memory)
-  if (endWith(memory, 'K')) {
-    num *= 1024
-  } else if (endWith(memory, 'M')) {
-    num *= 1024 * 1024
-  } else if (endWith(memory, 'G')) {
-    num *= 1024 * 1024 * 1024
-  }
-
-  return num
-}

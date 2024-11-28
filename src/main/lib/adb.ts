@@ -82,6 +82,7 @@ async function getBattery(deviceId: string) {
   return {
     batteryLevel: toNum(getPropValue('level', result)),
     batteryTemperature: toNum(getPropValue('temperature', result)),
+    batteryVoltage: toNum(getPropValue('voltage', result)),
   }
 }
 

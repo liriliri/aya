@@ -22,6 +22,7 @@ export default observer(function Performance() {
     uptime: 0,
     batteryLevel: 0,
     batteryTemperature: 0,
+    batteryVoltage: 0,
   })
 
   const memData = useCallback(() => {
@@ -56,8 +57,11 @@ export default observer(function Performance() {
 
   const isDark = store.theme === 'dark'
 
-  const batteryLevel = dataRef.current.batteryLevel + '%'
-  const batteryTemperature = dataRef.current.batteryTemperature / 10 + '°C'
+  const data = dataRef.current
+  const batteryLevel = data.batteryLevel + '%'
+  const batteryVoltage = `${(data.batteryVoltage / 1000).toFixed(2)}V`
+  const batteryTemperature = `${data.batteryTemperature / 10}°C`
+  const batteryTitle = `${batteryVoltage} ${batteryTemperature}`
 
   return (
     <div className={Style.container}>
@@ -67,7 +71,7 @@ export default observer(function Performance() {
         />
         <LunaToolbarSpace />
         <LunaToolbarHtml>
-          <div className={Style.batteryContainer} title={batteryTemperature}>
+          <div className={Style.batteryContainer} title={batteryTitle}>
             <span className={Style.batteryLevel}>{batteryLevel}</span>
             <div className={Style.battery}>
               <div className={Style.batteryHead} />

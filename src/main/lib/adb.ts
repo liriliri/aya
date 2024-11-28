@@ -11,6 +11,7 @@ import singleton from 'licia/singleton'
 import trim from 'licia/trim'
 import startWith from 'licia/startWith'
 import lowerCase from 'licia/lowerCase'
+import toNum from 'licia/toNum'
 import * as window from './window'
 import fs from 'fs-extra'
 import { getSettingsStore } from './store'
@@ -63,8 +64,15 @@ async function getOverview(deviceId: string) {
 
 async function getPerformance(deviceId: string) {
   return {
+    uptime: await getUptime(deviceId),
     ...(await getMemory(deviceId)),
   }
+}
+
+async function getUptime(deviceId: string) {
+  const result = await shell(deviceId, 'cat /proc/uptime')
+  const [uptime] = result.split(' ')
+  return Math.round(toNum(uptime) * 1000)
 }
 
 async function screencap(deviceId: string) {

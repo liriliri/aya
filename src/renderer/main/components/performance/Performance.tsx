@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import store from '../../store'
 import LunaPerformanceMonitor from 'luna-performance-monitor/react'
 import {
@@ -8,10 +8,14 @@ import {
 } from '../../../../common/theme'
 import { t } from '../../../lib/util'
 import Style from './Performance.module.scss'
+import durationFormat from 'licia/durationFormat'
+import LunaToolbar, { LunaToolbarText } from 'luna-toolbar/react'
 
 export default observer(function Performance() {
+  const [uptime, setUptime] = useState(0)
   const dataRef = useRef({
     memUsed: 0,
+    uptime: 0,
   })
 
   const memData = useCallback(() => {
@@ -28,10 +32,11 @@ export default observer(function Performance() {
       if (device) {
         if (store.panel === 'performance') {
           const data = await main.getPerformance(device.id)
+          setUptime(data.uptime)
           dataRef.current = data
         }
       }
-      timer = setTimeout(getPerformance, 2000)
+      timer = setTimeout(getPerformance, 1000)
     }
 
     getPerformance()
@@ -47,13 +52,18 @@ export default observer(function Performance() {
 
   return (
     <div className={Style.container}>
-      <LunaPerformanceMonitor
-        title={t('memory')}
-        data={memData}
-        theme={store.theme}
-        color={isDark ? colorWarningTextDark : colorWarningText}
-        unit="MB"
-      />
+      <LunaToolbar className={Style.toolbar}>
+        <LunaToolbarText text={`${t('uptime')} ${durationFormat(uptime)}`} />
+      </LunaToolbar>
+      <div className={Style.charts}>
+        <LunaPerformanceMonitor
+          title={t('memory')}
+          data={memData}
+          theme={store.theme}
+          color={isDark ? colorWarningTextDark : colorWarningText}
+          unit="MB"
+        />
+      </div>
     </div>
   )
 })

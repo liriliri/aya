@@ -69,5 +69,6 @@
   "stop": "Stop",
   "stopPackageConfirm": "Are you sure you want to stop {{name}}?",
   "unknown": "Unknown",
-  "performance": "Performance"
+  "performance": "Performance",
+  "uptime": "Uptime"
 }

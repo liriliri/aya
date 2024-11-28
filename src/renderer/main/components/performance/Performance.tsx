@@ -19,6 +19,7 @@ export default observer(function Performance() {
   const [uptime, setUptime] = useState(0)
   const dataRef = useRef({
     memUsed: 0,
+    memTotal: 0,
     uptime: 0,
     batteryLevel: 0,
     batteryTemperature: 0,
@@ -85,7 +86,9 @@ export default observer(function Performance() {
       </LunaToolbar>
       <div className={Style.charts}>
         <LunaPerformanceMonitor
-          title={t('memory')}
+          title={`${t('memory')} ${Math.round(
+            (data.memUsed / data.memTotal) * 100
+          )}%`}
           data={memData}
           theme={store.theme}
           color={isDark ? colorWarningTextDark : colorWarningText}

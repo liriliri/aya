@@ -66,6 +66,7 @@ async function getPerformance(deviceId: string) {
   return {
     uptime: await getUptime(deviceId),
     ...(await getMemory(deviceId)),
+    ...(await getBattery(deviceId)),
   }
 }
 
@@ -73,6 +74,15 @@ async function getUptime(deviceId: string) {
   const result = await shell(deviceId, 'cat /proc/uptime')
   const [uptime] = result.split(' ')
   return Math.round(toNum(uptime) * 1000)
+}
+
+async function getBattery(deviceId: string) {
+  const result = await shell(deviceId, 'dumpsys battery')
+
+  return {
+    batteryLevel: toNum(getPropValue('level', result)),
+    batteryTemperature: toNum(getPropValue('temperature', result)),
+  }
 }
 
 async function screencap(deviceId: string) {
@@ -98,11 +108,11 @@ async function getMemory(deviceId: string) {
   let memTotal = 0
   let memFree = 0
 
-  const totalMatch = memInfo.match(/MemTotal:\s+(\d+)/)
-  const freeMatch = memInfo.match(/MemFree:\s+(\d+)/)
+  const totalMatch = getPropValue('MemTotal', memInfo)
+  const freeMatch = getPropValue('MemFree', memInfo)
   if (totalMatch && freeMatch) {
-    memTotal = parseInt(totalMatch[1], 10) * 1024
-    memFree = parseInt(freeMatch[1], 10) * 1024
+    memTotal = parseInt(totalMatch, 10) * 1024
+    memFree = parseInt(freeMatch, 10) * 1024
   }
 
   return {
@@ -440,6 +450,18 @@ async function resumeLogcat(logcatId: string) {
 async function closeLogcat(logcatId: string) {
   logcats[logcatId].close()
   delete logcats[logcatId]
+}
+
+function getPropValue(key: string, str: string) {
+  const lines = str.split('\n')
+  for (let i = 0, len = lines.length; i < len; i++) {
+    const line = trim(lines[i])
+    if (startWith(line, key)) {
+      return trim(line.replace(/.*:/, ''))
+    }
+  }
+
+  return ''
 }
 
 export async function init() {

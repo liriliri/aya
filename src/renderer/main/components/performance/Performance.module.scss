@@ -20,3 +20,47 @@
   height: 100%;
   padding: #{theme.$padding-x-s}px #{theme.$padding-x-x-s}px;
 }
+
+.battery-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 #{theme.$padding-x-s}px;
+}
+
+.battery-level {
+  margin-right: #{theme.$margin-x-x-s}px;
+  font-size: #{theme.$font-size-s-m}px;
+}
+
+.battery {
+  display: inline-block;
+  position: relative;
+  width: 23px;
+  height: 10px;
+  padding: 1px;
+  border: 1px solid var(--aya-color-text);
+  border-radius: 2px;
+  vertical-align: middle;
+  font-size: 0;
+}
+
+.battery-head {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  margin-top: -2px;
+  margin-left: 2px;
+  width: 2px;
+  height: 4px;
+  border-radius: 0 2px 2px 0;
+  background: var(--aya-color-text);
+}
+
+.battery-inside {
+  width: 50%;
+  height: 100%;
+  background: var(--aya-color-text);
+  border-radius: 1px;
+  display: inline-block;
+}

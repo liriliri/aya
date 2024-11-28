@@ -9,13 +9,19 @@ import {
 import { t } from '../../../lib/util'
 import Style from './Performance.module.scss'
 import durationFormat from 'licia/durationFormat'
-import LunaToolbar, { LunaToolbarText } from 'luna-toolbar/react'
+import LunaToolbar, {
+  LunaToolbarHtml,
+  LunaToolbarSpace,
+  LunaToolbarText,
+} from 'luna-toolbar/react'
 
 export default observer(function Performance() {
   const [uptime, setUptime] = useState(0)
   const dataRef = useRef({
     memUsed: 0,
     uptime: 0,
+    batteryLevel: 0,
+    batteryTemperature: 0,
   })
 
   const memData = useCallback(() => {
@@ -50,10 +56,28 @@ export default observer(function Performance() {
 
   const isDark = store.theme === 'dark'
 
+  const batteryLevel = dataRef.current.batteryLevel + '%'
+  const batteryTemperature = dataRef.current.batteryTemperature / 10 + '°C'
+
   return (
     <div className={Style.container}>
       <LunaToolbar className={Style.toolbar}>
-        <LunaToolbarText text={`${t('uptime')} ${durationFormat(uptime, 'd:hh:mm:ss')}`} />
+        <LunaToolbarText
+          text={`${t('uptime')} ${durationFormat(uptime, 'd:hh:mm:ss')}`}
+        />
+        <LunaToolbarSpace />
+        <LunaToolbarHtml>
+          <div className={Style.batteryContainer} title={batteryTemperature}>
+            <span className={Style.batteryLevel}>{batteryLevel}</span>
+            <div className={Style.battery}>
+              <div className={Style.batteryHead} />
+              <div
+                className={Style.batteryInside}
+                style={{ width: batteryLevel }}
+              />
+            </div>
+          </div>
+        </LunaToolbarHtml>
       </LunaToolbar>
       <div className={Style.charts}>
         <LunaPerformanceMonitor

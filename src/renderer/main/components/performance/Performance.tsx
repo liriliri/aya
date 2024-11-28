@@ -53,7 +53,7 @@ export default observer(function Performance() {
   return (
     <div className={Style.container}>
       <LunaToolbar className={Style.toolbar}>
-        <LunaToolbarText text={`${t('uptime')} ${durationFormat(uptime)}`} />
+        <LunaToolbarText text={`${t('uptime')} ${durationFormat(uptime, 'd:hh:mm:ss')}`} />
       </LunaToolbar>
       <div className={Style.charts}>
         <LunaPerformanceMonitor

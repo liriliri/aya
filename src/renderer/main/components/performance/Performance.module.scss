@@ -18,7 +18,13 @@
 
 .charts {
   height: 100%;
-  padding: #{theme.$padding-x-s}px #{theme.$padding-x-x-s}px;
+  overflow-y: auto;
+  padding: 0 #{theme.$padding-x-x-s}px;
+}
+
+.cpu-container {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .battery-container {

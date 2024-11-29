@@ -10,8 +10,10 @@ import each from 'licia/each'
 import singleton from 'licia/singleton'
 import trim from 'licia/trim'
 import startWith from 'licia/startWith'
+import sleep from 'licia/sleep'
 import lowerCase from 'licia/lowerCase'
 import toNum from 'licia/toNum'
+import now from 'licia/now'
 import * as window from './window'
 import fs from 'fs-extra'
 import { getSettingsStore } from './store'
@@ -41,6 +43,7 @@ async function getDevices() {
 async function getOverview(deviceId: string) {
   const device = await client.getDevice(deviceId)
   const properties = await device.getProperties()
+  const cpus = await getCpus(deviceId)
 
   let name = properties['ro.product.name']
   if (properties['ro.oppo.market.name']) {
@@ -55,7 +58,8 @@ async function getOverview(deviceId: string) {
     model: properties['ro.product.model'],
     androidVersion: properties['ro.build.version.release'],
     sdkVersion: properties['ro.build.version.sdk'],
-    serialNumber: properties['ro.serialno'] || '',
+    serialNum: properties['ro.serialno'] || '',
+    cpuNum: cpus.length,
     ...(await getStorage(deviceId)),
     ...(await getMemory(deviceId)),
     ...(await getScreen(deviceId)),
@@ -63,11 +67,125 @@ async function getOverview(deviceId: string) {
 }
 
 async function getPerformance(deviceId: string) {
+  const cpus = await getCpus(deviceId)
+
   return {
     uptime: await getUptime(deviceId),
+    cpus,
+    cpuLoads: await getCpuLoads(deviceId, cpus),
     ...(await getMemory(deviceId)),
     ...(await getBattery(deviceId)),
+    ...(await getFrames(deviceId)),
   }
+}
+
+async function getFrames(deviceId: string) {
+  const result: string = await shell(deviceId, 'dumpsys SurfaceFlinger')
+  let frames = 0
+  const frameTime = now()
+  const match = result.match(/flips=(\d+)/)
+  if (match) {
+    frames = toNum(match[1])
+  }
+
+  return {
+    frames,
+    frameTime,
+  }
+}
+
+const DEFAULT_PERIOD = 50
+
+async function getCpuLoads(deviceId: string, allCpus: any[], period = 0) {
+  const cpuLoads: number[] = []
+  if (!period) {
+    period = DEFAULT_PERIOD
+  }
+
+  return new Promise(function (resolve) {
+    sleep(period).then(async () => {
+      const newAllCpus = await getCpus(deviceId, false)
+      each(allCpus, (cpu, idx) => {
+        cpuLoads[idx] = calculateCpuLoad(cpu, newAllCpus[idx])
+      })
+      resolve(cpuLoads)
+    })
+  })
+}
+
+function calculateCpuLoad(lastCpu, cpu) {
+  const lastTimes = lastCpu.times
+  const times = cpu.times
+  const lastLoad =
+    lastTimes.user +
+    lastTimes.sys +
+    lastTimes.nice +
+    lastTimes.irq +
+    lastTimes.iowait +
+    lastTimes.softirq
+  const lastTick = lastLoad + lastTimes.idle
+  const load =
+    times.user +
+    times.sys +
+    times.nice +
+    times.irq +
+    times.iowait +
+    times.softirq
+  const tick = load + times.idle
+
+  return (load - lastLoad) / (tick - lastTick)
+}
+
+async function getCpus(deviceId: string, speed = true) {
+  const result: string = await shell(deviceId, 'cat /proc/stat')
+  const lines = result.split('\n')
+  const cpus: any[] = []
+
+  each(lines, (line) => {
+    line = trim(line)
+    if (!startWith(line, 'cpu')) {
+      return
+    }
+
+    const parts = line.split(/\s+/)
+    if (parts[0] === 'cpu') {
+      return
+    }
+
+    const cpu: any = {}
+    cpu.times = {
+      user: toNum(parts[1]),
+      nice: toNum(parts[2]),
+      sys: toNum(parts[3]),
+      idle: toNum(parts[4]),
+      iowait: toNum(parts[5]),
+      irq: toNum(parts[6]),
+      softirq: toNum(parts[7]),
+    }
+
+    cpus.push(cpu)
+  })
+
+  if (speed) {
+    const freqCmd = map(cpus, (cpu, idx) => {
+      return `cat /sys/devices/system/cpu/cpu${idx}/cpufreq/scaling_cur_freq`
+    }).join('\n')
+    const freq: string = await shell(deviceId, freqCmd)
+    const speeds: number[] = []
+    each(freq.split('\n'), (line) => {
+      line = trim(line)
+      if (!line) {
+        return
+      }
+      speeds.push(Math.floor(toNum(line) / 1000))
+    })
+
+    each(cpus, (cpu, idx) => {
+      cpu.speed = speeds[idx]
+    })
+  }
+
+  return cpus
 }
 
 async function getUptime(deviceId: string) {

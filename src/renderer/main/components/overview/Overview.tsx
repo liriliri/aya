@@ -30,7 +30,7 @@ export default observer(function Overview() {
           {item(t('model'), overview.model, 'model')}
         </div>
         <div className={Style.row}>
-          {item(t('serialNum'), overview.serialNumber, 'serial-number')}
+          {item(t('serialNum'), overview.serialNum, 'serial-number')}
           {item(
             t('androidVersion'),
             `Android ${overview.androidVersion} (API ${overview.sdkVersion})`,
@@ -38,7 +38,9 @@ export default observer(function Overview() {
           )}
           {item(
             t('processor'),
-            `${overview.processor || t('unknown')} (${overview.abi})`,
+            `${overview.processor || t('unknown')} ${t('cpuNum', {
+              count: overview.cpuNum,
+            })} (${overview.abi})`,
             'processor'
           )}
         </div>

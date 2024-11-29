@@ -70,5 +70,6 @@
   "stopPackageConfirm": "确定要退出 {{name}} 吗？",
   "unknown": "未知",
   "performance": "性能",
-  "uptime": "已开机"
+  "uptime": "已开机",
+  "cpuNum": "{{count}} 核"
 }

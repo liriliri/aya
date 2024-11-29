@@ -70,5 +70,6 @@
   "stopPackageConfirm": "Are you sure you want to stop {{name}}?",
   "unknown": "Unknown",
   "performance": "Performance",
-  "uptime": "Uptime"
+  "uptime": "Uptime",
+  "cpuNum": "{{count}} Cores"
 }

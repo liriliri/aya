@@ -228,7 +228,10 @@ async function getMemory(deviceId: string) {
   let memFree = 0
 
   const totalMatch = getPropValue('MemTotal', memInfo)
-  const freeMatch = getPropValue('MemAvailable', memInfo)
+  let freeMatch = getPropValue('MemAvailable', memInfo)
+  if (!freeMatch) {
+    freeMatch = getPropValue('MemFree', memInfo)
+  }
   if (totalMatch && freeMatch) {
     memTotal = parseInt(totalMatch, 10) * 1024
     memFree = parseInt(freeMatch, 10) * 1024

@@ -440,7 +440,7 @@ class Logcat extends Emitter {
       if (this.paused) {
         return
       }
-      if (!this.pidNames[entry.pid]) {
+      if (!this.pidNames[entry.pid] && entry.pid !== 0) {
         await this.getPidNames(deviceId)
       }
       entry.package = this.pidNames[entry.pid] || `pid-${entry.pid}`

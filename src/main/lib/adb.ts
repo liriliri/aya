@@ -69,8 +69,12 @@ async function getOverview(deviceId: string) {
 }
 
 function getMarketName(properties: types.PlainObj<string>) {
-  if (properties['ro.oppo.market.name']) {
-    return properties['ro.oppo.market.name']
+  const keys = ['ro.oppo.market.name', 'ro.config.marketing_name']
+  for (let i = 0, len = keys.length; i < len; i++) {
+    const key = keys[i]
+    if (properties[key]) {
+      return properties[key]
+    }
   }
 
   const device = properties['ro.product.device']

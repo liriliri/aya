@@ -1,4 +1,5 @@
 import Adb, { Client, Device } from '@devicefarmer/adbkit'
+import androidDeviceList from 'android-device-list'
 import { resolveUnpack, handleEvent } from './util'
 import map from 'licia/map'
 import types from 'licia/types'
@@ -18,6 +19,7 @@ import * as window from './window'
 import fs from 'fs-extra'
 import { getSettingsStore } from './store'
 import isWindows from 'licia/isWindows'
+import isEmpty from 'licia/isEmpty'
 
 const settingsStore = getSettingsStore()
 
@@ -31,10 +33,15 @@ async function getDevices() {
     map(devices, async (device: Device) => {
       const properties = await client.getDevice(device.id).getProperties()
 
+      let name = `${properties['ro.product.manufacturer']} ${properties['ro.product.model']}`
+      const marketName = getMarketName(properties)
+      if (marketName) {
+        name = marketName
+      }
+
       return {
         id: device.id,
-        brand: properties['ro.product.brand'],
-        model: properties['ro.product.model'],
+        name,
       }
     })
   ).catch(() => [])
@@ -45,13 +52,8 @@ async function getOverview(deviceId: string) {
   const properties = await device.getProperties()
   const cpus = await getCpus(deviceId)
 
-  let name = properties['ro.product.name']
-  if (properties['ro.oppo.market.name']) {
-    name = properties['ro.oppo.market.name']
-  }
-
   return {
-    name,
+    name: getMarketName(properties) || properties['ro.product.name'],
     processor: properties['ro.product.board'] || '',
     abi: properties['ro.product.cpu.abi'],
     brand: properties['ro.product.brand'],
@@ -64,6 +66,29 @@ async function getOverview(deviceId: string) {
     ...(await getMemory(deviceId)),
     ...(await getScreen(deviceId)),
   }
+}
+
+function getMarketName(properties: types.PlainObj<string>) {
+  if (properties['ro.oppo.market.name']) {
+    return properties['ro.oppo.market.name']
+  }
+
+  const device = properties['ro.product.device']
+  const model = properties['ro.product.model']
+
+  let marketName = ''
+
+  const devices: any[] = androidDeviceList.getDevicesByDeviceId(device)
+  if (!isEmpty(devices)) {
+    const deviceFilter = filter(devices, (device) => device.model === model)
+    if (!isEmpty(deviceFilter)) {
+      marketName = deviceFilter[0].name
+    } else {
+      marketName = devices[0].name
+    }
+  }
+
+  return marketName
 }
 
 async function getPerformance(deviceId: string) {

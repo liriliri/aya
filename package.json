@@ -37,6 +37,7 @@
     "@xterm/addon-unicode11": "^0.8.0",
     "@xterm/addon-webgl": "^0.18.0",
     "@xterm/xterm": "^5.5.0",
+    "android-device-list": "^1.2.10",
     "concurrently": "^9.0.1",
     "custom-electron-titlebar": "^4.2.8",
     "electron": "^33.0.1",

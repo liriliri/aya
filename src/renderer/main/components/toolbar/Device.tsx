@@ -13,7 +13,7 @@ export default observer(function Device() {
   if (!isEmpty(store.devices)) {
     deviceOptions = {}
     each(store.devices, (device) => {
-      deviceOptions[`${device.brand} ${device.model}`] = device.id
+      deviceOptions[device.name] = device.id
     })
   } else {
     deviceOptions[t('deviceNotConnected')] = ''

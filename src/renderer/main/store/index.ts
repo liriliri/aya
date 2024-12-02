@@ -8,8 +8,7 @@ import isEmpty from 'licia/isEmpty'
 
 interface IDevice {
   id: string
-  brand: string
-  model: string
+  name: string
 }
 
 class Store extends BaseStore {

@@ -71,5 +71,8 @@
   "unknown": "Unknown",
   "performance": "Performance",
   "uptime": "Uptime",
-  "cpuNum": "{{count}} Cores"
+  "cpuNum": "{{count}} Cores",
+  "webview": "Webview",
+  "title": "Title",
+  "type": "Type"
 }

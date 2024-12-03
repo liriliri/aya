@@ -71,5 +71,8 @@
   "unknown": "未知",
   "performance": "性能",
   "uptime": "已开机",
-  "cpuNum": "{{count}} 核"
+  "cpuNum": "{{count}} 核",
+  "webview": "网页",
+  "title": "标题",
+  "type": "类型"
 }

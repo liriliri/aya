@@ -1,0 +1,110 @@
+import { observer } from 'mobx-react-lite'
+import Style from './Webview.module.scss'
+import LunaToolbar, {
+  LunaToolbarInput,
+  LunaToolbarSpace,
+  LunaToolbarText,
+} from 'luna-toolbar/react'
+import { useEffect, useState } from 'react'
+import { t } from '../../../lib/util'
+import LunaDataGrid from 'luna-data-grid/react'
+import store from '../../store'
+
+export default observer(function Webview() {
+  const [port, setPort] = useState(0)
+  const [webviews, setWebviews] = useState([])
+  const [topActivity, setTopActivity] = useState({
+    name: '',
+    pid: 0,
+  })
+  const [listHeight, setListHeight] = useState(0)
+  const [filter, setFilter] = useState('')
+
+  const { device } = store
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null
+
+    async function getWebviews() {
+      timer = null
+      if (device) {
+        if (store.panel === 'webview') {
+          try {
+            const topActivity = await main.getTopActivity(device.id)
+            setTopActivity(topActivity)
+            if (topActivity.pid) {
+              const result = await main.getWebviews(device.id, topActivity.pid)
+              setPort(result.port)
+              setWebviews(result.webviews)
+            }
+            /* eslint-disable @typescript-eslint/no-unused-vars, no-empty */
+          } catch (e) {}
+        }
+      }
+      timer = setTimeout(getWebviews, 5000)
+    }
+
+    getWebviews()
+
+    function resize() {
+      const height = window.innerHeight - 89
+      setListHeight(height)
+    }
+    resize()
+
+    window.addEventListener('resize', resize)
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer)
+      }
+
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
+  return (
+    <div className={Style.container}>
+      <LunaToolbar className={Style.toolbar}>
+        <LunaToolbarInput
+          keyName="filter"
+          value={filter}
+          placeholder={t('filter')}
+          onChange={(val) => setFilter(val)}
+        />
+        <LunaToolbarSpace />
+        <LunaToolbarText text={topActivity ? topActivity.name : ''} />
+      </LunaToolbar>
+      <LunaDataGrid
+        className={Style.webviews}
+        filter={filter}
+        columns={columns}
+        data={webviews}
+        selectable={true}
+        minHeight={listHeight}
+        maxHeight={listHeight}
+        uniqueId="id"
+      />
+    </div>
+  )
+})
+
+const columns = [
+  {
+    id: 'title',
+    title: t('title'),
+    sortable: true,
+    weight: 20,
+  },
+  {
+    id: 'url',
+    title: 'URL',
+    sortable: true,
+  },
+  {
+    id: 'type',
+    title: t('type'),
+    sortable: true,
+    weight: 10,
+  },
+]

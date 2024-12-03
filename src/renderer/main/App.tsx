@@ -5,6 +5,7 @@ import Overview from './components/overview/Overview'
 import Screenshot from './components/screenshot/Screenshot'
 import Process from './components/process/Process'
 import Performance from './components/performance/Performance'
+import Webview from './components/webview/Webview'
 import Style from './App.module.scss'
 import LunaModal from 'luna-modal/react'
 import { t } from '../lib/util'
@@ -47,6 +48,9 @@ export default observer(function App() {
           </Panel>
           <Panel panel="performance">
             <Performance />
+          </Panel>
+          <Panel panel="webview">
+            <Webview />
           </Panel>
         </div>
       </div>

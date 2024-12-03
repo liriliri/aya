@@ -14,6 +14,7 @@ export default observer(function Panels() {
       'shell',
       'process',
       'performance',
+      'webview',
     ],
     (panel) => {
       return (

@@ -3,6 +3,7 @@ import androidDeviceList from 'android-device-list'
 import { resolveUnpack, handleEvent } from './util'
 import map from 'licia/map'
 import types from 'licia/types'
+import getPort from 'licia/getPort'
 import filter from 'licia/filter'
 import Emitter from 'licia/Emitter'
 import isStrBlank from 'licia/isStrBlank'
@@ -12,14 +13,24 @@ import singleton from 'licia/singleton'
 import trim from 'licia/trim'
 import startWith from 'licia/startWith'
 import sleep from 'licia/sleep'
-import lowerCase from 'licia/lowerCase'
 import toNum from 'licia/toNum'
 import now from 'licia/now'
+import contain from 'licia/contain'
 import * as window from './window'
 import fs from 'fs-extra'
 import { getSettingsStore } from './store'
 import isWindows from 'licia/isWindows'
 import isEmpty from 'licia/isEmpty'
+import axios from 'axios'
+import * as base from './adb/base'
+import { shell, getPidNames, getProcesses } from './adb/base'
+import * as logcat from './adb/logcat'
+import {
+  openLogcat,
+  closeLogcat,
+  resumeLogcat,
+  pauseLogcat,
+} from './adb/logcat'
 
 const settingsStore = getSettingsStore()
 
@@ -289,13 +300,6 @@ async function getStorage(deviceId: string) {
   }
 }
 
-async function shell(deviceId: string, cmd: string) {
-  const device = await client.getDevice(deviceId)
-  const socket = await device.shell(cmd)
-  const output = await Adb.util.readAll(socket)
-  return output.toString()
-}
-
 class ShellProtocol {
   static STDIN = 0
   static STDOUT = 1
@@ -453,154 +457,78 @@ async function killShell(sessionId: string) {
   delete ptys[sessionId]
 }
 
-class Logcat extends Emitter {
-  private reader: any
-  private paused = false
-  private pidNames: types.PlainObj<string> = {}
-  constructor(reader: any) {
-    super()
-
-    this.reader = reader
-  }
-  async init(deviceId: string) {
-    const { reader } = this
-
-    reader.on('entry', async (entry) => {
-      if (this.paused) {
-        return
-      }
-      if (!this.pidNames[entry.pid] && entry.pid !== 0) {
-        await this.getPidNames(deviceId)
-      }
-      entry.package = this.pidNames[entry.pid] || `pid-${entry.pid}`
-      this.emit('entry', entry)
-    })
-  }
-  close() {
-    this.reader.end()
-  }
-  pause() {
-    this.paused = true
-  }
-  resume() {
-    this.paused = false
-  }
-  private async getPidNames(deviceId: string) {
-    const processes = await getProcesses(deviceId)
-    const pidNames = {}
-    each(processes, (process) => {
-      pidNames[process.pid] = process.name
-    })
-    this.pidNames = pidNames
-  }
-}
-
 const getPackages = singleton(async (deviceId: string) => {
   const result: string = await shell(deviceId, 'pm list packages')
 
   return map(trim(result).split('\n'), (line) => line.slice(8))
 })
 
-const getProcesses = singleton(async (deviceId: string) => {
-  let columns = ['pid', '%cpu', 'time+', 'res', 'user', 'name', 'args']
-  let command = 'top -b -n 1'
-  each(columns, (column) => {
-    command += ` -o ${column}`
-  })
+const getWebviews = singleton(async (deviceId: string, pid: number) => {
+  const webviews: any[] = []
 
-  const result: string = await shell(deviceId, command)
-  let lines = result.split('\n')
-  let start = -1
+  const result: string = await shell(
+    deviceId,
+    `cat /proc/net/unix | grep webview_devtools_remote_${pid}`
+  )
+  if (isStrBlank(result)) {
+    return webviews
+  }
+
+  const socketName = `localabstract:webview_devtools_remote_${pid}`
+  const device = await client.getDevice(deviceId)
+  const forwards = await device.listForwards()
+  let port = 0
+  for (let i = 0, len = forwards.length; i < len; i++) {
+    const forward = forwards[i]
+    if (forward.name === socketName) {
+      port = toNum(forward.local.replace('tcp:', ''))
+      break
+    }
+  }
+  if (!port) {
+    port = await getPort()
+    await device.forward(`tcp:${port}`, socketName)
+  }
+  const { data } = await axios.get(`http://localhost:${port}/json`)
+  each(data, (item: any) => webviews.push(item))
+
+  return {
+    port,
+    webviews,
+  }
+})
+
+async function getTopActivity(deviceId: string) {
+  const topActivity: string = await shell(deviceId, 'dumpsys activity')
+  const lines = topActivity.split('\n')
+  let line = ''
   for (let i = 0, len = lines.length; i < len; i++) {
-    if (startWith(trim(lines[i]), 'PID')) {
-      start = i + 1
+    line = trim(lines[i])
+    if (contain(line, 'top-activity')) {
       break
     }
   }
 
-  // older version of top command
-  if (start < 0) {
-    const result: string = await shell(deviceId, 'top -n 1')
-    lines = result.split('\n')
-    for (let i = 0, len = lines.length; i < len; i++) {
-      const line = trim(lines[i])
-      if (startWith(line, 'PID')) {
-        columns = line.split(/\s+/)
-        columns = map(columns, (column) => {
-          column = lowerCase(column)
-          if (column === 'cpu%') {
-            column = '%cpu'
-          } else if (column === 'uid') {
-            column = 'user'
-          } else if (column === 'rss') {
-            column = 'res'
-          }
-          return column
-        })
-        start = i + 1
-        break
-      }
+  if (!line) {
+    return {
+      name: '',
+      pid: 0,
     }
   }
 
-  lines = lines.slice(start)
-  const processes: any[] = []
-  each(lines, (line) => {
-    line = trim(line)
-    if (!line) {
-      return
-    }
-    const parts = line.split(/\s+/)
-    const process: any = {}
-    each(columns, (column, index) => {
-      if (column === 'args') {
-        process[column] = parts.slice(index).join(' ')
-      } else {
-        process[column] = parts[index] || ''
-      }
-    })
-    if (process.args === command) {
-      return
-    }
-    processes.push(process)
-  })
+  const parts = line.split(/\s+/)
+  const pid = parseInt(parts[parts.length - 2], 10)
+  const pidNames = await getPidNames(deviceId)
+  const name = pidNames[pid] || `pid-${pid}`
 
-  return processes
-})
+  return {
+    name,
+    pid,
+  }
+}
 
 async function stopPackage(deviceId: string, pid: number) {
   await shell(deviceId, `am force-stop ${pid}`)
-}
-
-const logcats: types.PlainObj<Logcat> = {}
-
-async function openLogcat(deviceId: string) {
-  const device = await client.getDevice(deviceId)
-  const reader = await device.openLogcat({
-    clear: true,
-  })
-  const logcat = new Logcat(reader)
-  await logcat.init(deviceId)
-  const logcatId = uniqId('logcat')
-  logcat.on('entry', (entry) => {
-    window.sendTo('main', 'logcatEntry', logcatId, entry)
-  })
-  logcats[logcatId] = logcat
-
-  return logcatId
-}
-
-async function pauseLogcat(logcatId: string) {
-  logcats[logcatId].pause()
-}
-
-async function resumeLogcat(logcatId: string) {
-  logcats[logcatId].resume()
-}
-
-async function closeLogcat(logcatId: string) {
-  logcats[logcatId].close()
-  delete logcats[logcatId]
 }
 
 function getPropValue(key: string, str: string) {
@@ -621,14 +549,18 @@ export async function init() {
   if (adbPath === 'adb' || (!isStrBlank(adbPath) && fs.existsSync(adbPath))) {
     bin = adbPath
   }
+
   client = Adb.createClient({
     bin,
   })
-
   client.trackDevices().then((tracker) => {
     tracker.on('add', onDeviceChange)
     tracker.on('remove', onDeviceChange)
   })
+
+  base.setClient(client)
+  logcat.setClient(client)
+
   function onDeviceChange() {
     setTimeout(() => window.sendTo('main', 'changeDevice'), 2000)
   }
@@ -651,5 +583,7 @@ export async function init() {
   handleEvent('screencap', screencap)
   handleEvent('getMemory', getMemory)
   handleEvent('getProcesses', getProcesses)
+  handleEvent('getWebviews', getWebviews)
+  handleEvent('getTopActivity', getTopActivity)
   handleEvent('getPerformance', getPerformance)
 }

@@ -3,7 +3,6 @@ import androidDeviceList from 'android-device-list'
 import { resolveUnpack, handleEvent } from './util'
 import map from 'licia/map'
 import types from 'licia/types'
-import getPort from 'licia/getPort'
 import filter from 'licia/filter'
 import Emitter from 'licia/Emitter'
 import isStrBlank from 'licia/isStrBlank'
@@ -466,30 +465,36 @@ const getPackages = singleton(async (deviceId: string) => {
 const getWebviews = singleton(async (deviceId: string, pid: number) => {
   const webviews: any[] = []
 
-  const result: string = await shell(
-    deviceId,
-    `cat /proc/net/unix | grep webview_devtools_remote_${pid}`
-  )
-  if (isStrBlank(result)) {
-    return webviews
-  }
+  const result: string = await shell(deviceId, `cat /proc/net/unix`)
 
-  const socketName = `localabstract:webview_devtools_remote_${pid}`
-  const device = await client.getDevice(deviceId)
-  const forwards = await device.listForwards()
-  let port = 0
-  for (let i = 0, len = forwards.length; i < len; i++) {
-    const forward = forwards[i]
-    if (forward.name === socketName) {
-      port = toNum(forward.local.replace('tcp:', ''))
+  const lines = result.split('\n')
+  let line = ''
+  for (let i = 0, len = lines.length; i < len; i++) {
+    line = trim(lines[i])
+    if (contain(line, `webview_devtools_remote_${pid}`)) {
       break
     }
   }
-  if (!port) {
-    port = await getPort()
-    await device.forward(`tcp:${port}`, socketName)
+
+  if (!line) {
+    return {
+      port: 0,
+      webviews,
+    }
   }
-  const { data } = await axios.get(`http://localhost:${port}/json`)
+
+  const socketNameMatch = line.match(/[^@]+@(.*?webview_devtools_remote_?.*)/)
+  if (!socketNameMatch) {
+    return {
+      port: 0,
+      webviews,
+    }
+  }
+
+  const socketName = socketNameMatch[1]
+  const remote = `localabstract:${socketName}`
+  const port = await base.forwardTcp(deviceId, remote)
+  const { data } = await axios.get(`http://127.0.0.1:${port}/json`)
   each(data, (item: any) => webviews.push(item))
 
   return {

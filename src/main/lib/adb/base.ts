@@ -5,6 +5,8 @@ import startWith from 'licia/startWith'
 import map from 'licia/map'
 import lowerCase from 'licia/lowerCase'
 import Adb, { Client } from '@devicefarmer/adbkit'
+import getPort from 'licia/getPort'
+import toNum from 'licia/toNum'
 
 let client: Client
 
@@ -93,4 +95,22 @@ export async function shell(deviceId: string, cmd: string) {
   const socket = await device.shell(cmd)
   const output = await Adb.util.readAll(socket)
   return output.toString()
+}
+
+export async function forwardTcp(deviceId: string, remote: string) {
+  const device = await client.getDevice(deviceId)
+  const forwards = await device.listForwards()
+
+  for (let i = 0, len = forwards.length; i < len; i++) {
+    const forward = forwards[i]
+    if (forward.remote === remote && forward.serial === deviceId) {
+      return toNum(forward.local.replace('tcp:', ''))
+    }
+  }
+
+  const port = await getPort()
+  const local = `tcp:${port}`
+  await device.forward(local, remote)
+
+  return port
 }

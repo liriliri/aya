@@ -41,7 +41,7 @@ export default observer(function Webview() {
           } catch (e) {}
         }
       }
-      timer = setTimeout(getWebviews, 5000)
+      timer = setTimeout(getWebviews, 2000)
     }
 
     getWebviews()
@@ -72,8 +72,8 @@ export default observer(function Webview() {
           placeholder={t('filter')}
           onChange={(val) => setFilter(val)}
         />
-        <LunaToolbarSpace />
         <LunaToolbarText text={topActivity ? topActivity.name : ''} />
+        <LunaToolbarSpace />
       </LunaToolbar>
       <LunaDataGrid
         className={Style.webviews}

@@ -9,10 +9,12 @@ import { useEffect, useState } from 'react'
 import { t } from '../../../lib/util'
 import LunaDataGrid from 'luna-data-grid/react'
 import store from '../../store'
+import ToolbarIcon from '../../../components/ToolbarIcon'
 
 export default observer(function Webview() {
   const [port, setPort] = useState(0)
   const [webviews, setWebviews] = useState([])
+  const [selected, setSelected] = useState<any>(null)
   const [topActivity, setTopActivity] = useState({
     name: '',
     pid: 0,
@@ -63,6 +65,13 @@ export default observer(function Webview() {
     }
   }, [])
 
+  function inspect() {
+    if (!selected) {
+      return
+    }
+    window.open(selected.devtoolsFrontendUrl)
+  }
+
   return (
     <div className={Style.container}>
       <LunaToolbar className={Style.toolbar}>
@@ -74,8 +83,16 @@ export default observer(function Webview() {
         />
         <LunaToolbarText text={topActivity ? topActivity.name : ''} />
         <LunaToolbarSpace />
+        <ToolbarIcon
+          disabled={selected === null}
+          icon="debug"
+          title={t('inspect')}
+          onClick={inspect}
+        />
       </LunaToolbar>
       <LunaDataGrid
+        onSelect={async (node) => setSelected(node.data)}
+        onDeselect={() => setSelected(null)}
         className={Style.webviews}
         filter={filter}
         columns={columns}

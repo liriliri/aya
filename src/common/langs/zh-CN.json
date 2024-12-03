@@ -74,5 +74,6 @@
   "cpuNum": "{{count}} 核",
   "webview": "网页",
   "title": "标题",
-  "type": "类型"
+  "type": "类型",
+  "inspect": "调试"
 }

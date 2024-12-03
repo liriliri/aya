@@ -74,5 +74,6 @@
   "cpuNum": "{{count}} Cores",
   "webview": "Webview",
   "title": "Title",
-  "type": "Type"
+  "type": "Type",
+  "inspect": "Inspect"
 }

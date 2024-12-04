@@ -35,3 +35,7 @@ AYA is a desktop application for easily controlling android devices, which can b
 ## Performance
 
 ![performance](https://aya.liriliri.io/performance.png)
+
+## Webview
+
+![webview](https://aya.liriliri.io/webview.png)

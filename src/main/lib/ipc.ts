@@ -1,4 +1,4 @@
-import { dialog, OpenDialogOptions } from 'electron'
+import { dialog, OpenDialogOptions, shell } from 'electron'
 import contextMenu from './contextMenu'
 import { handleEvent } from './util'
 
@@ -7,4 +7,7 @@ export function init() {
   handleEvent('showOpenDialog', (options: OpenDialogOptions = {}) =>
     dialog.showOpenDialog(options)
   )
+  handleEvent('openExternal', (url: string) => {
+    shell.openExternal(url)
+  })
 }

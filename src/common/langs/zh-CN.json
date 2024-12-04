@@ -75,5 +75,7 @@
   "webview": "网页",
   "title": "标题",
   "type": "类型",
-  "inspect": "调试"
+  "inspect": "调试",
+  "openWithBrowser": "使用默认浏览器打开",
+  "close": "关闭"
 }

@@ -477,18 +477,12 @@ const getWebviews = singleton(async (deviceId: string, pid: number) => {
   }
 
   if (!line) {
-    return {
-      port: 0,
-      webviews,
-    }
+    return webviews
   }
 
   const socketNameMatch = line.match(/[^@]+@(.*?webview_devtools_remote_?.*)/)
   if (!socketNameMatch) {
-    return {
-      port: 0,
-      webviews,
-    }
+    return webviews
   }
 
   const socketName = socketNameMatch[1]
@@ -497,10 +491,7 @@ const getWebviews = singleton(async (deviceId: string, pid: number) => {
   const { data } = await axios.get(`http://127.0.0.1:${port}/json`)
   each(data, (item: any) => webviews.push(item))
 
-  return {
-    port,
-    webviews,
-  }
+  return webviews
 })
 
 async function getTopActivity(deviceId: string) {

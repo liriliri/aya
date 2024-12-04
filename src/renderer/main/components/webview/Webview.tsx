@@ -7,13 +7,14 @@ import LunaToolbar, {
 } from 'luna-toolbar/react'
 import { useEffect, useState } from 'react'
 import { t } from '../../../lib/util'
+import toEl from 'licia/toEl'
 import LunaDataGrid from 'luna-data-grid/react'
+import map from 'licia/map'
 import store from '../../store'
 import ToolbarIcon from '../../../components/ToolbarIcon'
 
 export default observer(function Webview() {
-  const [port, setPort] = useState(0)
-  const [webviews, setWebviews] = useState([])
+  const [webviews, setWebviews] = useState<any[]>([])
   const [selected, setSelected] = useState<any>(null)
   const [topActivity, setTopActivity] = useState({
     name: '',
@@ -35,9 +36,24 @@ export default observer(function Webview() {
             const topActivity = await main.getTopActivity(device.id)
             setTopActivity(topActivity)
             if (topActivity.pid) {
-              const result = await main.getWebviews(device.id, topActivity.pid)
-              setPort(result.port)
-              setWebviews(result.webviews)
+              const webviews = await main.getWebviews(
+                device.id,
+                topActivity.pid
+              )
+              setWebviews(
+                map(webviews, (webview: any) => {
+                  const title = webview.faviconUrl
+                    ? toEl(
+                        `<span><img src="${webview.faviconUrl}" />${webview.title}</span>`
+                      )
+                    : webview.title
+
+                  return {
+                    ...webview,
+                    title,
+                  }
+                })
+              )
             }
             /* eslint-disable @typescript-eslint/no-unused-vars, no-empty */
           } catch (e) {}
@@ -65,13 +81,6 @@ export default observer(function Webview() {
     }
   }, [])
 
-  function inspect() {
-    if (!selected) {
-      return
-    }
-    window.open(selected.devtoolsFrontendUrl)
-  }
-
   return (
     <div className={Style.container}>
       <LunaToolbar className={Style.toolbar}>
@@ -87,7 +96,13 @@ export default observer(function Webview() {
           disabled={selected === null}
           icon="debug"
           title={t('inspect')}
-          onClick={inspect}
+          onClick={() => main.openExternal(selected.devtoolsFrontendUrl)}
+        />
+        <ToolbarIcon
+          disabled={selected === null}
+          icon="browser"
+          title={t('openWithBrowser')}
+          onClick={() => main.openExternal(selected.url)}
         />
       </LunaToolbar>
       <LunaDataGrid

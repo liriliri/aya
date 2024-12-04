@@ -75,5 +75,7 @@
   "webview": "Webview",
   "title": "Title",
   "type": "Type",
-  "inspect": "Inspect"
+  "inspect": "Inspect",
+  "openWithBrowser": "Open with Default Browser",
+  "close": "Close"
 }

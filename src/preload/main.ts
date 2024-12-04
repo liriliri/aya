@@ -53,6 +53,7 @@ export default {
   getPackages: (deviceId: string) => {
     return ipcRenderer.invoke('getPackages', deviceId)
   },
+  openExternal: (url: string) => ipcRenderer.invoke('openExternal', url),
   showContextMenu: (x: number, y: number, template: any) => {
     ipcRenderer.invoke(
       'showContextMenu',

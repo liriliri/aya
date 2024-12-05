@@ -4,3 +4,8 @@ release/
 adb/
 !src/**/adb/
 package-lock.json
+
+.gradle/
+.idea/
+server/**/build/
+local.properties

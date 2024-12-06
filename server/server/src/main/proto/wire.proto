@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package io.liriliri.aya.proto;
+
+message Request {
+  string id = 1;
+  string method = 2;
+  string params = 3;
+}
+
+message Response {
+  string id = 1;
+  string result = 2;
+}

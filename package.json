@@ -16,11 +16,12 @@
     "upload": "zx script/upload.mjs",
     "adb": "zx script/adb.mjs",
     "server": "zx script/server.mjs",
-    "format": "lsla prettier \"src/**/*.{ts,tsx,scss,css,json}\" \"*.{js,ts,json}\" \"script/*.mjs\" --write",
+    "format": "lsla prettier \"src/**/*.{ts,tsx,scss,css,json}\" \"*.{js,ts,json}\" \"script/*.mjs\" \"server/*.js\" --write",
     "start": "electron ./dist/main/index.js",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "genIcon": "lsla genIcon --input src/renderer/icon --output src/renderer/icon.css --name aya-icon",
-    "genTheme": "lsla genTheme --input src/common/theme.json --output src/renderer/theme.scss && lsla genTheme --input src/common/theme.json --output src/common/theme.ts"
+    "genTheme": "lsla genTheme --input src/common/theme.json --output src/renderer/theme.scss && lsla genTheme --input src/common/theme.json --output src/common/theme.ts",
+    "genPb": "pbjs -t static-module -w commonjs -o src/main/lib/wire.js server/server/src/main/proto/Wire.proto && pbts -o src/main/lib/wire.d.ts src/main/lib/wire.js"
   },
   "keywords": [
     "adb"
@@ -61,6 +62,8 @@
     "luna-toolbar": "^0.6.2",
     "mobx": "^6.13.5",
     "mobx-react-lite": "^4.0.7",
+    "protobufjs": "^7.4.0",
+    "protobufjs-cli": "^1.1.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sass": "^1.80.2",

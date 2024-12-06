@@ -1,6 +1,11 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.protobuf'
+}
+
+dependencies {
+    implementation 'com.google.protobuf:protobuf-java:3.22.3'
 }
 
 android {
@@ -32,6 +37,22 @@ android.applicationVariants.all { variant ->
                 rename { String fileName ->
                     fileName.replace(file.getName(), "server.dex")
                 }
+            }
+        }
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.22.3'
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                remove java
+            }
+            task.builtins {
+                java {}
             }
         }
     }

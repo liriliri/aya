@@ -8,8 +8,8 @@ const config = {
   directories: {
     output: `../release/${pkg.version}`,
   },
-  files: ['main', 'preload', 'renderer', 'adb'],
-  asarUnpack: ['adb/**/*'],
+  files: ['main', 'preload', 'renderer', 'adb', 'server'],
+  asarUnpack: ['adb/**/*', 'server/**/*'],
   artifactName: '${name}-${version}-${os}-${arch}.${ext}',
   win: {
     target: [

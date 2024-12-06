@@ -1,11 +1,11 @@
 node_modules/
 dist/
 release/
-adb/
-!src/**/adb/
+/adb
 package-lock.json
 
 .gradle/
 .idea/
 server/**/build/
 local.properties
+server.dex

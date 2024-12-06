@@ -1,14 +1,38 @@
 plugins {
     id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
     namespace 'io.liriliri.aya'
 
-    compileSdk = 34
+    compileSdk = 33
 
     defaultConfig {
         versionCode 1
         versionName '0.1.0'
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        outputFileName = "aya-server-v${versionName}.apk"
+
+        def dexPath = rootProject.rootDir.path
+        variant.assembleProvider.get().doLast {
+            copy {
+                def file = zipTree(file(outputFile)).matching { include 'classes*.dex' }.singleFile
+
+                from file
+                into dexPath
+                rename { String fileName ->
+                    fileName.replace(file.getName(), "server.dex")
+                }
+            }
+        }
     }
 }

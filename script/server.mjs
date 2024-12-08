@@ -12,7 +12,6 @@ const command = process.argv[3]
 async function build() {
   await $`./gradlew :server:assembleRelease`
   await fs.copy('server.dex', '../dist/server/server.dex')
-  await fs.copy('start.sh', '../dist/server/start.sh')
 }
 
 async function start() {
@@ -34,9 +33,9 @@ async function test() {
   const device = client.getDevice(devices[0].id)
   const connection = await device.openLocal('localabstract:aya')
   connection.write(
-    wire.io.liriliri.aya.proto.Request.encode({
+    wire.io.liriliri.aya.Request.encodeDelimited({
       id: '1',
-      method: 'getPackages',
+      method: 'getVersion',
     }).finish()
   )
 }

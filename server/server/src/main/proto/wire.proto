@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package io.liriliri.aya.proto;
+package io.liriliri.aya;
 
 message Request {
   string id = 1;

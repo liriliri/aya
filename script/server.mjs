@@ -11,16 +11,15 @@ const command = process.argv[3]
 
 async function build() {
   await $`./gradlew :server:assembleRelease`
-  await fs.copy('server.dex', '../dist/server/server.dex')
 }
 
 async function start() {
   if (isWindows) {
-    await $`MSYS_NO_PATHCONV=1 adb push server.dex /data/local/tmp/aya/server.dex`
-    await $`MSYS_NO_PATHCONV=1 adb shell CLASSPATH=/data/local/tmp/aya/server.dex app_process /system/bin io.liriliri.aya.Server`
+    await $`MSYS_NO_PATHCONV=1 adb push aya.dex /data/local/tmp/aya.dex`
+    await $`MSYS_NO_PATHCONV=1 adb shell CLASSPATH=/data/local/tmp/aya.dex app_process /system/bin io.liriliri.aya.Server`
   } else {
-    await $`adb push server.dex /data/local/tmp/aya/server.dex`
-    await $`adb shell CLASSPATH=/data/local/tmp/aya/server.dex app_process /system/bin io.liriliri.aya.Server`
+    await $`adb push aya.dex /data/local/tmp/aya.dex`
+    await $`adb shell CLASSPATH=/data/local/tmp/aya.dex app_process /system/bin io.liriliri.aya.Server`
   }
 }
 
@@ -31,13 +30,20 @@ async function test() {
     return
   }
   const device = client.getDevice(devices[0].id)
-  const connection = await device.openLocal('localabstract:aya')
-  connection.write(
+  const socket = await device.openLocal('localabstract:aya')
+  socket.write(
     wire.io.liriliri.aya.Request.encodeDelimited({
       id: '1',
       method: 'getVersion',
     }).finish()
   )
+  socket.on('readable', () => {
+    const buf = socket.read()
+    if (buf) {
+      const message = wire.io.liriliri.aya.Response.decodeDelimited(buf)
+      console.log(message)
+    }
+  })
 }
 
 if (command === 'build') {

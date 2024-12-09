@@ -15,6 +15,8 @@ await $`npm run build:preload`
 await $`npm run build:renderer`
 
 await fs.copy('build', 'dist/build')
+await fs.copy('adb', 'dist/adb')
+await fs.copy('server/aya.dex', 'dist/server/aya.dex')
 cd('dist')
 
 await fs.writeJson('package.json', pkg, {

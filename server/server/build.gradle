@@ -13,9 +13,13 @@ android {
 
     compileSdk = 33
 
+    def pkgFilePath = "$rootDir/../package.json"
+    def pkgFile = new File(pkgFilePath)
+    def pkgJson = new groovy.json.JsonSlurper().parseText(pkgFile.text)
+
     defaultConfig {
         versionCode 1
-        versionName '0.1.0'
+        versionName pkgJson.version
     }
 
     kotlinOptions {
@@ -40,7 +44,7 @@ android.applicationVariants.all { variant ->
                 from file
                 into dexPath
                 rename { String fileName ->
-                    fileName.replace(file.getName(), "server.dex")
+                    fileName.replace(file.getName(), "aya.dex")
                 }
             }
         }

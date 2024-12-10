@@ -36,8 +36,8 @@ async function test() {
   socket.write(
     wire.io.liriliri.aya.Request.encodeDelimited({
       id: '1',
-      method: 'getPackageInfo',
-      params: '{"packageName": "io.liriliri.eruda"}',
+      method: 'getPackageInfos',
+      params: JSON.stringify({ packageNames: ['io.liriliri.eruda'] }),
     }).finish()
   )
   socket.on('readable', () => {

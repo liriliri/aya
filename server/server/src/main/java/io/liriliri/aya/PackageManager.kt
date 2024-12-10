@@ -6,14 +6,13 @@ import android.os.IInterface
 import android.util.Log
 import java.lang.reflect.Method
 
-
 class PackageManager(private val manager: IInterface) {
     companion object {
         private const val TAG = "Aya.PackageManager"
     }
 
     private val getPackageInfoMethod: Method by lazy {
-        if (Build.VERSION.SDK_INT >= 32) manager.javaClass.getMethod(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) manager.javaClass.getMethod(
             "getPackageInfo",
             String::class.java, java.lang.Long.TYPE, Integer.TYPE
         ) else manager.javaClass.getMethod(

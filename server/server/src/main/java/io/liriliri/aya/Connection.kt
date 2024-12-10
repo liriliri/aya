@@ -1,9 +1,15 @@
 package io.liriliri.aya
 
+import android.content.res.AssetManager
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.net.LocalSocket
+import android.util.Base64
+import android.util.DisplayMetrics
 import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 
 class Connection(private val client: LocalSocket) : Thread() {
     private companion object {
@@ -12,13 +18,17 @@ class Connection(private val client: LocalSocket) : Thread() {
 
     override fun run() {
         while (!isInterrupted && client.isConnected) {
-            val request = Wire.Request.parseDelimitedFrom(client.inputStream)
-            val params = request.params.ifEmpty { "{}" }
-            handleRequest(request.id, request.method, params)
+            try {
+                val request = Wire.Request.parseDelimitedFrom(client.inputStream)
+                val params = request.params.ifEmpty { "{}" }
+                handleRequest(request.id, request.method, params)
+            } catch (e: Exception) {
+                break
+            }
         }
 
         client.close()
-        Log.i(TAG, "Disconnected")
+        Log.i(TAG, "Client disconnected")
     }
 
     private fun handleRequest(id: String, method: String, params: String) {
@@ -31,8 +41,8 @@ class Connection(private val client: LocalSocket) : Thread() {
                 result.put("version", getVersion())
             }
 
-            "getPackageInfo" -> {
-                result.put("packageInfo", getPackageInfo(JSONObject(params)))
+            "getPackageInfos" -> {
+                result.put("packageInfos", getPackageInfos(JSONObject(params)))
             }
 
             else -> {
@@ -40,6 +50,7 @@ class Connection(private val client: LocalSocket) : Thread() {
             }
         }
 
+        Log.i(TAG, "Response: $result")
         Wire.Response.newBuilder().setId(id).setResult(result.toString()).build()
             .writeDelimitedTo(client.outputStream)
     }
@@ -48,13 +59,69 @@ class Connection(private val client: LocalSocket) : Thread() {
         return BuildConfig.VERSION_NAME
     }
 
-    private fun getPackageInfo(params: JSONObject): JSONObject {
-        val packageName = params.getString("packageName")
-        val packageInfo = ServiceManager.packageManager.getPackageInfo(packageName)
+    private fun getPackageInfos(params: JSONObject): JSONArray {
+        val packageNames = Util.jsonArrayToStringArray(params.getJSONArray("packageNames"))
+        val result = JSONArray()
 
-        val result = JSONObject()
-        result.put("versionName", packageInfo.versionName)
+        packageNames.forEach {
+            result.put(getPackageInfo(it))
+        }
 
         return result
+    }
+
+    private fun getPackageInfo(packageName: String): JSONObject {
+        val packageInfo =
+            ServiceManager.packageManager.getPackageInfo(packageName)
+
+        val info = JSONObject()
+        info.put("packageName", packageInfo.packageName)
+        info.put("versionName", packageInfo.versionName)
+        info.put("firstInstallTime", packageInfo.firstInstallTime)
+        info.put("lastUpdateTime", packageInfo.lastUpdateTime)
+
+        val applicationInfo = packageInfo.applicationInfo
+        var apkSize = 0L
+        val apkPath = applicationInfo.sourceDir
+        apkSize = File(apkPath).length()
+        info.put("apkPath", apkPath)
+        info.put("apkSize", apkSize)
+
+        val resources = getResources(apkPath)
+        val labelRes = applicationInfo.labelRes
+        var label = packageName
+        if (labelRes != 0) {
+            label = resources.getString(labelRes)
+        }
+        info.put("label", label)
+
+        var icon = ""
+        if (applicationInfo.icon != 0) {
+            val resIcon = resources.getDrawable(applicationInfo.icon)
+            val bitmapIcon = Util.drawableToBitmap(resIcon)
+            icon = "data:image/png;base64,${
+                Base64.encodeToString(
+                    Util.bitMapToPng(bitmapIcon, 20),
+                    Base64.DEFAULT
+                )
+            }"
+        }
+        info.put("icon", icon)
+
+        return info
+    }
+
+    private fun getResources(apkPath: String): Resources {
+        val assetManager = AssetManager::class.java.newInstance() as AssetManager
+        val addAssetManagerMethod =
+            assetManager.javaClass.getMethod("addAssetPath", String::class.java)
+        addAssetManagerMethod.invoke(assetManager, apkPath)
+
+        val displayMetrics = DisplayMetrics()
+        displayMetrics.setToDefaults()
+        val configuration = Configuration()
+        configuration.setToDefaults()
+
+        return Resources(assetManager, displayMetrics, configuration)
     }
 }

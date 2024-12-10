@@ -2,6 +2,7 @@ package io.liriliri.aya
 
 import android.net.LocalSocket
 import android.util.Log
+import org.json.JSONArray
 import org.json.JSONObject
 
 class Connection(private val client: LocalSocket) : Thread() {
@@ -12,7 +13,7 @@ class Connection(private val client: LocalSocket) : Thread() {
     override fun run() {
         while (!isInterrupted && client.isConnected) {
             val request = Wire.Request.parseDelimitedFrom(client.inputStream)
-            val params = if (request.params.isEmpty()) "{}" else ""
+            val params = request.params.ifEmpty { "{}" }
             handleRequest(request.id, request.method, params)
         }
 
@@ -30,6 +31,10 @@ class Connection(private val client: LocalSocket) : Thread() {
                 result.put("version", getVersion())
             }
 
+            "getPackageInfo" -> {
+                result.put("packageInfo", getPackageInfo(JSONObject(params)))
+            }
+
             else -> {
                 Log.e(TAG, "Unknown method: $method")
             }
@@ -41,5 +46,15 @@ class Connection(private val client: LocalSocket) : Thread() {
 
     private fun getVersion(): String {
         return BuildConfig.VERSION_NAME
+    }
+
+    private fun getPackageInfo(params: JSONObject): JSONObject {
+        val packageName = params.getString("packageName")
+        val packageInfo = ServiceManager.packageManager.getPackageInfo(packageName)
+
+        val result = JSONObject()
+        result.put("versionName", packageInfo.versionName)
+
+        return result
     }
 }

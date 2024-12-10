@@ -18,6 +18,7 @@ android {
     def pkgJson = new groovy.json.JsonSlurper().parseText(pkgFile.text)
 
     defaultConfig {
+        minSdk 23
         versionCode 1
         versionName pkgJson.version
     }

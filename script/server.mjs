@@ -5,6 +5,8 @@ import isWindows from 'licia/isWindows.js'
 
 const Adb = adb.default
 
+$.verbose = true
+
 cd('server')
 
 const command = process.argv[3]
@@ -34,7 +36,8 @@ async function test() {
   socket.write(
     wire.io.liriliri.aya.Request.encodeDelimited({
       id: '1',
-      method: 'getVersion',
+      method: 'getPackageInfo',
+      params: '{"packageName": "io.liriliri.eruda"}',
     }).finish()
   )
   socket.on('readable', () => {

@@ -77,5 +77,6 @@
   "type": "Type",
   "inspect": "Inspect",
   "openWithBrowser": "Open with Default Browser",
-  "close": "Close"
+  "close": "Close",
+  "application": "Application"
 }

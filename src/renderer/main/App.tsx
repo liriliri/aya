@@ -6,6 +6,7 @@ import Screenshot from './components/screenshot/Screenshot'
 import Process from './components/process/Process'
 import Performance from './components/performance/Performance'
 import Webview from './components/webview/Webview'
+import Application from './components/application/Application'
 import Style from './App.module.scss'
 import LunaModal from 'luna-modal/react'
 import { t } from '../lib/util'
@@ -33,6 +34,9 @@ export default observer(function App() {
         <div className={Style.panels} key={store.device ? store.device.id : ''}>
           <Panel panel="overview">
             <Overview />
+          </Panel>
+          <Panel panel="application">
+            <Application />
           </Panel>
           <Panel panel="screenshot">
             <Screenshot />

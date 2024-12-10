@@ -77,5 +77,6 @@
   "type": "类型",
   "inspect": "调试",
   "openWithBrowser": "使用默认浏览器打开",
-  "close": "关闭"
+  "close": "关闭",
+  "application": "应用"
 }

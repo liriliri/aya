@@ -23,6 +23,7 @@ import * as base from './adb/base'
 import { shell, getPidNames, getProcesses } from './adb/base'
 import * as logcat from './adb/logcat'
 import * as shellAdb from './adb/shell'
+import * as server from './adb/server'
 import { createShell, writeShell, resizeShell, killShell } from './adb/shell'
 import {
   openLogcat,
@@ -400,6 +401,7 @@ export async function init() {
   base.setClient(client)
   logcat.setClient(client)
   shellAdb.setClient(client)
+  server.setClient(client)
 
   function onDeviceChange() {
     setTimeout(() => window.sendTo('main', 'changeDevice'), 2000)

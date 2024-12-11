@@ -1,24 +1,6 @@
 @use '../../../theme' as theme;
 
-.container {
-  width: 100%;
-  height: 100%;
-  padding-top: 31px;
-  position: relative;
-  overflow: hidden;
-}
-
-.toolbar {
-  background: var(--aya-color-bg-container);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-}
-
 .charts {
-  height: 100%;
-  overflow-y: auto;
   padding: 0 #{theme.$padding-x-x-s}px;
 }
 

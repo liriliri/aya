@@ -1,30 +1,5 @@
 .container {
-  width: 100%;
-  height: 100%;
-  background: var(--aya-color-bg-container);
-  position: relative;
-  padding-top: 31px;
-  overflow: hidden;
-  &:hover {
-    .arrow-left,
-    .arrow-right {
-      opacity: 1;
-    }
-  }
   :global(.luna-image-viewer) {
     background-color: var(--aya-color-bg-container-darker);
   }
-}
-
-.toolbar {
-  background: var(--aya-color-bg-container);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-}
-
-.image-viewer {
-  width: 100%;
-  height: 100%;
 }

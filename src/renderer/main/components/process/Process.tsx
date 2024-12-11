@@ -69,8 +69,8 @@ export default observer(function Process() {
   }
 
   return (
-    <div className={Style.container}>
-      <LunaToolbar className={Style.toolbar}>
+    <div className="panel-with-toolbar">
+      <LunaToolbar className="panel-toolbar">
         <LunaToolbarInput
           keyName="filter"
           value={filter}

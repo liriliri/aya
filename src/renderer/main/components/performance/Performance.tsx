@@ -23,6 +23,7 @@ import LunaToolbar, {
 } from 'luna-toolbar/react'
 import isEmpty from 'licia/isEmpty'
 import map from 'licia/map'
+import className from 'licia/className'
 
 export default observer(function Performance() {
   const [uptime, setUptime] = useState(0)
@@ -104,8 +105,8 @@ export default observer(function Performance() {
   const batteryTitle = `${batteryVoltage} ${batteryTemperature}`
 
   return (
-    <div className={Style.container}>
-      <LunaToolbar className={Style.toolbar}>
+    <div className={className('panel-with-toolbar', Style.container)}>
+      <LunaToolbar className="panel-toolbar">
         <LunaToolbarText
           text={`${t('uptime')} ${durationFormat(uptime, 'd:hh:mm:ss')}`}
         />
@@ -123,7 +124,7 @@ export default observer(function Performance() {
           </div>
         </LunaToolbarHtml>
       </LunaToolbar>
-      <div className={Style.charts}>
+      <div className={className('panel-body', Style.charts)}>
         <LunaPerformanceMonitor
           title="CPU"
           data={cpuData}

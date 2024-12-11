@@ -7,6 +7,7 @@ import types from 'licia/types'
 import { notify, t } from '../../../lib/util'
 import store from '../../store'
 import copy from 'licia/copy'
+import className from 'licia/className'
 
 export default observer(function Overview() {
   const [overview, setOverview] = useState<types.PlainObj<string | number>>({})
@@ -22,7 +23,7 @@ export default observer(function Overview() {
   }
 
   return (
-    <div className={Style.container}>
+    <div className={className('panel', Style.container)}>
       <div className={Style.info}>
         <div className={Style.row}>
           {item(t('name'), overview.name, 'phone')}

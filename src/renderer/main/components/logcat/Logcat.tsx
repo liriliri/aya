@@ -13,7 +13,6 @@ import dateFormat from 'licia/dateFormat'
 import toNum from 'licia/toNum'
 import trim from 'licia/trim'
 import { useEffect, useRef, useState } from 'react'
-import Style from './Logcat.module.scss'
 import store from '../../store'
 import toBool from 'licia/toBool'
 import copy from 'licia/copy'
@@ -84,7 +83,7 @@ export default observer(function Logcat() {
         }: ${entry.message}`
       )
     }).join('\n')
-    const name = `${store.device ? store.device.model : 'logcat'}.${dateFormat(
+    const name = `${store.device ? store.device.name : 'logcat'}.${dateFormat(
       'yyyymmddHH'
     )}.txt`
 
@@ -122,9 +121,9 @@ export default observer(function Logcat() {
   }
 
   return (
-    <div className={Style.container}>
+    <div className="panel-with-toolbar">
       <LunaToolbar
-        className={Style.toolbar}
+        className="panel-toolbar"
         onChange={(key, val) => {
           switch (key) {
             case 'view':
@@ -224,7 +223,7 @@ export default observer(function Logcat() {
         <ToolbarIcon icon="delete" title={t('clear')} onClick={clear} />
       </LunaToolbar>
       <LunaLogcat
-        className={Style.logcat}
+        className="panel-body"
         maxNum={2000}
         filter={filter}
         wrapLongLines={softWrap}

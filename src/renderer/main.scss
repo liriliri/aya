@@ -193,3 +193,32 @@ body {
     }
   }
 }
+
+.panel {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+  background: var(--aya-color-bg-container);
+}
+
+.panel-with-toolbar {
+  width: 100%;
+  height: 100%;
+  padding-top: 31px;
+  overflow-y: auto;
+  position: relative;
+}
+
+.panel-toolbar {
+  background: var(--aya-color-bg-container);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.panel-body {
+  height: 100%;
+  overflow-y: auto;
+}

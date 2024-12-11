@@ -13,6 +13,7 @@ import base64 from 'licia/base64'
 import convertBin from 'licia/convertBin'
 import download from 'licia/download'
 import loadImg from 'licia/loadImg'
+import className from 'licia/className'
 import LunaImageViewer from 'luna-image-viewer/react'
 import ImageViewer from 'luna-image-viewer'
 import ToolbarIcon from '../../../components/ToolbarIcon'
@@ -64,8 +65,8 @@ export default observer(function Screenshot() {
   const hasImage = toBool(image)
 
   return (
-    <div className={Style.container}>
-      <LunaToolbar className={Style.toolbar}>
+    <div className={className('panel-with-toolbar', Style.container)}>
+      <LunaToolbar className="panel-toolbar">
         <ToolbarIcon
           icon="refresh"
           title={t('recapture')}
@@ -129,7 +130,7 @@ export default observer(function Screenshot() {
       </LunaToolbar>
       {image && (
         <LunaImageViewer
-          className={Style.imageViewer}
+          className="panel-body"
           image={image.url}
           onCreate={(imageViewer) => (imageViewerRef.current = imageViewer)}
         ></LunaImageViewer>

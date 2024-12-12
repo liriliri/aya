@@ -301,7 +301,7 @@ async function getStorage(deviceId: string) {
   }
 }
 
-const getPackages = singleton(async (deviceId: string, system = false) => {
+const getPackages = singleton(async (deviceId: string, system = true) => {
   const result: string = await shell(
     deviceId,
     `pm list packages${system ? '' : ' -3'}`

@@ -7,6 +7,7 @@ import types from 'licia/types'
 import { notify, t } from '../../../lib/util'
 import store from '../../store'
 import copy from 'licia/copy'
+import { PannelLoading } from '../../../components/loading'
 import className from 'licia/className'
 
 export default observer(function Overview() {
@@ -18,12 +19,18 @@ export default observer(function Overview() {
     }
   }, [])
 
-  if (isEmpty(overview)) {
-    return <div className={Style.container}>{t('deviceNotConnected')}</div>
-  }
+  let content: JSX.Element | null = null
 
-  return (
-    <div className={className('panel', Style.container)}>
+  if (!store.device) {
+    content = (
+      <div className={className('panel', Style.container)}>
+        {t('deviceNotConnected')}
+      </div>
+    )
+  } else if (isEmpty(overview)) {
+    content = <PannelLoading />
+  } else {
+    content = (
       <div className={Style.info}>
         <div className={Style.row}>
           {item(t('name'), overview.name, 'phone')}
@@ -61,8 +68,10 @@ export default observer(function Overview() {
           {item(t('memory'), fileSize(overview.memTotal as number), 'memory')}
         </div>
       </div>
-    </div>
-  )
+    )
+  }
+
+  return <div className={className('panel', Style.container)}>{content}</div>
 })
 
 function item(title, value, icon = 'info') {

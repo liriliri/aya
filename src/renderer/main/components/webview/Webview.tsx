@@ -10,6 +10,7 @@ import { t } from '../../../lib/util'
 import toEl from 'licia/toEl'
 import LunaDataGrid from 'luna-data-grid/react'
 import map from 'licia/map'
+import className from 'licia/className'
 import store from '../../store'
 import ToolbarIcon from '../../../components/ToolbarIcon'
 
@@ -82,7 +83,7 @@ export default observer(function Webview() {
   }, [])
 
   return (
-    <div className="panel-with-toolbar">
+    <div className={className('panel-with-toolbar', Style.conatiner)}>
       <LunaToolbar className="panel-toolbar">
         <LunaToolbarInput
           keyName="filter"

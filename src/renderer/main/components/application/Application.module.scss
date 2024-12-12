@@ -1,2 +1,44 @@
+@use '../../../theme' as theme;
+
 .applications {
+  display: grid;
+}
+
+.application {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 10%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  flex-direction: column;
+  border-radius: #{theme.$border-radius}px;
+  &:hover {
+    border-color: var(--aya-color-border);
+  }
+}
+
+.application-icon {
+  margin: 0 auto;
+  width: 60%;
+  overflow: hidden;
+  border-radius: 20%;
+  font-size: 0;
+  img {
+    width: 100%;
+    aspect-ratio: 1;
+  }
+  margin-bottom: #{theme.$margin-x-s}px;
+}
+
+.application-label {
+  white-space: nowrap;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  font-size: #{theme.$font-size-s-m}px;
 }

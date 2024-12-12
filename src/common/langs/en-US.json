@@ -78,5 +78,6 @@
   "inspect": "Inspect",
   "openWithBrowser": "Open with Default Browser",
   "close": "Close",
-  "application": "Application"
+  "application": "Application",
+  "totalApplication": "{{total}} total applications"
 }

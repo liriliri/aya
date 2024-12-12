@@ -1,30 +1,130 @@
-import LunaToolbar from 'luna-toolbar/react'
-import className from 'licia/className'
+import LunaToolbar, {
+  LunaToolbarInput,
+  LunaToolbarSeparator,
+  LunaToolbarSpace,
+  LunaToolbarText,
+} from 'luna-toolbar/react'
+import map from 'licia/map'
+import isEmpty from 'licia/isEmpty'
 import Style from './Application.module.scss'
 import { observer } from 'mobx-react-lite'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import store from '../../store'
+import { PannelLoading } from '../../../components/Loading'
+import ToolbarIcon from '../../../components/ToolbarIcon'
+import { t } from '../../../lib/util'
+import isStrBlank from 'licia/isStrBlank'
+import contain from 'licia/contain'
+import lowerCase from 'licia/lowerCase'
+import defaultIcon from '../../../assets/img/default-icon.png'
 
 export default observer(function Application() {
+  const [isLoading, setIsLoading] = useState(false)
+  const [packageInfos, setPackageInfos] = useState<any[]>([])
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+  const [filter, setFilter] = useState('')
+
   const { device } = store
 
   useEffect(() => {
     getAllPackageInfos()
+
+    function resize() {
+      setWindowWidth(window.innerWidth)
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    return () => {
+      window.removeEventListener('resize', resize)
+    }
   }, [])
 
   async function getAllPackageInfos() {
-    if (!device) {
+    if (!device || isLoading) {
       return
     }
-    const packages = await main.getPackages(device.id, false)
+
+    setIsLoading(true)
+    const packages = await main.getPackages(device.id)
     const packageInfos = await main.getPackageInfos(device.id, packages)
-    console.log(packageInfos)
+    setPackageInfos(packageInfos)
+    setIsLoading(false)
   }
+
+  const columnCount = Math.round(windowWidth / store.application.itemSize)
+  const gapSize = store.application.itemSize < 150 ? 10 : 20
+
+  const applications = (
+    <div
+      className={Style.applications}
+      style={{
+        gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
+        gap: `${gapSize}px ${gapSize}px`,
+        padding: `${gapSize}px`,
+      }}
+    >
+      {map(packageInfos, (info: any) => {
+        if (!isStrBlank(filter)) {
+          if (!contain(lowerCase(info.label), lowerCase(filter))) {
+            return null
+          }
+        }
+
+        return (
+          <div key={info.packageName} className={Style.application}>
+            <div className={Style.applicationIcon}>
+              <img src={info.icon || defaultIcon} draggable="false" />
+            </div>
+            <div className={Style.applicationLabel}>{info.label}</div>
+          </div>
+        )
+      })}
+    </div>
+  )
 
   return (
     <div className="panel-with-toolbar">
-      <LunaToolbar className="panel-toolbar"></LunaToolbar>
-      <div className={className('panel-body', Style.applications)}></div>
+      <LunaToolbar className="panel-toolbar">
+        <LunaToolbarInput
+          keyName="filter"
+          value={filter}
+          placeholder={t('filter')}
+          onChange={(val) => setFilter(val)}
+        />
+        <LunaToolbarText
+          text={t('totalApplication', { total: packageInfos.length })}
+        />
+        <LunaToolbarSpace />
+        <ToolbarIcon
+          icon="zoom-in"
+          title={t('zoomIn')}
+          disabled={store.application.itemSize > 220 || isEmpty(packageInfos)}
+          onClick={() => {
+            const itemSize = Math.round(store.application.itemSize * 1.2)
+            store.application.set('itemSize', itemSize)
+          }}
+        />
+        <ToolbarIcon
+          icon="zoom-out"
+          title={t('zoomOut')}
+          disabled={store.application.itemSize < 120 || isEmpty(packageInfos)}
+          onClick={() => {
+            const itemSize = Math.round(store.application.itemSize * 0.8)
+            store.application.set('itemSize', itemSize)
+          }}
+        />
+        <LunaToolbarSeparator />
+        <ToolbarIcon
+          icon="refresh"
+          title={t('refresh')}
+          disabled={isLoading}
+          onClick={getAllPackageInfos}
+        />
+      </LunaToolbar>
+      <div className="panel-body">
+        {isLoading ? <PannelLoading /> : applications}
+      </div>
     </div>
   )
 })

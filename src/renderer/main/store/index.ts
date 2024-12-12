@@ -3,6 +3,7 @@ import isStr from 'licia/isStr'
 import find from 'licia/find'
 import BaseStore from '../../store/BaseStore'
 import { Settings } from './settings'
+import { Application } from './application'
 import { setMainStore } from '../../lib/util'
 import isEmpty from 'licia/isEmpty'
 
@@ -16,6 +17,7 @@ class Store extends BaseStore {
   device: IDevice | null = null
   panel: string = 'overview'
   settings = new Settings()
+  application = new Application()
   constructor() {
     super()
 

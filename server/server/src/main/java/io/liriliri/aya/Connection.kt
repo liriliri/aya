@@ -14,6 +14,7 @@ import java.io.File
 class Connection(private val client: LocalSocket) : Thread() {
     private companion object {
         private const val TAG = "Aya.Connection"
+        private val cache = mutableMapOf<String, Cache>()
     }
 
     override fun run() {
@@ -87,25 +88,37 @@ class Connection(private val client: LocalSocket) : Thread() {
         info.put("apkPath", apkPath)
         info.put("apkSize", apkSize)
 
-        val resources = getResources(apkPath)
-        val labelRes = applicationInfo.labelRes
         var label = packageName
-        if (labelRes != 0) {
-            label = resources.getString(labelRes)
+        var icon = ""
+
+        if (cache[packageName] != null) {
+            val cacheInfo = cache[packageName]!!
+            label = cacheInfo.label
+            icon = cacheInfo.icon
+        } else {
+            val resources = getResources(apkPath)
+            val labelRes = applicationInfo.labelRes
+            if (labelRes != 0) {
+                label = resources.getString(labelRes)
+            }
+
+            if (applicationInfo.icon != 0) {
+                try {
+                    val resIcon = resources.getDrawable(applicationInfo.icon)
+                    val bitmapIcon = Util.drawableToBitmap(resIcon)
+                    icon = "data:image/png;base64,${
+                        Base64.encodeToString(
+                            Util.bitMapToPng(bitmapIcon, 20),
+                            Base64.DEFAULT
+                        )
+                    }"
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to get icon for $packageName")
+                }
+            }
+            cache[packageName] = Cache(label, icon)
         }
         info.put("label", label)
-
-        var icon = ""
-        if (applicationInfo.icon != 0) {
-            val resIcon = resources.getDrawable(applicationInfo.icon)
-            val bitmapIcon = Util.drawableToBitmap(resIcon)
-            icon = "data:image/png;base64,${
-                Base64.encodeToString(
-                    Util.bitMapToPng(bitmapIcon, 20),
-                    Base64.DEFAULT
-                )
-            }"
-        }
         info.put("icon", icon)
 
         return info
@@ -125,3 +138,5 @@ class Connection(private val client: LocalSocket) : Thread() {
         return Resources(assetManager, displayMetrics, configuration)
     }
 }
+
+class Cache(val label: String, val icon: String)

@@ -40,7 +40,11 @@ class AyaClient {
       const socket = await device.openLocal('localabstract:aya')
       let buf = Buffer.alloc(0)
       socket.on('readable', () => {
-        buf = Buffer.concat([buf, socket.read()])
+        const newBuf = socket.read()
+        if (!newBuf) {
+          return
+        }
+        buf = Buffer.concat([buf, newBuf])
         try {
           const message = wire.io.liriliri.aya.Response.decodeDelimited(buf)
           buf = Buffer.alloc(0)
@@ -94,9 +98,10 @@ export const getPackageInfos = singleton(async function (
   packageNames: string[]
 ) {
   const client = await getAyaClient(deviceId)
-  return await client.sendMessage('getPackageInfos', {
+  const result: any = await client.sendMessage('getPackageInfos', {
     packageNames,
   })
+  return result.packageInfos
 })
 
 export async function setClient(c: Client) {

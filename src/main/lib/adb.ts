@@ -25,6 +25,7 @@ import * as logcat from './adb/logcat'
 import * as shellAdb from './adb/shell'
 import * as server from './adb/server'
 import { createShell, writeShell, resizeShell, killShell } from './adb/shell'
+import { getPackageInfos } from './adb/server'
 import {
   openLogcat,
   closeLogcat,
@@ -300,8 +301,11 @@ async function getStorage(deviceId: string) {
   }
 }
 
-const getPackages = singleton(async (deviceId: string) => {
-  const result: string = await shell(deviceId, 'pm list packages')
+const getPackages = singleton(async (deviceId: string, system = false) => {
+  const result: string = await shell(
+    deviceId,
+    `pm list packages${system ? '' : ' -3'}`
+  )
 
   return map(trim(result).split('\n'), (line) => line.slice(8))
 })
@@ -419,6 +423,8 @@ export async function init() {
 
   handleEvent('getPackages', getPackages)
   handleEvent('stopPackage', stopPackage)
+
+  handleEvent('getPackageInfos', getPackageInfos)
 
   handleEvent('getDevices', getDevices)
   handleEvent('getOverview', getOverview)

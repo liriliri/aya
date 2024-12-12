@@ -50,8 +50,11 @@ export default {
   stopPackage: (deviceId: string, pkg: string) => {
     return ipcRenderer.invoke('stopPackage', deviceId, pkg)
   },
-  getPackages: (deviceId: string) => {
-    return ipcRenderer.invoke('getPackages', deviceId)
+  getPackages: (deviceId: string, system?: boolean) => {
+    return ipcRenderer.invoke('getPackages', deviceId, system)
+  },
+  getPackageInfos: (deviceId: string, packageNames: string) => {
+    return ipcRenderer.invoke('getPackageInfos', deviceId, packageNames)
   },
   openExternal: (url: string) => ipcRenderer.invoke('openExternal', url),
   showContextMenu: (x: number, y: number, template: any) => {

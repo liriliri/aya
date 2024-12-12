@@ -1,22 +1,20 @@
 /*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
-"use strict";
-
-var $protobuf = require("protobufjs/minimal");
+import * as $protobuf from "protobufjs/minimal";
 
 // Common aliases
-var $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
+const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
 
 // Exported root namespace
-var $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
+const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
 
-$root.io = (function() {
+export const io = $root.io = (() => {
 
     /**
      * Namespace io.
      * @exports io
      * @namespace
      */
-    var io = {};
+    const io = {};
 
     io.liriliri = (function() {
 
@@ -25,7 +23,7 @@ $root.io = (function() {
          * @memberof io
          * @namespace
          */
-        var liriliri = {};
+        const liriliri = {};
 
         liriliri.aya = (function() {
 
@@ -34,7 +32,7 @@ $root.io = (function() {
              * @memberof io.liriliri
              * @namespace
              */
-            var aya = {};
+            const aya = {};
 
             aya.Request = (function() {
 
@@ -57,7 +55,7 @@ $root.io = (function() {
                  */
                 function Request(properties) {
                     if (properties)
-                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                             if (properties[keys[i]] != null)
                                 this[keys[i]] = properties[keys[i]];
                 }
@@ -146,9 +144,9 @@ $root.io = (function() {
                 Request.decode = function decode(reader, length) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
-                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.io.liriliri.aya.Request();
+                    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.io.liriliri.aya.Request();
                     while (reader.pos < end) {
-                        var tag = reader.uint32();
+                        let tag = reader.uint32();
                         switch (tag >>> 3) {
                         case 1: {
                                 message.id = reader.string();
@@ -220,7 +218,7 @@ $root.io = (function() {
                 Request.fromObject = function fromObject(object) {
                     if (object instanceof $root.io.liriliri.aya.Request)
                         return object;
-                    var message = new $root.io.liriliri.aya.Request();
+                    let message = new $root.io.liriliri.aya.Request();
                     if (object.id != null)
                         message.id = String(object.id);
                     if (object.method != null)
@@ -242,7 +240,7 @@ $root.io = (function() {
                 Request.toObject = function toObject(message, options) {
                     if (!options)
                         options = {};
-                    var object = {};
+                    let object = {};
                     if (options.defaults) {
                         object.id = "";
                         object.method = "";
@@ -306,7 +304,7 @@ $root.io = (function() {
                  */
                 function Response(properties) {
                     if (properties)
-                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                             if (properties[keys[i]] != null)
                                 this[keys[i]] = properties[keys[i]];
                 }
@@ -385,9 +383,9 @@ $root.io = (function() {
                 Response.decode = function decode(reader, length) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
-                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.io.liriliri.aya.Response();
+                    let end = length === undefined ? reader.len : reader.pos + length, message = new $root.io.liriliri.aya.Response();
                     while (reader.pos < end) {
-                        var tag = reader.uint32();
+                        let tag = reader.uint32();
                         switch (tag >>> 3) {
                         case 1: {
                                 message.id = reader.string();
@@ -452,7 +450,7 @@ $root.io = (function() {
                 Response.fromObject = function fromObject(object) {
                     if (object instanceof $root.io.liriliri.aya.Response)
                         return object;
-                    var message = new $root.io.liriliri.aya.Response();
+                    let message = new $root.io.liriliri.aya.Response();
                     if (object.id != null)
                         message.id = String(object.id);
                     if (object.result != null)
@@ -472,7 +470,7 @@ $root.io = (function() {
                 Response.toObject = function toObject(message, options) {
                     if (!options)
                         options = {};
-                    var object = {};
+                    let object = {};
                     if (options.defaults) {
                         object.id = "";
                         object.result = "";
@@ -522,4 +520,4 @@ $root.io = (function() {
     return io;
 })();
 
-module.exports = $root;
+export { $root as default };

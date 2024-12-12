@@ -371,8 +371,29 @@ async function getTopActivity(deviceId: string) {
   }
 }
 
-async function stopPackage(deviceId: string, pid: number) {
-  await shell(deviceId, `am force-stop ${pid}`)
+async function stopPackage(deviceId: string, pkg: string) {
+  await shell(deviceId, `am force-stop ${pkg}`)
+}
+
+async function startPackage(deviceId: string, pkg: string) {
+  const mainActivity = await getMainActivity(deviceId, pkg)
+  await shell(deviceId, `am start -n ${mainActivity}`)
+}
+
+async function getMainActivity(deviceId: string, pkg: string) {
+  const result = await shell(
+    deviceId,
+    `dumpsys package ${pkg} | grep -A 1 MAIN`
+  )
+  const lines = result.split('\n')
+  for (let i = 0, len = lines.length; i < len; i++) {
+    const line = trim(lines[i])
+    if (contain(line, `${pkg}/`)) {
+      return line.substring(line.indexOf(`${pkg}/`), line.indexOf(' filter'))
+    }
+  }
+
+  throw new Error('Failed to get main activity')
 }
 
 function getPropValue(key: string, str: string) {
@@ -423,6 +444,7 @@ export async function init() {
 
   handleEvent('getPackages', getPackages)
   handleEvent('stopPackage', stopPackage)
+  handleEvent('startPackage', startPackage)
 
   handleEvent('getPackageInfos', getPackageInfos)
 

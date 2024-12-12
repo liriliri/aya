@@ -79,5 +79,6 @@
   "openWithBrowser": "Open with Default Browser",
   "close": "Close",
   "application": "Application",
-  "totalApplication": "{{total}} total applications"
+  "totalApplication": "{{total}} total applications",
+  "startPackageErr": "Failed to start package"
 }

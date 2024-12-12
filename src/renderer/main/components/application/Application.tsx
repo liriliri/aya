@@ -13,7 +13,7 @@ import store from '../../store'
 import { PannelLoading } from '../../../components/loading'
 import className from 'licia/className'
 import ToolbarIcon from '../../../components/ToolbarIcon'
-import { t } from '../../../lib/util'
+import { notify, t } from '../../../lib/util'
 import isStrBlank from 'licia/isStrBlank'
 import contain from 'licia/contain'
 import lowerCase from 'licia/lowerCase'
@@ -132,19 +132,26 @@ interface IAppProps {
 function App(props: IAppProps) {
   const [isAnimating, setIsAnimating] = useState(false)
 
-  function open() {
+  async function start() {
     setIsAnimating(true)
+    try {
+      await main.startPackage(store.device!.id, props.packageName)
+      // eslint-disable-next-line
+    } catch (e) {
+      notify(t('startPackageErr'), { icon: 'error' })
+    }
   }
 
   return (
     <div
       key={props.packageName}
+      title={props.packageName}
       className={className({
         [Style.openEffect]: isAnimating,
         [Style.application]: true,
       })}
       onAnimationEnd={() => setIsAnimating(false)}
-      onClick={open}
+      onClick={start}
     >
       <div className={Style.applicationIcon}>
         <img src={props.icon || defaultIcon} draggable="false" />

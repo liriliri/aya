@@ -79,5 +79,6 @@
   "openWithBrowser": "使用默认浏览器打开",
   "close": "关闭",
   "application": "应用",
-  "totalApplication": "共 {{total}} 个应用"
+  "totalApplication": "共 {{total}} 个应用",
+  "startPackageErr": "启动应用失败"
 }

@@ -10,7 +10,8 @@ import Style from './Application.module.scss'
 import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
 import store from '../../store'
-import { PannelLoading } from '../../../components/Loading'
+import { PannelLoading } from '../../../components/loading'
+import className from 'licia/className'
 import ToolbarIcon from '../../../components/ToolbarIcon'
 import { t } from '../../../lib/util'
 import isStrBlank from 'licia/isStrBlank'
@@ -71,14 +72,7 @@ export default observer(function Application() {
           }
         }
 
-        return (
-          <div key={info.packageName} className={Style.application}>
-            <div className={Style.applicationIcon}>
-              <img src={info.icon || defaultIcon} draggable="false" />
-            </div>
-            <div className={Style.applicationLabel}>{info.label}</div>
-          </div>
-        )
+        return <App {...info} />
       })}
     </div>
   )
@@ -128,3 +122,34 @@ export default observer(function Application() {
     </div>
   )
 })
+
+interface IAppProps {
+  packageName: string
+  icon: string
+  label: string
+}
+
+function App(props: IAppProps) {
+  const [isAnimating, setIsAnimating] = useState(false)
+
+  function open() {
+    setIsAnimating(true)
+  }
+
+  return (
+    <div
+      key={props.packageName}
+      className={className({
+        [Style.openEffect]: isAnimating,
+        [Style.application]: true,
+      })}
+      onAnimationEnd={() => setIsAnimating(false)}
+      onClick={open}
+    >
+      <div className={Style.applicationIcon}>
+        <img src={props.icon || defaultIcon} draggable="false" />
+      </div>
+      <div className={Style.applicationLabel}>{props.label}</div>
+    </div>
+  )
+}

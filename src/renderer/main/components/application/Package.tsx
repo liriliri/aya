@@ -28,7 +28,20 @@ export default function Package(props: IAppProps) {
   }
 
   const onContextMenu = (e: React.MouseEvent) => {
+    const device = store.device!
+
     const template: any[] = [
+      {
+        label: t('stop'),
+        click: async () => {
+          const result = await LunaModal.confirm(
+            t('stopPackageConfirm', { name: props.label })
+          )
+          if (result) {
+            await main.stopPackage(device.id, props.packageName)
+          }
+        },
+      },
       {
         label: t('uninstall'),
         click: async () => {
@@ -36,7 +49,7 @@ export default function Package(props: IAppProps) {
             t('uninstallConfirm', { name: props.label })
           )
           if (result) {
-            await main.uninstallPackage(store.device!.id, props.packageName)
+            await main.uninstallPackage(device.id, props.packageName)
             props.onUninstall()
           }
         },

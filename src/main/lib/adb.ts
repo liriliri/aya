@@ -376,11 +376,14 @@ async function stopPackage(deviceId: string, pkg: string) {
 }
 
 async function startPackage(deviceId: string, pkg: string) {
-  const mainActivity = await getMainActivity(deviceId, pkg)
-  await shell(deviceId, `am start -n ${mainActivity}`)
+  const component = await getMainComponent(deviceId, pkg)
+  const device = await client.getDevice(deviceId)
+  await device.startActivity({
+    component,
+  })
 }
 
-async function getMainActivity(deviceId: string, pkg: string) {
+async function getMainComponent(deviceId: string, pkg: string) {
   const result = await shell(
     deviceId,
     `dumpsys package ${pkg} | grep -A 1 MAIN`

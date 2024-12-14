@@ -4,7 +4,9 @@ import { Client } from '@devicefarmer/adbkit'
 import { resolveUnpack } from '../util'
 import singleton from 'licia/singleton'
 import wire from '../wire'
-import sleep from 'licia/sleep'
+import waitUntil from 'licia/waitUntil'
+import { shell } from './base'
+import contain from 'licia/contain'
 
 let client: Client
 
@@ -63,11 +65,23 @@ class AyaClient {
       if (tryStart) {
         await this.push()
         await this.start()
-        await sleep(1500)
+        let started = false
+        await waitUntil(
+          () => {
+            this.isRunning().then((val) => (started = val))
+            return started
+          },
+          10000,
+          1000
+        )
         await this.connect(false)
       }
     }
   }
+  private isRunning = singleton(async () => {
+    const result: string = await shell(this.deviceId, `cat /proc/net/unix`)
+    return contain(result, '@aya')
+  })
   private async push() {
     const device = client.getDevice(this.deviceId)
     await device.push(

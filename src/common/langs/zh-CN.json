@@ -80,5 +80,9 @@
   "close": "关闭",
   "application": "应用",
   "totalApplication": "共 {{total}} 个应用",
-  "startPackageErr": "启动应用失败"
+  "startPackageErr": "启动应用失败",
+  "install": "安装",
+  "refresh": "刷新",
+  "packageInstalling": "安装应用中",
+  "packageInstalled": "应用已安装"
 }

@@ -80,5 +80,9 @@
   "close": "Close",
   "application": "Application",
   "totalApplication": "{{total}} total applications",
-  "startPackageErr": "Failed to start package"
+  "startPackageErr": "Failed to start package",
+  "install": "Install",
+  "refresh": "Refresh",
+  "packageInstalling": "Installing package",
+  "packageInstalled": "Package installed"
 }

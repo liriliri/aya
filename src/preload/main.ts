@@ -53,6 +53,9 @@ export default {
   startPackage: (deviceId: string, pkg: string) => {
     return ipcRenderer.invoke('startPackage', deviceId, pkg)
   },
+  installPackage: (deviceId: string, apkPath: string) => {
+    return ipcRenderer.invoke('installPackage', deviceId, apkPath)
+  },
   getPackages: (deviceId: string, system?: boolean) => {
     return ipcRenderer.invoke('getPackages', deviceId, system)
   },

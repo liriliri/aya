@@ -11,13 +11,12 @@ import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
 import store from '../../store'
 import { PannelLoading } from '../../../components/loading'
-import className from 'licia/className'
 import ToolbarIcon from '../../../components/ToolbarIcon'
 import { notify, t } from '../../../lib/util'
 import isStrBlank from 'licia/isStrBlank'
 import contain from 'licia/contain'
 import lowerCase from 'licia/lowerCase'
-import defaultIcon from '../../../assets/img/default-icon.png'
+import App from './App'
 
 export default observer(function Application() {
   const [isLoading, setIsLoading] = useState(false)
@@ -51,6 +50,19 @@ export default observer(function Application() {
     const packageInfos = await main.getPackageInfos(device.id, packages)
     setPackageInfos(packageInfos)
     setIsLoading(false)
+  }
+
+  async function installPackage() {
+    const { filePaths } = await main.showOpenDialog({
+      properties: ['openFile'],
+      filters: [{ name: 'apk file', extensions: ['apk'] }],
+    })
+    if (isEmpty(filePaths)) {
+      return
+    }
+    notify(t('packageInstalling'), { icon: 'info' })
+    await main.installPackage(device!.id, filePaths[0])
+    notify(t('packageInstalled'), { icon: 'success' })
   }
 
   const columnCount = Math.round(windowWidth / store.application.itemSize)
@@ -91,6 +103,13 @@ export default observer(function Application() {
         />
         <LunaToolbarSpace />
         <ToolbarIcon
+          icon="add"
+          title={t('install')}
+          onClick={installPackage}
+          disabled={!device}
+        />
+        <LunaToolbarSeparator />
+        <ToolbarIcon
           icon="zoom-in"
           title={t('zoomIn')}
           disabled={store.application.itemSize > 220 || isEmpty(packageInfos)}
@@ -122,41 +141,3 @@ export default observer(function Application() {
     </div>
   )
 })
-
-interface IAppProps {
-  packageName: string
-  icon: string
-  label: string
-}
-
-function App(props: IAppProps) {
-  const [isAnimating, setIsAnimating] = useState(false)
-
-  async function start() {
-    setIsAnimating(true)
-    try {
-      await main.startPackage(store.device!.id, props.packageName)
-      // eslint-disable-next-line
-    } catch (e) {
-      notify(t('startPackageErr'), { icon: 'error' })
-    }
-  }
-
-  return (
-    <div
-      key={props.packageName}
-      title={props.packageName}
-      className={className({
-        [Style.openEffect]: isAnimating,
-        [Style.application]: true,
-      })}
-      onAnimationEnd={() => setIsAnimating(false)}
-      onClick={start}
-    >
-      <div className={Style.applicationIcon}>
-        <img src={props.icon || defaultIcon} draggable="false" />
-      </div>
-      <div className={Style.applicationLabel}>{props.label}</div>
-    </div>
-  )
-}

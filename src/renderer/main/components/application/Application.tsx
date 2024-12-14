@@ -27,7 +27,7 @@ export default observer(function Application() {
   const { device } = store
 
   useEffect(() => {
-    getAllPackageInfos()
+    refresh()
 
     function resize() {
       setWindowWidth(window.innerWidth)
@@ -40,7 +40,7 @@ export default observer(function Application() {
     }
   }, [])
 
-  async function getAllPackageInfos() {
+  async function refresh() {
     if (!device || isLoading) {
       return
     }
@@ -63,6 +63,7 @@ export default observer(function Application() {
     notify(t('packageInstalling'), { icon: 'info' })
     await main.installPackage(device!.id, filePaths[0])
     notify(t('packageInstalled'), { icon: 'success' })
+    await refresh()
   }
 
   const columnCount = Math.round(windowWidth / store.application.itemSize)
@@ -132,7 +133,7 @@ export default observer(function Application() {
           icon="refresh"
           title={t('refresh')}
           disabled={isLoading}
-          onClick={getAllPackageInfos}
+          onClick={refresh}
         />
       </LunaToolbar>
       <div className="panel-body">

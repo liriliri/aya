@@ -84,5 +84,6 @@
   "install": "Install",
   "refresh": "Refresh",
   "packageInstalling": "Installing package",
-  "packageInstalled": "Package installed"
+  "uninstall": "Uninstall",
+  "uninstallConfirm": "Are you sure you want to uninstall {{name}}?"
 }

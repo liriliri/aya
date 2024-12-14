@@ -4,14 +4,17 @@ import { notify, t } from '../../../lib/util'
 import className from 'licia/className'
 import defaultIcon from '../../../assets/img/default-icon.png'
 import Style from './Application.module.scss'
+import LunaModal from 'luna-modal'
+import contextMenu from '../../../lib/contextMenu'
 
 interface IAppProps {
   packageName: string
   icon: string
   label: string
+  onUninstall: () => void
 }
 
-export default function App(props: IAppProps) {
+export default function Package(props: IAppProps) {
   const [isAnimating, setIsAnimating] = useState(false)
 
   async function start() {
@@ -24,6 +27,25 @@ export default function App(props: IAppProps) {
     }
   }
 
+  const onContextMenu = (e: React.MouseEvent) => {
+    const template: any[] = [
+      {
+        label: t('uninstall'),
+        click: async () => {
+          const result = await LunaModal.confirm(
+            t('uninstallConfirm', { name: props.label })
+          )
+          if (result) {
+            await main.uninstallPackage(store.device!.id, props.packageName)
+            props.onUninstall()
+          }
+        },
+      },
+    ]
+
+    contextMenu(e, template)
+  }
+
   return (
     <div
       key={props.packageName}
@@ -33,6 +55,7 @@ export default function App(props: IAppProps) {
         [Style.application]: true,
       })}
       onAnimationEnd={() => setIsAnimating(false)}
+      onContextMenu={onContextMenu}
       onClick={start}
     >
       <div className={Style.applicationIcon}>

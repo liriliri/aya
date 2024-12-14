@@ -16,7 +16,7 @@ import { notify, t } from '../../../lib/util'
 import isStrBlank from 'licia/isStrBlank'
 import contain from 'licia/contain'
 import lowerCase from 'licia/lowerCase'
-import App from './App'
+import Package from './Package'
 
 export default observer(function Application() {
   const [isLoading, setIsLoading] = useState(false)
@@ -62,7 +62,6 @@ export default observer(function Application() {
     }
     notify(t('packageInstalling'), { icon: 'info' })
     await main.installPackage(device!.id, filePaths[0])
-    notify(t('packageInstalled'), { icon: 'success' })
     await refresh()
   }
 
@@ -85,7 +84,7 @@ export default observer(function Application() {
           }
         }
 
-        return <App {...info} />
+        return <Package {...info} onUninstall={refresh} />
       })}
     </div>
   )

@@ -388,6 +388,11 @@ async function installPackage(deviceId: string, apkPath: string) {
   await device.install(apkPath)
 }
 
+async function uninstallPackage(deviceId: string, pkg: string) {
+  const device = await client.getDevice(deviceId)
+  await device.uninstall(pkg)
+}
+
 async function getMainComponent(deviceId: string, pkg: string) {
   const result = await shell(
     deviceId,
@@ -454,6 +459,7 @@ export async function init() {
   handleEvent('stopPackage', stopPackage)
   handleEvent('startPackage', startPackage)
   handleEvent('installPackage', installPackage)
+  handleEvent('uninstallPackage', uninstallPackage)
 
   handleEvent('getPackageInfos', getPackageInfos)
 

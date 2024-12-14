@@ -84,5 +84,6 @@
   "install": "安装",
   "refresh": "刷新",
   "packageInstalling": "安装应用中",
-  "packageInstalled": "应用已安装"
+  "uninstall": "卸载",
+  "uninstallConfirm": "确定要卸载 {{name}} 吗？"
 }

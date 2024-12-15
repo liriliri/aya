@@ -65,16 +65,16 @@ export default function Package(props: IAppProps) {
       title={props.packageName}
       className={className({
         [Style.openEffect]: isAnimating,
-        [Style.application]: true,
+        [Style.package]: true,
       })}
       onAnimationEnd={() => setIsAnimating(false)}
       onContextMenu={onContextMenu}
       onClick={start}
     >
-      <div className={Style.applicationIcon}>
+      <div className={Style.packageIcon}>
         <img src={props.icon || defaultIcon} draggable="false" />
       </div>
-      <div className={Style.applicationLabel}>{props.label}</div>
+      <div className={Style.packageLabel}>{props.label}</div>
     </div>
   )
 }

@@ -12,10 +12,12 @@ import { useEffect, useState } from 'react'
 import store from '../../store'
 import { PannelLoading } from '../../../components/loading'
 import ToolbarIcon from '../../../components/ToolbarIcon'
-import { notify, t } from '../../../lib/util'
+import { notify, t, isFileDrop } from '../../../lib/util'
 import isStrBlank from 'licia/isStrBlank'
 import contain from 'licia/contain'
 import lowerCase from 'licia/lowerCase'
+import className from 'licia/className'
+import endWith from 'licia/endWith'
 import Package from './Package'
 
 export default observer(function Application() {
@@ -23,6 +25,7 @@ export default observer(function Application() {
   const [packageInfos, setPackageInfos] = useState<any[]>([])
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [filter, setFilter] = useState('')
+  const [dropHighlight, setDropHighlight] = useState(false)
 
   const { device } = store
 
@@ -52,16 +55,33 @@ export default observer(function Application() {
     setIsLoading(false)
   }
 
-  async function installPackage() {
-    const { filePaths } = await main.showOpenDialog({
-      properties: ['openFile'],
-      filters: [{ name: 'apk file', extensions: ['apk'] }],
-    })
-    if (isEmpty(filePaths)) {
-      return
+  async function onDrop(e: React.DragEvent) {
+    e.preventDefault()
+    setDropHighlight(false)
+    const files = e.dataTransfer.files
+    for (let i = 0, len = files.length; i < len; i++) {
+      const path = preload.getPathForFile(files[i])
+      if (!endWith(path, '.apk')) {
+        continue
+      }
+      await installPackage(path)
     }
+  }
+
+  async function installPackage(apkPath?: string) {
+    if (!apkPath) {
+      const { filePaths } = await main.showOpenDialog({
+        properties: ['openFile'],
+        filters: [{ name: 'apk file', extensions: ['apk'] }],
+      })
+      if (isEmpty(filePaths)) {
+        return
+      }
+      apkPath = filePaths[0]
+    }
+
     notify(t('packageInstalling'), { icon: 'info' })
-    await main.installPackage(device!.id, filePaths[0])
+    await main.installPackage(device!.id, apkPath!)
     await refresh()
   }
 
@@ -76,6 +96,15 @@ export default observer(function Application() {
         gap: `${gapSize}px ${gapSize}px`,
         padding: `${gapSize}px`,
       }}
+      onDrop={onDrop}
+      onDragLeave={() => setDropHighlight(false)}
+      onDragOver={(e) => {
+        if (!isFileDrop(e)) {
+          return
+        }
+        e.preventDefault()
+        setDropHighlight(true)
+      }}
     >
       {map(packageInfos, (info: any) => {
         if (!isStrBlank(filter)) {
@@ -84,7 +113,9 @@ export default observer(function Application() {
           }
         }
 
-        return <Package {...info} onUninstall={refresh} />
+        return (
+          <Package key={info.packageName} {...info} onUninstall={refresh} />
+        )
       })}
     </div>
   )
@@ -135,7 +166,11 @@ export default observer(function Application() {
           onClick={refresh}
         />
       </LunaToolbar>
-      <div className="panel-body">
+      <div
+        className={className('panel-body', {
+          [Style.highlight]: dropHighlight,
+        })}
+      >
         {isLoading ? <PannelLoading /> : applications}
       </div>
     </div>

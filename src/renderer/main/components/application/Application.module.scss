@@ -7,7 +7,11 @@
   min-height: 100%;
 }
 
-.application {
+.highlight {
+  background: var(--aya-color-primary-bg);
+}
+
+.package {
   position: relative;
   display: flex;
   width: 100%;
@@ -51,7 +55,7 @@
   }
 }
 
-.application-icon {
+.package-icon {
   margin: 0 auto;
   width: 60%;
   overflow: hidden;
@@ -64,7 +68,7 @@
   margin-bottom: #{theme.$margin-x-s}px;
 }
 
-.application-label {
+.package-label {
   white-space: nowrap;
   text-align: center;
   overflow: hidden;

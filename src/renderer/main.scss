@@ -36,7 +36,7 @@ body {
       color-warning-text: theme.$color-warning-text,
       color-info-text: theme.$color-info-text,
       color-primary: theme.$color-primary,
-      color-primary-bg: color.adjust(theme.$color-primary, $lightness: 60%),
+      color-primary-bg: color.adjust(theme.$color-primary, $lightness: 40%),
       color-primary-hover: theme.$color-primary-hover,
       color-primary-active: theme.$color-primary-active,
       color-border: color.adjust(theme.$color-border, $lightness: 2%),

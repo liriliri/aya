@@ -1,4 +1,4 @@
-import { contextBridge } from 'electron'
+import { contextBridge, webUtils } from 'electron'
 import { Titlebar, TitlebarColor } from 'custom-electron-titlebar'
 import { colorBgContainer, colorBgContainerDark } from '../common/theme'
 import getUrlParam from 'licia/getUrlParam'
@@ -39,6 +39,9 @@ const preloadObj = {
     if (titleBar) {
       titleBar.updateTitle(title)
     }
+  },
+  getPathForFile: (file: File) => {
+    return webUtils.getPathForFile(file)
   },
 }
 mainObj.on('refreshMenu', () => {

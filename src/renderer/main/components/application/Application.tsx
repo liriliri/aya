@@ -59,30 +59,45 @@ export default observer(function Application() {
     e.preventDefault()
     setDropHighlight(false)
     const files = e.dataTransfer.files
+    const apkPaths: string[] = []
     for (let i = 0, len = files.length; i < len; i++) {
       const path = preload.getPathForFile(files[i])
       if (!endWith(path, '.apk')) {
         continue
       }
-      await installPackage(path)
+      apkPaths.push(path)
     }
+    await installPackages(apkPaths)
   }
 
-  async function installPackage(apkPath?: string) {
-    if (!apkPath) {
+  async function installPackages(apkPaths?: string[]) {
+    if (!apkPaths) {
       const { filePaths } = await main.showOpenDialog({
-        properties: ['openFile'],
+        properties: ['openFile', 'multiSelections'],
         filters: [{ name: 'apk file', extensions: ['apk'] }],
       })
       if (isEmpty(filePaths)) {
         return
       }
-      apkPath = filePaths[0]
+      apkPaths = filePaths
     }
 
-    notify(t('packageInstalling'), { icon: 'info' })
-    await main.installPackage(device!.id, apkPath!)
-    await refresh()
+    let hasSuccess = false
+    for (let i = 0, len = apkPaths!.length; i < len; i++) {
+      const apkPath = apkPaths![i]
+      notify(t('packageInstalling', { path: apkPath }), { icon: 'info' })
+      try {
+        await main.installPackage(device!.id, apkPath!)
+        hasSuccess = true
+        // eslint-disable-next-line
+      } catch (e) {
+        notify(t('installPackageErr'), { icon: 'error' })
+      }
+    }
+
+    if (hasSuccess) {
+      await refresh()
+    }
   }
 
   const columnCount = Math.round(windowWidth / store.application.itemSize)
@@ -136,7 +151,7 @@ export default observer(function Application() {
         <ToolbarIcon
           icon="add"
           title={t('install')}
-          onClick={installPackage}
+          onClick={() => installPackages()}
           disabled={!device}
         />
         <LunaToolbarSeparator />

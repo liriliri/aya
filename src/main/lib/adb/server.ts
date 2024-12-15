@@ -1,7 +1,7 @@
 import types from 'licia/types'
 import uuid from 'licia/uuid'
 import { Client } from '@devicefarmer/adbkit'
-import { resolveUnpack } from '../util'
+import { handleEvent, resolveUnpack } from '../util'
 import singleton from 'licia/singleton'
 import wire from '../wire'
 import waitUntil from 'licia/waitUntil'
@@ -118,6 +118,8 @@ export const getPackageInfos = singleton(async function (
   return result.packageInfos
 })
 
-export async function setClient(c: Client) {
+export async function init(c: Client) {
   client = c
+
+  handleEvent('getPackageInfos', getPackageInfos)
 }

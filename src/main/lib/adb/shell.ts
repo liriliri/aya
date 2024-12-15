@@ -3,6 +3,7 @@ import Emitter from 'licia/Emitter'
 import uniqId from 'licia/uniqId'
 import * as window from '../window'
 import { Client } from '@devicefarmer/adbkit'
+import { handleEvent } from '../util'
 
 let client: Client
 
@@ -167,6 +168,11 @@ export async function killShell(sessionId: string) {
   delete ptys[sessionId]
 }
 
-export function setClient(c: Client) {
+export function init(c: Client) {
   client = c
+
+  handleEvent('createShell', createShell)
+  handleEvent('writeShell', writeShell)
+  handleEvent('resizeShell', resizeShell)
+  handleEvent('killShell', killShell)
 }

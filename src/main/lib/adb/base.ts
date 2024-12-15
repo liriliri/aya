@@ -86,7 +86,7 @@ export const getProcesses = singleton(async (deviceId: string) => {
   return processes
 })
 
-export async function setClient(c: Client) {
+export async function init(c: Client) {
   client = c
 }
 

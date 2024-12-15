@@ -24,14 +24,7 @@ import { shell, getPidNames, getProcesses } from './adb/base'
 import * as logcat from './adb/logcat'
 import * as shellAdb from './adb/shell'
 import * as server from './adb/server'
-import { createShell, writeShell, resizeShell, killShell } from './adb/shell'
-import { getPackageInfos } from './adb/server'
-import {
-  openLogcat,
-  closeLogcat,
-  resumeLogcat,
-  pauseLogcat,
-} from './adb/logcat'
+import * as packageAdb from './adb/package'
 
 const settingsStore = getSettingsStore()
 
@@ -301,15 +294,6 @@ async function getStorage(deviceId: string) {
   }
 }
 
-const getPackages = singleton(async (deviceId: string, system = true) => {
-  const result: string = await shell(
-    deviceId,
-    `pm list packages${system ? '' : ' -3'}`
-  )
-
-  return map(trim(result).split('\n'), (line) => line.slice(8))
-})
-
 const getWebviews = singleton(async (deviceId: string, pid: number) => {
   const webviews: any[] = []
 
@@ -371,44 +355,6 @@ async function getTopActivity(deviceId: string) {
   }
 }
 
-async function stopPackage(deviceId: string, pkg: string) {
-  await shell(deviceId, `am force-stop ${pkg}`)
-}
-
-async function startPackage(deviceId: string, pkg: string) {
-  const component = await getMainComponent(deviceId, pkg)
-  const device = await client.getDevice(deviceId)
-  await device.startActivity({
-    component,
-  })
-}
-
-async function installPackage(deviceId: string, apkPath: string) {
-  const device = await client.getDevice(deviceId)
-  await device.install(apkPath)
-}
-
-async function uninstallPackage(deviceId: string, pkg: string) {
-  const device = await client.getDevice(deviceId)
-  await device.uninstall(pkg)
-}
-
-async function getMainComponent(deviceId: string, pkg: string) {
-  const result = await shell(
-    deviceId,
-    `dumpsys package ${pkg} | grep -A 1 MAIN`
-  )
-  const lines = result.split('\n')
-  for (let i = 0, len = lines.length; i < len; i++) {
-    const line = trim(lines[i])
-    if (contain(line, `${pkg}/`)) {
-      return line.substring(line.indexOf(`${pkg}/`), line.indexOf(' filter'))
-    }
-  }
-
-  throw new Error('Failed to get main activity')
-}
-
 function getPropValue(key: string, str: string) {
   const lines = str.split('\n')
   for (let i = 0, len = lines.length; i < len; i++) {
@@ -436,32 +382,15 @@ export async function init() {
     tracker.on('remove', onDeviceChange)
   })
 
-  base.setClient(client)
-  logcat.setClient(client)
-  shellAdb.setClient(client)
-  server.setClient(client)
+  base.init(client)
+  logcat.init(client)
+  shellAdb.init(client)
+  server.init(client)
+  packageAdb.init(client)
 
   function onDeviceChange() {
     setTimeout(() => window.sendTo('main', 'changeDevice'), 2000)
   }
-
-  handleEvent('createShell', createShell)
-  handleEvent('writeShell', writeShell)
-  handleEvent('resizeShell', resizeShell)
-  handleEvent('killShell', killShell)
-
-  handleEvent('openLogcat', openLogcat)
-  handleEvent('closeLogcat', closeLogcat)
-  handleEvent('pauseLogcat', pauseLogcat)
-  handleEvent('resumeLogcat', resumeLogcat)
-
-  handleEvent('getPackages', getPackages)
-  handleEvent('stopPackage', stopPackage)
-  handleEvent('startPackage', startPackage)
-  handleEvent('installPackage', installPackage)
-  handleEvent('uninstallPackage', uninstallPackage)
-
-  handleEvent('getPackageInfos', getPackageInfos)
 
   handleEvent('getDevices', getDevices)
   handleEvent('getOverview', getOverview)

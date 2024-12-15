@@ -4,6 +4,7 @@ import { Client } from '@devicefarmer/adbkit'
 import { getPidNames } from './base'
 import uniqId from 'licia/uniqId'
 import * as window from '../window'
+import { handleEvent } from '../util'
 
 let client: Client
 
@@ -72,6 +73,11 @@ export async function closeLogcat(logcatId: string) {
   delete logcats[logcatId]
 }
 
-export function setClient(c: Client) {
+export function init(c: Client) {
   client = c
+
+  handleEvent('openLogcat', openLogcat)
+  handleEvent('closeLogcat', closeLogcat)
+  handleEvent('pauseLogcat', pauseLogcat)
+  handleEvent('resumeLogcat', resumeLogcat)
 }

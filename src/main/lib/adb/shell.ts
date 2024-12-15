@@ -128,7 +128,7 @@ class AdbPty extends Emitter {
 
 const ptys: types.PlainObj<AdbPty> = {}
 
-export async function createShell(deviceId: string) {
+async function createShell(deviceId: string) {
   const device = await client.getDevice(deviceId)
 
   const transport = await device.transport()
@@ -151,19 +151,15 @@ export async function createShell(deviceId: string) {
   return sessionId
 }
 
-export async function writeShell(sessionId: string, data: string) {
+async function writeShell(sessionId: string, data: string) {
   ptys[sessionId].write(data)
 }
 
-export async function resizeShell(
-  sessionId: string,
-  cols: number,
-  rows: number
-) {
+async function resizeShell(sessionId: string, cols: number, rows: number) {
   ptys[sessionId].resize(cols, rows)
 }
 
-export async function killShell(sessionId: string) {
+async function killShell(sessionId: string) {
   ptys[sessionId].kill()
   delete ptys[sessionId]
 }

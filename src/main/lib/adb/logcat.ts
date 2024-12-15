@@ -44,7 +44,7 @@ class Logcat extends Emitter {
 
 const logcats: types.PlainObj<Logcat> = {}
 
-export async function openLogcat(deviceId: string) {
+async function openLogcat(deviceId: string) {
   const device = await client.getDevice(deviceId)
   const reader = await device.openLogcat({
     clear: true,
@@ -60,15 +60,15 @@ export async function openLogcat(deviceId: string) {
   return logcatId
 }
 
-export async function pauseLogcat(logcatId: string) {
+async function pauseLogcat(logcatId: string) {
   logcats[logcatId].pause()
 }
 
-export async function resumeLogcat(logcatId: string) {
+async function resumeLogcat(logcatId: string) {
   logcats[logcatId].resume()
 }
 
-export async function closeLogcat(logcatId: string) {
+async function closeLogcat(logcatId: string) {
   logcats[logcatId].close()
   delete logcats[logcatId]
 }

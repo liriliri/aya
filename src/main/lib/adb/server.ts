@@ -107,7 +107,7 @@ async function getAyaClient(deviceId: string) {
   return ayaClients[deviceId]
 }
 
-export const getPackageInfos = singleton(async function (
+const getPackageInfos = singleton(async function (
   deviceId: string,
   packageNames: string[]
 ) {

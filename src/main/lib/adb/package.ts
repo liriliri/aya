@@ -1,5 +1,5 @@
 import { Client } from '@devicefarmer/adbkit'
-import { shell } from './base'
+import { getPidNames, shell } from './base'
 import singleton from 'licia/singleton'
 import map from 'licia/map'
 import trim from 'licia/trim'
@@ -55,6 +55,35 @@ async function getMainComponent(deviceId: string, pkg: string) {
   throw new Error('Failed to get main activity')
 }
 
+async function getTopPackage(deviceId: string) {
+  const topActivity: string = await shell(deviceId, 'dumpsys activity')
+  const lines = topActivity.split('\n')
+  let line = ''
+  for (let i = 0, len = lines.length; i < len; i++) {
+    line = trim(lines[i])
+    if (contain(line, 'top-activity')) {
+      break
+    }
+  }
+
+  if (!line) {
+    return {
+      name: '',
+      pid: 0,
+    }
+  }
+
+  const parts = line.split(/\s+/)
+  const pid = parseInt(parts[parts.length - 2], 10)
+  const pidNames = await getPidNames(deviceId)
+  const name = pidNames[pid] || `pid-${pid}`
+
+  return {
+    name,
+    pid,
+  }
+}
+
 export async function init(c: Client) {
   client = c
 
@@ -63,4 +92,5 @@ export async function init(c: Client) {
   handleEvent('startPackage', startPackage)
   handleEvent('installPackage', installPackage)
   handleEvent('uninstallPackage', uninstallPackage)
+  handleEvent('getTopPackage', getTopPackage)
 }

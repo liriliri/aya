@@ -20,7 +20,7 @@ import isWindows from 'licia/isWindows'
 import isEmpty from 'licia/isEmpty'
 import axios from 'axios'
 import * as base from './adb/base'
-import { shell, getPidNames, getProcesses } from './adb/base'
+import { shell, getProcesses } from './adb/base'
 import * as logcat from './adb/logcat'
 import * as shellAdb from './adb/shell'
 import * as server from './adb/server'
@@ -327,35 +327,6 @@ const getWebviews = singleton(async (deviceId: string, pid: number) => {
   return webviews
 })
 
-async function getTopActivity(deviceId: string) {
-  const topActivity: string = await shell(deviceId, 'dumpsys activity')
-  const lines = topActivity.split('\n')
-  let line = ''
-  for (let i = 0, len = lines.length; i < len; i++) {
-    line = trim(lines[i])
-    if (contain(line, 'top-activity')) {
-      break
-    }
-  }
-
-  if (!line) {
-    return {
-      name: '',
-      pid: 0,
-    }
-  }
-
-  const parts = line.split(/\s+/)
-  const pid = parseInt(parts[parts.length - 2], 10)
-  const pidNames = await getPidNames(deviceId)
-  const name = pidNames[pid] || `pid-${pid}`
-
-  return {
-    name,
-    pid,
-  }
-}
-
 function getPropValue(key: string, str: string) {
   const lines = str.split('\n')
   for (let i = 0, len = lines.length; i < len; i++) {
@@ -400,6 +371,5 @@ export async function init() {
   handleEvent('getMemory', getMemory)
   handleEvent('getProcesses', getProcesses)
   handleEvent('getWebviews', getWebviews)
-  handleEvent('getTopActivity', getTopActivity)
   handleEvent('getPerformance', getPerformance)
 }

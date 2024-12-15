@@ -44,8 +44,8 @@ export default {
   getWebviews: (deviceId: string, pid: number) => {
     return ipcRenderer.invoke('getWebviews', deviceId, pid)
   },
-  getTopActivity: (deviceId: string) => {
-    return ipcRenderer.invoke('getTopActivity', deviceId)
+  getTopPackage: (deviceId: string) => {
+    return ipcRenderer.invoke('getTopPackage', deviceId)
   },
   stopPackage: (deviceId: string, pkg: string) => {
     return ipcRenderer.invoke('stopPackage', deviceId, pkg)

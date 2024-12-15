@@ -17,7 +17,7 @@ import ToolbarIcon from '../../../components/ToolbarIcon'
 export default observer(function Webview() {
   const [webviews, setWebviews] = useState<any[]>([])
   const [selected, setSelected] = useState<any>(null)
-  const [topActivity, setTopActivity] = useState({
+  const [topPackage, setTopPackage] = useState({
     name: '',
     pid: 0,
   })
@@ -34,13 +34,10 @@ export default observer(function Webview() {
       if (device) {
         if (store.panel === 'webview') {
           try {
-            const topActivity = await main.getTopActivity(device.id)
-            setTopActivity(topActivity)
-            if (topActivity.pid) {
-              const webviews = await main.getWebviews(
-                device.id,
-                topActivity.pid
-              )
+            const topPackage = await main.getTopPackage(device.id)
+            setTopPackage(topPackage)
+            if (topPackage.pid) {
+              const webviews = await main.getWebviews(device.id, topPackage.pid)
               setWebviews(
                 map(webviews, (webview: any) => {
                   const title = webview.faviconUrl
@@ -91,7 +88,7 @@ export default observer(function Webview() {
           placeholder={t('filter')}
           onChange={(val) => setFilter(val)}
         />
-        <LunaToolbarText text={topActivity ? topActivity.name : ''} />
+        <LunaToolbarText text={topPackage ? topPackage.name : ''} />
         <LunaToolbarSpace />
         <ToolbarIcon
           disabled={selected === null}

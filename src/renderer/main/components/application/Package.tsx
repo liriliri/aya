@@ -11,6 +11,8 @@ interface IAppProps {
   packageName: string
   icon: string
   label: string
+  apkPath: string
+  versionName: string
   onUninstall: () => void
 }
 
@@ -52,6 +54,22 @@ export default function Package(props: IAppProps) {
             await main.uninstallPackage(device.id, props.packageName)
             props.onUninstall()
           }
+        },
+      },
+      {
+        label: t('exportApk'),
+        click: async () => {
+          const { canceled, filePath } = await main.showSaveDialog({
+            defaultPath: `${props.packageName}-${props.versionName}.apk`,
+          })
+          if (canceled) {
+            return
+          }
+          await main.pullFile(device.id, props.apkPath, filePath)
+          notify(t('apkExported', { path: filePath }), {
+            icon: 'success',
+            duration: 5000,
+          })
         },
       },
     ]

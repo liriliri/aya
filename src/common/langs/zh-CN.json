@@ -85,5 +85,7 @@
   "refresh": "刷新",
   "packageInstalling": "安装应用中",
   "uninstall": "卸载",
-  "uninstallConfirm": "确定要卸载 {{name}} 吗？"
+  "uninstallConfirm": "确定要卸载 {{name}} 吗？",
+  "exportApk": "导出安装包",
+  "apkExported": "安装包已导出至 {{path}}"
 }

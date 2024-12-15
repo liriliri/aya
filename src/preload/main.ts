@@ -1,4 +1,4 @@
-import { ipcRenderer, OpenDialogOptions } from 'electron'
+import { ipcRenderer, OpenDialogOptions, SaveDialogOptions } from 'electron'
 import types from 'licia/types'
 
 export default {
@@ -65,6 +65,9 @@ export default {
   getPackageInfos: (deviceId: string, packageNames: string) => {
     return ipcRenderer.invoke('getPackageInfos', deviceId, packageNames)
   },
+  pullFile: (deviceId: string, path: string, dest: string) => {
+    return ipcRenderer.invoke('pullFile', deviceId, path, dest)
+  },
   openExternal: (url: string) => ipcRenderer.invoke('openExternal', url),
   showContextMenu: (x: number, y: number, template: any) => {
     ipcRenderer.invoke(
@@ -76,6 +79,9 @@ export default {
   },
   showOpenDialog: (options: OpenDialogOptions = {}) => {
     return ipcRenderer.invoke('showOpenDialog', options)
+  },
+  showSaveDialog: (options: SaveDialogOptions = {}) => {
+    return ipcRenderer.invoke('showSaveDialog', options)
   },
   relaunch: () => ipcRenderer.invoke('relaunch'),
   on: (event: string, cb: types.AnyFn) => {

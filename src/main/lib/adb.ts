@@ -25,6 +25,7 @@ import * as logcat from './adb/logcat'
 import * as shellAdb from './adb/shell'
 import * as server from './adb/server'
 import * as packageAdb from './adb/package'
+import * as file from './adb/file'
 
 const settingsStore = getSettingsStore()
 
@@ -387,6 +388,7 @@ export async function init() {
   shellAdb.init(client)
   server.init(client)
   packageAdb.init(client)
+  file.init(client)
 
   function onDeviceChange() {
     setTimeout(() => window.sendTo('main', 'changeDevice'), 2000)

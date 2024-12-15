@@ -19,8 +19,7 @@ interface IAppProps {
 export default function Package(props: IAppProps) {
   const [isAnimating, setIsAnimating] = useState(false)
 
-  async function start() {
-    setIsAnimating(true)
+  async function open() {
     try {
       await main.startPackage(store.device!.id, props.packageName)
       // eslint-disable-next-line
@@ -34,6 +33,10 @@ export default function Package(props: IAppProps) {
 
     const template: any[] = [
       {
+        label: t('open'),
+        click: open,
+      },
+      {
         label: t('stop'),
         click: async () => {
           const result = await LunaModal.confirm(
@@ -43,6 +46,9 @@ export default function Package(props: IAppProps) {
             await main.stopPackage(device.id, props.packageName)
           }
         },
+      },
+      {
+        type: 'separator',
       },
       {
         label: t('uninstall'),
@@ -87,7 +93,10 @@ export default function Package(props: IAppProps) {
       })}
       onAnimationEnd={() => setIsAnimating(false)}
       onContextMenu={onContextMenu}
-      onClick={start}
+      onClick={() => {
+        setIsAnimating(true)
+        open()
+      }}
     >
       <div className={Style.packageIcon}>
         <img src={props.icon || defaultIcon} draggable="false" />

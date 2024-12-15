@@ -88,5 +88,6 @@
   "uninstall": "Uninstall",
   "uninstallConfirm": "Are you sure you want to uninstall {{name}}?",
   "exportApk": "Export APK file",
-  "apkExported": "APK file exported to {{path}}"
+  "apkExported": "APK file exported to {{path}}",
+  "open": "Open"
 }

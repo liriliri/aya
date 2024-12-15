@@ -88,5 +88,6 @@
   "uninstall": "卸载",
   "uninstallConfirm": "确定要卸载 {{name}} 吗？",
   "exportApk": "导出安装包",
-  "apkExported": "安装包已导出至 {{path}}"
+  "apkExported": "安装包已导出至 {{path}}",
+  "open": "打开"
 }

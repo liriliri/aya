@@ -21,6 +21,11 @@ async function stopPackage(deviceId: string, pkg: string) {
   await shell(deviceId, `am force-stop ${pkg}`)
 }
 
+async function clearPackage(deviceId: string, pkg: string) {
+  const device = await client.getDevice(deviceId)
+  await device.clear(pkg)
+}
+
 async function startPackage(deviceId: string, pkg: string) {
   const component = await getMainComponent(deviceId, pkg)
   const device = await client.getDevice(deviceId)
@@ -93,4 +98,5 @@ export async function init(c: Client) {
   handleEvent('installPackage', installPackage)
   handleEvent('uninstallPackage', uninstallPackage)
   handleEvent('getTopPackage', getTopPackage)
+  handleEvent('clearPackage', clearPackage)
 }

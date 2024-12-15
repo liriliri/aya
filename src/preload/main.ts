@@ -50,6 +50,9 @@ export default {
   stopPackage: (deviceId: string, pkg: string) => {
     return ipcRenderer.invoke('stopPackage', deviceId, pkg)
   },
+  clearPackage: (deviceId: string, pkg: string) => {
+    return ipcRenderer.invoke('clearPackage', deviceId, pkg)
+  },
   startPackage: (deviceId: string, pkg: string) => {
     return ipcRenderer.invoke('startPackage', deviceId, pkg)
   },

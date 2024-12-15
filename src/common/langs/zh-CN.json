@@ -87,6 +87,9 @@
   "installPackageErr": "安装应用失败",
   "uninstall": "卸载",
   "uninstallConfirm": "确定要卸载 {{name}} 吗？",
+  "clearData": "清除数据",
+  "clearDataConfirm": "确定要清除 {{name}} 的数据吗？",
+  "dataCleared": "数据已清除",
   "exportApk": "导出安装包",
   "apkExported": "安装包已导出至 {{path}}",
   "open": "打开"

@@ -51,6 +51,18 @@ export default function Package(props: IAppProps) {
         type: 'separator',
       },
       {
+        label: t('clearData'),
+        click: async () => {
+          const result = await LunaModal.confirm(
+            t('clearDataConfirm', { name: props.label })
+          )
+          if (result) {
+            await main.clearPackage(device.id, props.packageName)
+            notify(t('dataCleared'), { icon: 'success' })
+          }
+        },
+      },
+      {
         label: t('uninstall'),
         click: async () => {
           const result = await LunaModal.confirm(
@@ -61,6 +73,9 @@ export default function Package(props: IAppProps) {
             props.onUninstall()
           }
         },
+      },
+      {
+        type: 'separator',
       },
       {
         label: t('exportApk'),

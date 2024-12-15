@@ -87,6 +87,9 @@
   "installPackageErr": "Failed to install package",
   "uninstall": "Uninstall",
   "uninstallConfirm": "Are you sure you want to uninstall {{name}}?",
+  "clearData": "Clear Data",
+  "clearDataConfirm": "Are you sure you want to clear data for {{name}}?",
+  "dataCleared": "Data cleared",
   "exportApk": "Export APK file",
   "apkExported": "APK file exported to {{path}}",
   "open": "Open"

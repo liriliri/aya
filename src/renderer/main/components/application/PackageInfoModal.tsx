@@ -70,7 +70,7 @@ export default function PackageInfoModal(props: IProps) {
 function item(title: string, value: string | number) {
   return (
     <div className={Style.item}>
-      <span className={Style.title}>{title}</span>
+      <span>{title}</span>
       <span className={Style.value}>{value}</span>
     </div>
   )

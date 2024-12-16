@@ -2,9 +2,13 @@ package io.liriliri.aya
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 import android.graphics.drawable.Drawable
 import org.json.JSONArray
 import java.io.ByteArrayOutputStream
+
 
 object Util {
     fun jsonArrayToStringArray(jsonArray: JSONArray): Array<String> {
@@ -19,8 +23,9 @@ object Util {
         val bitmap = Bitmap.createBitmap(
             drawable.intrinsicWidth,
             drawable.intrinsicHeight,
-            Bitmap.Config.RGB_565
+            Bitmap.Config.ARGB_8888
         )
+        bitmap.setHasAlpha(true)
         val canvas = Canvas(bitmap)
         drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
         drawable.draw(canvas)

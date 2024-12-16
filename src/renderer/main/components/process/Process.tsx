@@ -53,7 +53,12 @@ export default observer(function Process() {
           setProcesses(
             map(processes, (process: any) => {
               const info = find(packageInfos.current, (info) => {
-                return startWith(process.name, info.packageName)
+                const match = process.name.match(/^[\w.]+/)
+                if (!match) {
+                  return false
+                }
+
+                return match[0] === info.packageName
               })
 
               if (info) {

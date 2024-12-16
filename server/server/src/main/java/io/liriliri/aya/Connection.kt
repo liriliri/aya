@@ -26,6 +26,7 @@ class Connection(private val client: LocalSocket) : Thread() {
                 val params = request.params.ifEmpty { "{}" }
                 handleRequest(request.id, request.method, params)
             } catch (e: Exception) {
+                Log.e(TAG, "Failed to handle request", e)
                 break
             }
         }
@@ -108,7 +109,11 @@ class Connection(private val client: LocalSocket) : Thread() {
             val resources = getResources(apkPath)
             val labelRes = applicationInfo.labelRes
             if (labelRes != 0) {
-                label = resources.getString(labelRes)
+                try {
+                    label = resources.getString(labelRes)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to get label for $packageName")
+                }
             }
 
             if (applicationInfo.icon != 0) {

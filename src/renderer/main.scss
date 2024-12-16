@@ -1,8 +1,19 @@
 @use 'sass:color';
 @use './theme' as theme;
 
+@font-face {
+  font-family: 'MiSans';
+  src: url('./assets/MiSans-Regular.ttf');
+}
+
 * {
   box-sizing: border-box;
+}
+
+.platform-windows {
+  * {
+    font-family: 'MiSans' !important;
+  }
 }
 
 body {

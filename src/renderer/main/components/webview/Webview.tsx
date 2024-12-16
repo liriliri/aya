@@ -19,6 +19,7 @@ export default observer(function Webview() {
   const [selected, setSelected] = useState<any>(null)
   const [topPackage, setTopPackage] = useState({
     name: '',
+    label: '',
     pid: 0,
   })
   const [listHeight, setListHeight] = useState(0)
@@ -35,7 +36,13 @@ export default observer(function Webview() {
         if (store.panel === 'webview') {
           try {
             const topPackage = await main.getTopPackage(device.id)
-            setTopPackage(topPackage)
+            const packageInfos = await main.getPackageInfos(device.id, [
+              topPackage.name,
+            ])
+            setTopPackage({
+              ...topPackage,
+              label: packageInfos[0].label,
+            })
             if (topPackage.pid) {
               const webviews = await main.getWebviews(device.id, topPackage.pid)
               setWebviews(
@@ -88,7 +95,7 @@ export default observer(function Webview() {
           placeholder={t('filter')}
           onChange={(val) => setFilter(val)}
         />
-        <LunaToolbarText text={topPackage ? topPackage.name : ''} />
+        <LunaToolbarText text={topPackage ? topPackage.label : ''} />
         <LunaToolbarSpace />
         <ToolbarIcon
           disabled={selected === null}

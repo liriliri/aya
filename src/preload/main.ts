@@ -65,7 +65,7 @@ export default {
   getPackages: (deviceId: string, system?: boolean) => {
     return ipcRenderer.invoke('getPackages', deviceId, system)
   },
-  getPackageInfos: (deviceId: string, packageNames: string) => {
+  getPackageInfos: (deviceId: string, packageNames: string[]) => {
     return ipcRenderer.invoke('getPackageInfos', deviceId, packageNames)
   },
   pullFile: (deviceId: string, path: string, dest: string) => {

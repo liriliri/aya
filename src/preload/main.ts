@@ -68,6 +68,12 @@ export default {
   getPackageInfos: (deviceId: string, packageNames: string[]) => {
     return ipcRenderer.invoke('getPackageInfos', deviceId, packageNames)
   },
+  disablePackage: (deviceId: string, pkg: string) => {
+    return ipcRenderer.invoke('disablePackage', deviceId, pkg)
+  },
+  enablePackage: (deviceId: string, pkg: string) => {
+    return ipcRenderer.invoke('enablePackage', deviceId, pkg)
+  },
   pullFile: (deviceId: string, path: string, dest: string) => {
     return ipcRenderer.invoke('pullFile', deviceId, path, dest)
   },

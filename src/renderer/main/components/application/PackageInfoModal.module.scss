@@ -1,0 +1,71 @@
+@use '../../../theme' as theme;
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: #{theme.$margin-m-d}px;
+}
+
+.icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 20%;
+  overflow: hidden;
+  font-size: 0;
+  margin-right: 12px;
+  img {
+    width: 100%;
+  }
+}
+
+.basic {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.label,
+.package-name,
+.version-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.label {
+  font-size: #{theme.$font-size-l-g}px;
+  margin-bottom: #{theme.$margin-s-m}px;
+}
+
+.package-name,
+.version-name {
+  opacity: 0.8;
+  margin-bottom: #{theme.$margin-x-x-s}px;
+  font-size: #{theme.$font-size}px;
+}
+
+.item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: #{theme.$padding-s-m}px 0;
+}
+
+.item + .item {
+  border-top: 1px solid var(--aya-color-border);
+}
+
+.title {
+  font-weight: bold;
+}
+
+.value {
+  flex: 1;
+  white-space: nowrap;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 20px;
+}

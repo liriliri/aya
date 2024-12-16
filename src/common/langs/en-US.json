@@ -92,5 +92,18 @@
   "dataCleared": "Data cleared",
   "exportApk": "Export APK file",
   "apkExported": "APK file exported to {{path}}",
-  "open": "Open"
+  "open": "Open",
+  "enablePackage": "Enable",
+  "disablePackage": "Disable",
+  "sysPackageTip": "The Package is a system package.",
+  "disablePackageConfirm": "Are you sure you want to disable {{name}}?",
+  "packageInfo": "Package Info",
+  "apkSize": "APK Size",
+  "firstInstallTime": "First Install Time",
+  "lastUpdateTime": "Last Update Time",
+  "sysPackage": "System Package",
+  "yes": "Yes",
+  "no": "No",
+  "minSdkVersion": "Min SDK Version",
+  "targetSdkVersion": "Target SDK Version"
 }

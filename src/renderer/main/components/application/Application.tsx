@@ -18,14 +18,18 @@ import contain from 'licia/contain'
 import lowerCase from 'licia/lowerCase'
 import className from 'licia/className'
 import endWith from 'licia/endWith'
+import find from 'licia/find'
 import Package from './Package'
+import PackageInfoModal from './PackageInfoModal'
 
 export default observer(function Application() {
   const [isLoading, setIsLoading] = useState(false)
+  const [packageInfo, setPackageInfo] = useState<any>({})
   const [packageInfos, setPackageInfos] = useState<any[]>([])
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [filter, setFilter] = useState('')
   const [dropHighlight, setDropHighlight] = useState(false)
+  const [packageInfoModalVisible, setPackageInfoModalVisible] = useState(false)
 
   const { device } = store
 
@@ -103,6 +107,17 @@ export default observer(function Application() {
   const columnCount = Math.round(windowWidth / store.application.itemSize)
   const gapSize = store.application.itemSize < 150 ? 10 : 20
 
+  function onShowInfo(packageName: string) {
+    const packageInfo = find(
+      packageInfos,
+      (info) => info.packageName === packageName
+    )
+    if (packageInfo) {
+      setPackageInfo(packageInfo)
+      setPackageInfoModalVisible(true)
+    }
+  }
+
   const applications = (
     <div
       className={Style.applications}
@@ -129,7 +144,14 @@ export default observer(function Application() {
         }
 
         return (
-          <Package key={info.packageName} {...info} onUninstall={refresh} />
+          <Package
+            key={info.packageName}
+            {...info}
+            onUninstall={refresh}
+            onDisable={refresh}
+            onEnable={refresh}
+            onShowInfo={onShowInfo}
+          />
         )
       })}
     </div>
@@ -188,6 +210,13 @@ export default observer(function Application() {
       >
         {isLoading ? <PannelLoading /> : applications}
       </div>
+      {!isEmpty(packageInfo) && (
+        <PackageInfoModal
+          packageInfo={packageInfo}
+          visible={packageInfoModalVisible}
+          onClose={() => setPackageInfoModalVisible(false)}
+        />
+      )}
     </div>
   )
 })

@@ -2,9 +2,6 @@ package io.liriliri.aya
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
 import android.graphics.drawable.Drawable
 import org.json.JSONArray
 import java.io.ByteArrayOutputStream

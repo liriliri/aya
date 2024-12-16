@@ -89,6 +89,14 @@ async function getTopPackage(deviceId: string) {
   }
 }
 
+async function disablePackage(deviceId: string, pkg: string) {
+  await shell(deviceId, `pm disable-user ${pkg}`)
+}
+
+async function enablePackage(deviceId: string, pkg: string) {
+  await shell(deviceId, `pm enable ${pkg}`)
+}
+
 export async function init(c: Client) {
   client = c
 
@@ -99,4 +107,6 @@ export async function init(c: Client) {
   handleEvent('uninstallPackage', uninstallPackage)
   handleEvent('getTopPackage', getTopPackage)
   handleEvent('clearPackage', clearPackage)
+  handleEvent('disablePackage', disablePackage)
+  handleEvent('enablePackage', enablePackage)
 }

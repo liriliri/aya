@@ -92,5 +92,18 @@
   "dataCleared": "数据已清除",
   "exportApk": "导出安装包",
   "apkExported": "安装包已导出至 {{path}}",
-  "open": "打开"
+  "open": "打开",
+  "enablePackage": "解冻",
+  "disablePackage": "冻结",
+  "sysPackageTip": "该应用为系统应用。",
+  "disablePackageConfirm": "确定要冻结 {{name}} 吗？",
+  "packageInfo": "应用信息",
+  "apkSize": "安装包大小",
+  "firstInstallTime": "首次安装时间",
+  "lastUpdateTime": "最后更新时间",
+  "sysPackage": "系统应用",
+  "yes": "是",
+  "no": "否",
+  "minSdkVersion": "最小 SDK 版本",
+  "targetSdkVersion": "目标 SDK 版本"
 }

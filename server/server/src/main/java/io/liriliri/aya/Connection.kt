@@ -1,9 +1,11 @@
 package io.liriliri.aya
 
+import android.content.pm.ApplicationInfo
 import android.content.res.AssetManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.LocalSocket
+import android.os.Build
 import android.util.Base64
 import android.util.DisplayMetrics
 import android.util.Log
@@ -87,6 +89,13 @@ class Connection(private val client: LocalSocket) : Thread() {
         apkSize = File(apkPath).length()
         info.put("apkPath", apkPath)
         info.put("apkSize", apkSize)
+        info.put("enabled", applicationInfo.enabled)
+
+        var system = false
+        if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
+            system = true
+        }
+        info.put("system", system)
 
         var label = packageName
         var icon = ""
@@ -120,6 +129,11 @@ class Connection(private val client: LocalSocket) : Thread() {
         }
         info.put("label", label)
         info.put("icon", icon)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            info.put("minSdkVersion", applicationInfo.minSdkVersion)
+            info.put("targetSdkVersion", applicationInfo.targetSdkVersion)
+        }
 
         return info
     }

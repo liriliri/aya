@@ -15,7 +15,7 @@
     "pack": "zx script/pack.mjs",
     "upload": "zx script/upload.mjs",
     "adb": "zx script/adb.mjs",
-    "server": "zx script/server.mjs build",
+    "server": "zx script/server.mjs",
     "format": "lsla prettier \"src/**/*.{ts,tsx,scss,css,json}\" \"*.{js,ts,json}\" \"script/*.mjs\" --write",
     "start": "electron ./dist/main/index.js",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",

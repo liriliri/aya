@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import store from '../../store'
 import LunaDataGrid from 'luna-data-grid/react'
 import Style from './Process.module.scss'
@@ -11,13 +11,20 @@ import LunaToolbar, {
 import ToolbarIcon from '../../../components/ToolbarIcon'
 import fileSize from 'licia/fileSize'
 import className from 'licia/className'
-import contain from 'licia/contain'
+import has from 'licia/has'
+import isEmpty from 'licia/isEmpty'
 import { t } from '../../../lib/util'
 import LunaModal from 'luna-modal'
+import singleton from 'licia/singleton'
+import map from 'licia/map'
+import startWith from 'licia/startWith'
+import defaultIcon from '../../../assets/img/default-icon.png'
+import toEl from 'licia/toEl'
+import find from 'licia/find'
 
 export default observer(function Process() {
-  const [processes, setProcesses] = useState([])
-  const [packages, setPackages] = useState([])
+  const [processes, setProcesses] = useState<any[]>([])
+  const packageInfos = useRef<any[]>([])
   const [listHeight, setListHeight] = useState(0)
   const [selected, setSelected] = useState<any>(null)
   const [filter, setFilter] = useState('')
@@ -27,12 +34,47 @@ export default observer(function Process() {
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null
 
+    const getPackageInfos = singleton(async function () {
+      if (!device) {
+        return
+      }
+      const packages = await main.getPackages(device.id)
+      packageInfos.current = await main.getPackageInfos(device.id, packages)
+    })
+
     async function getProcesses() {
       timer = null
       if (device) {
         if (store.panel === 'process') {
-          setProcesses(await main.getProcesses(device.id))
-          setPackages(await main.getPackages(device.id))
+          if (isEmpty(packageInfos.current)) {
+            getPackageInfos()
+          }
+          const processes = await main.getProcesses(device.id)
+          setProcesses(
+            map(processes, (process: any) => {
+              const info = find(packageInfos.current, (info) => {
+                return startWith(process.name, info.packageName)
+              })
+
+              if (info) {
+                const icon = info.icon || defaultIcon
+                const name = toEl(
+                  `<span><img src="${icon}" />${process.name.replace(
+                    info.packageName,
+                    info.label
+                  )}</span>`
+                )
+                return {
+                  ...process,
+                  packageName: info.packageName,
+                  label: info.label,
+                  name,
+                }
+              } else {
+                return process
+              }
+            })
+          )
         }
       }
       timer = setTimeout(getProcesses, 5000)
@@ -58,14 +100,14 @@ export default observer(function Process() {
   }, [])
 
   async function stop() {
-    if (!selected) {
+    if (!selected || !has(selected, 'packageName')) {
       return
     }
     const result = await LunaModal.confirm(
-      t('stopPackageConfirm', { name: selected.args })
+      t('stopPackageConfirm', { name: selected.label })
     )
     if (result) {
-      await main.stopPackage(device!.id, selected.args)
+      await main.stopPackage(device!.id, selected.packageName)
     }
   }
 
@@ -83,7 +125,7 @@ export default observer(function Process() {
         />
         <LunaToolbarSpace />
         <ToolbarIcon
-          disabled={selected === null || !contain(packages, selected.name)}
+          disabled={selected === null || !has(selected, 'packageName')}
           icon="delete"
           title={t('stop')}
           onClick={stop}

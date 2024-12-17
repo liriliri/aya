@@ -8,7 +8,7 @@ import map from 'licia/map'
 import isEmpty from 'licia/isEmpty'
 import Style from './Application.module.scss'
 import { observer } from 'mobx-react-lite'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import store from '../../store'
 import { PannelLoading } from '../../../components/loading'
 import ToolbarIcon from '../../../components/ToolbarIcon'
@@ -30,6 +30,7 @@ export default observer(function Application() {
   const [filter, setFilter] = useState('')
   const [dropHighlight, setDropHighlight] = useState(false)
   const [packageInfoModalVisible, setPackageInfoModalVisible] = useState(false)
+  const dragging = useRef(0)
 
   const { device } = store
 
@@ -127,7 +128,15 @@ export default observer(function Application() {
         padding: `${gapSize}px`,
       }}
       onDrop={onDrop}
-      onDragLeave={() => setDropHighlight(false)}
+      onDragEnter={() => {
+        dragging.current++
+      }}
+      onDragLeave={() => {
+        dragging.current--
+        if (dragging.current === 0) {
+          setDropHighlight(false)
+        }
+      }}
       onDragOver={(e) => {
         if (!isFileDrop(e)) {
           return

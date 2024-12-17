@@ -19,6 +19,8 @@ import lowerCase from 'licia/lowerCase'
 import className from 'licia/className'
 import endWith from 'licia/endWith'
 import find from 'licia/find'
+import chunk from 'licia/chunk'
+import concat from 'licia/concat'
 import Package from './Package'
 import PackageInfoModal from './PackageInfoModal'
 
@@ -52,11 +54,19 @@ export default observer(function Application() {
     if (!device || isLoading) {
       return
     }
-
+    setPackageInfos([])
     setIsLoading(true)
     const packages = await main.getPackages(device.id)
-    const packageInfos = await main.getPackageInfos(device.id, packages)
-    setPackageInfos(packageInfos)
+    const chunks = chunk(packages, 50)
+    let packageInfos: any[] = []
+    for (let i = 0, len = chunks.length; i < len; i++) {
+      const chunk = chunks[i]
+      packageInfos = concat(
+        packageInfos,
+        await main.getPackageInfos(device.id, chunk)
+      )
+      setPackageInfos(packageInfos)
+    }
     setIsLoading(false)
   }
 
@@ -217,7 +227,7 @@ export default observer(function Application() {
           [Style.highlight]: dropHighlight,
         })}
       >
-        {isLoading ? <PannelLoading /> : applications}
+        {isLoading && isEmpty(packageInfos) ? <PannelLoading /> : applications}
       </div>
       {!isEmpty(packageInfo) && (
         <PackageInfoModal

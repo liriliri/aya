@@ -81,7 +81,7 @@ function item(title, value, icon = 'info') {
   }
 
   return (
-    <div className={Style.item} onDoubleClick={copyValue}>
+    <div className={Style.item} onClick={copyValue}>
       <div className={Style.title}>
         <span className={`icon-${icon}`}></span>
         &nbsp;{title}

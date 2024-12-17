@@ -11,12 +11,23 @@
 }
 
 .platform-windows {
-  * {
+  button,
+  select,
+  .cet-titlebar,
+  .luna-setting,
+  .luna-modal,
+  .luna-tab,
+  .luna-notification-item,
+  .luna-toolbar,
+  .luna-data-grid {
     font-family: 'MiSans' !important;
   }
 }
 
 body {
+  &.platform-windows {
+    font-family: 'MiSans' !important;
+  }
   margin: 0;
   overflow: hidden;
   font-size: 14px;

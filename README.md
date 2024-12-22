@@ -16,30 +16,16 @@ Android adb desktop app.
 
 [AYA](https://aya.liriliri.io/) is a desktop application for easily controlling android devices, which can be considered as a GUI wrapper for ADB.
 
-## Application
+## Installation
 
-![application](https://aya.liriliri.io/application.png)
+Click [here](https://github.com/liriliri/aya/releases/) to download and install AYA. Both Windows x64 and Mac arm64 are supported.
 
-## Screenshot
+## Features
 
-![screencap](https://aya.liriliri.io/screencap.png)
+* Application manager
+* Process monitor
+* CPU, memory and FPS monitor
+* Logcat viewer
+* Interactive shell
 
-## Logcat
-
-![logcat](https://aya.liriliri.io/logcat.png)
-
-## Shell
-
-![shell](https://aya.liriliri.io/shell.png)
- 
-## Process
-
-![process](https://aya.liriliri.io/process.png)
-
-## Performance
-
-![performance](https://aya.liriliri.io/performance.png)
-
-## Webview
-
-![webview](https://aya.liriliri.io/webview.png)
+For more detailed usage instructions, please read the documentation at [aya.liriliri.io](https://aya.liriliri.io)!

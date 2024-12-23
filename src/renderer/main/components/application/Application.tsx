@@ -197,6 +197,7 @@ export default observer(function Application() {
             store.application.set('sysPackage', val)
             refresh()
           }}
+          disabled={isLoading}
         />
         <LunaToolbarSeparator />
         <LunaToolbarText

@@ -79,7 +79,7 @@
   "openWithBrowser": "Open with Default Browser",
   "close": "Close",
   "application": "Application",
-  "totalApplication": "{{total}} total applications",
+  "totalPackage": "{{total}} total packages",
   "startPackageErr": "Failed to start package",
   "install": "Install",
   "refresh": "Refresh",
@@ -105,5 +105,6 @@
   "yes": "Yes",
   "no": "No",
   "minSdkVersion": "Min SDK Version",
-  "targetSdkVersion": "Target SDK Version"
+  "targetSdkVersion": "Target SDK Version",
+  "onlyPackage": "Only Packages"
 }

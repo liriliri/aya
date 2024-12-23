@@ -4,7 +4,9 @@ import store from '../../store'
 import LunaDataGrid from 'luna-data-grid/react'
 import Style from './Process.module.scss'
 import LunaToolbar, {
+  LunaToolbarCheckbox,
   LunaToolbarInput,
+  LunaToolbarSeparator,
   LunaToolbarSpace,
   LunaToolbarText,
 } from 'luna-toolbar/react'
@@ -48,37 +50,41 @@ export default observer(function Process() {
           if (isEmpty(packageInfos.current)) {
             getPackageInfos()
           }
-          const processes = await main.getProcesses(device.id)
-          setProcesses(
-            map(processes, (process: any) => {
-              const info = find(packageInfos.current, (info) => {
-                const match = process.name.match(/^[\w.]+/)
-                if (!match) {
-                  return false
-                }
-
-                return match[0] === info.packageName
-              })
-
-              if (info) {
-                const icon = info.icon || defaultIcon
-                const name = toEl(
-                  `<span><img src="${icon}" />${process.name.replace(
-                    info.packageName,
-                    info.label
-                  )}</span>`
-                )
-                return {
-                  ...process,
-                  packageName: info.packageName,
-                  label: info.label,
-                  name,
-                }
-              } else {
-                return process
+          const allProcesses = await main.getProcesses(device.id)
+          let processes = map(allProcesses, (process: any) => {
+            const info = find(packageInfos.current, (info) => {
+              const match = process.name.match(/^[\w.]+/)
+              if (!match) {
+                return false
               }
+
+              return match[0] === info.packageName
             })
-          )
+
+            if (info) {
+              const icon = info.icon || defaultIcon
+              const name = toEl(
+                `<span><img src="${icon}" />${process.name.replace(
+                  info.packageName,
+                  info.label
+                )}</span>`
+              )
+              return {
+                ...process,
+                packageName: info.packageName,
+                label: info.label,
+                name,
+              }
+            } else {
+              return process
+            }
+          })
+          if (!isEmpty(packageInfos.current) && store.process.onlyPackage) {
+            processes = processes.filter((process) => {
+              return process.packageName
+            })
+          }
+          setProcesses(processes)
         }
       }
       timer = setTimeout(getProcesses, 5000)
@@ -124,6 +130,15 @@ export default observer(function Process() {
           placeholder={t('filter')}
           onChange={(val) => setFilter(val)}
         />
+        <LunaToolbarCheckbox
+          keyName="onlyPackage"
+          value={store.process.onlyPackage}
+          label={t('onlyPackage')}
+          onChange={(val) => {
+            store.process.set('onlyPackage', val)
+          }}
+        />
+        <LunaToolbarSeparator />
         <LunaToolbarText
           text={t('totalProcess', { total: processes.length })}
         />

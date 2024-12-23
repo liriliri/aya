@@ -201,7 +201,7 @@ export default observer(function Application() {
         />
         <LunaToolbarSeparator />
         <LunaToolbarText
-          text={t('totalApplication', { total: packageInfos.length })}
+          text={t('totalPackage', { total: packageInfos.length })}
         />
         <LunaToolbarSpace />
         <ToolbarIcon

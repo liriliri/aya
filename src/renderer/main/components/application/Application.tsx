@@ -218,7 +218,7 @@ export default observer(function Application() {
         <ToolbarIcon
           icon="refresh"
           title={t('refresh')}
-          disabled={isLoading}
+          disabled={isLoading || !device}
           onClick={refresh}
         />
       </LunaToolbar>

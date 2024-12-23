@@ -71,7 +71,7 @@ export default observer(function Screenshot() {
           icon="refresh"
           title={t('recapture')}
           onClick={recapture}
-          disabled={!toBool(store.device)}
+          disabled={!store.device}
         />
         <ToolbarIcon
           icon="save"
@@ -79,7 +79,7 @@ export default observer(function Screenshot() {
           onClick={save}
           disabled={!hasImage}
         />
-        <LunaToolbarButton onClick={() => {}}>
+        <LunaToolbarButton onClick={() => {}} disabled={!hasImage}>
           <CopyButton className="toolbar-icon" onClick={copy} />
         </LunaToolbarButton>
         <LunaToolbarSeparator />

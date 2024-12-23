@@ -14,7 +14,6 @@ import toNum from 'licia/toNum'
 import trim from 'licia/trim'
 import { useEffect, useRef, useState } from 'react'
 import store from '../../store'
-import toBool from 'licia/toBool'
 import copy from 'licia/copy'
 import download from 'licia/download'
 import { t } from '../../../lib/util'
@@ -152,7 +151,7 @@ export default observer(function Logcat() {
       >
         <LunaToolbarSelect
           keyName="view"
-          disabled={!toBool(device)}
+          disabled={!device}
           value={view}
           options={{
             [t('standardView')]: 'standard',
@@ -162,7 +161,7 @@ export default observer(function Logcat() {
         <LunaToolbarSeparator />
         <LunaToolbarSelect
           keyName="priority"
-          disabled={!toBool(device)}
+          disabled={!device}
           value="2"
           options={{
             VERBOSE: '2',
@@ -175,11 +174,20 @@ export default observer(function Logcat() {
         <LunaToolbarInput
           keyName="package"
           placeholder={t('package')}
-          value=""
+          value={filter.package || ''}
         />
-        <LunaToolbarInput keyName="tag" placeholder={t('tag')} value="" />
+        <LunaToolbarInput
+          keyName="tag"
+          placeholder={t('tag')}
+          value={filter.tag || ''}
+        />
         <LunaToolbarSpace />
-        <ToolbarIcon icon="save" title={t('save')} onClick={save} />
+        <ToolbarIcon
+          icon="save"
+          title={t('save')}
+          onClick={save}
+          disabled={!device}
+        />
         <LunaToolbarSeparator />
         <ToolbarIcon
           icon="soft-wrap"
@@ -191,6 +199,7 @@ export default observer(function Logcat() {
           icon="scroll-end"
           title={t('scrollToEnd')}
           onClick={() => logcatRef.current?.scrollToEnd()}
+          disabled={!device}
         />
         <ToolbarIcon
           icon="reset"
@@ -206,6 +215,7 @@ export default observer(function Logcat() {
               })
             }
           }}
+          disabled={!device}
         />
         <ToolbarIcon
           icon={paused ? 'play' : 'pause'}
@@ -218,9 +228,15 @@ export default observer(function Logcat() {
             }
             setPaused(!paused)
           }}
+          disabled={!device}
         />
         <LunaToolbarSeparator />
-        <ToolbarIcon icon="delete" title={t('clear')} onClick={clear} />
+        <ToolbarIcon
+          icon="delete"
+          title={t('clear')}
+          onClick={clear}
+          disabled={!device}
+        />
       </LunaToolbar>
       <LunaLogcat
         className="panel-body"

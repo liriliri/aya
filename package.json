@@ -59,7 +59,7 @@
     "luna-performance-monitor": "^1.2.1",
     "luna-setting": "^2.0.1",
     "luna-tab": "^0.3.2",
-    "luna-toolbar": "^0.6.2",
+    "luna-toolbar": "^0.8.1",
     "mobx": "^6.13.5",
     "mobx-react-lite": "^4.0.7",
     "protobufjs": "^7.4.0",

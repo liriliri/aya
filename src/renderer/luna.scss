@@ -126,6 +126,15 @@
       color: var(--aya-color-text);
     }
   }
+  .luna-toolbar-item-checkbox {
+    input {
+      border-color: var(--aya-color-border);
+      &:checked {
+        background-color: var(--aya-color-primary);
+        border-color: var(--aya-color-primary);
+      }
+    }
+  }
 }
 
 .luna-tab {

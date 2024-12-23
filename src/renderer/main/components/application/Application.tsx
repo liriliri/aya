@@ -1,4 +1,5 @@
 import LunaToolbar, {
+  LunaToolbarCheckbox,
   LunaToolbarInput,
   LunaToolbarSeparator,
   LunaToolbarSpace,
@@ -56,7 +57,10 @@ export default observer(function Application() {
     }
     setPackageInfos([])
     setIsLoading(true)
-    const packages = await main.getPackages(device.id)
+    const packages = await main.getPackages(
+      device.id,
+      store.application.sysPackage
+    )
     const chunks = chunk(packages, 50)
     let packageInfos: any[] = []
     for (let i = 0, len = chunks.length; i < len; i++) {
@@ -185,6 +189,16 @@ export default observer(function Application() {
           placeholder={t('filter')}
           onChange={(val) => setFilter(val)}
         />
+        <LunaToolbarCheckbox
+          keyName="sysPackage"
+          value={store.application.sysPackage}
+          label={t('sysPackage')}
+          onChange={(val) => {
+            store.application.set('sysPackage', val)
+            refresh()
+          }}
+        />
+        <LunaToolbarSeparator />
         <LunaToolbarText
           text={t('totalApplication', { total: packageInfos.length })}
         />

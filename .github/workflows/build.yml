@@ -36,4 +36,4 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: ${{ github.event.inputs.os }}
-        path: release/
+        path: release/**/*.{dmg,exe}

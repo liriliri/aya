@@ -1,12 +1,21 @@
-name: Build macOS
+name: Build
 
 on:
   workflow_dispatch:
+    inputs:
+      os:
+        type: choice
+        description: Operating System
+        required: true
+        options:
+        - windows
+        - ubuntu
+        - macos
 
 jobs:
   build:
 
-    runs-on: macos-latest
+    runs-on: ${{ github.event.inputs.os }}-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -26,5 +35,5 @@ jobs:
         npm run pack
     - uses: actions/upload-artifact@v4
       with:
-        name: windows
-        path: release/**/*.dmg
+        name: ${{ github.event.inputs.os }}
+        path: release/**/*.exe

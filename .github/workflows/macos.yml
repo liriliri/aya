@@ -1,4 +1,4 @@
-name: Build Windows
+name: Build macOS
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -27,4 +27,4 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: windows
-        path: release/**/*.exe
+        path: release/**/*.dmg

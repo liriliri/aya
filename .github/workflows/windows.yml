@@ -1,4 +1,4 @@
-Name: Build Windows
+name: Build Windows
 
 on:
   workflow_dispatch:
@@ -15,6 +15,7 @@ jobs:
         node-version: '18.x'
     - run: |
         npm run adb
+        npm run server
         npm i
         npm run build
         npm run pack
@@ -22,4 +23,3 @@ jobs:
       with:
         name: windows
         path: release/
-        

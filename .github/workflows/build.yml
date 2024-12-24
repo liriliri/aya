@@ -39,3 +39,4 @@ jobs:
         path: |
           release/**/*.dmg
           release/**/*.exe
+          !release/**/win-unpacked/

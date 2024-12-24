@@ -1,0 +1,25 @@
+Name: Build Windows
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+    - run: |
+        npm run adb
+        npm i
+        npm run build
+        npm run pack
+    - uses: actions/upload-artifact@v4
+      with:
+        name: windows
+        path: release/
+        

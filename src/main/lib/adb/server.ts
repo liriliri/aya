@@ -86,13 +86,13 @@ class AyaClient {
     const device = client.getDevice(this.deviceId)
     await device.push(
       resolveUnpack('server/aya.dex'),
-      '/data/local/tmp/aya.dex'
+      '/data/local/tmp/aya/aya.dex'
     )
   }
   private async start() {
     const device = client.getDevice(this.deviceId)
     await device.shell(
-      'CLASSPATH=/data/local/tmp/aya.dex app_process /system/bin io.liriliri.aya.Server'
+      'CLASSPATH=/data/local/tmp/aya/aya.dex app_process /system/bin io.liriliri.aya.Server'
     )
   }
 }

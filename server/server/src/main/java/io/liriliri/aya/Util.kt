@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import org.json.JSONArray
 import java.io.ByteArrayOutputStream
 
-
 object Util {
     fun jsonArrayToStringArray(jsonArray: JSONArray): Array<String> {
         val list = ArrayList<String>()

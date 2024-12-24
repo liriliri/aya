@@ -16,7 +16,33 @@ import java.io.File
 class Connection(private val client: LocalSocket) : Thread() {
     private companion object {
         private const val TAG = "Aya.Connection"
-        private val cache = mutableMapOf<String, Cache>()
+        private var packageCache = JSONObject()
+        private var packageCacheChanged = false
+        private const val PACKAGE_CACHE_FILE = "/data/local/tmp/aya/packageCache.json"
+
+        init {
+            loadPackageCache()
+        }
+
+        private fun loadPackageCache() {
+            Log.i(TAG, "Load package cache")
+
+            val file = File(PACKAGE_CACHE_FILE)
+            if (file.exists()) {
+                packageCache = JSONObject(file.readText())
+            }
+        }
+
+        private fun savePackageCache() {
+            Log.i(TAG, "Save package cache")
+            if (!packageCacheChanged) {
+                return
+            }
+            packageCacheChanged = false
+
+            val file = File(PACKAGE_CACHE_FILE)
+            file.writeText(packageCache.toString())
+        }
     }
 
     override fun run() {
@@ -70,6 +96,7 @@ class Connection(private val client: LocalSocket) : Thread() {
         packageNames.forEach {
             result.put(getPackageInfo(it))
         }
+        savePackageCache()
 
         return result
     }
@@ -101,10 +128,12 @@ class Connection(private val client: LocalSocket) : Thread() {
         var label = packageName
         var icon = ""
 
-        if (cache[packageName] != null) {
-            val cacheInfo = cache[packageName]!!
-            label = cacheInfo.label
-            icon = cacheInfo.icon
+        val cacheKey = packageName + apkSize
+
+        if (packageCache.has(cacheKey)) {
+            val cacheInfo = packageCache.getJSONObject(cacheKey)
+            label = cacheInfo.getString("label")
+            icon = cacheInfo.getString("icon")
         } else {
             val resources = getResources(apkPath)
             val labelRes = applicationInfo.labelRes
@@ -130,7 +159,11 @@ class Connection(private val client: LocalSocket) : Thread() {
                     Log.e(TAG, "Failed to get icon for $packageName")
                 }
             }
-            cache[packageName] = Cache(label, icon)
+            val cacheInfo = JSONObject()
+            cacheInfo.put("label", label)
+            cacheInfo.put("icon", icon)
+            packageCache.put(cacheKey, cacheInfo)
+            packageCacheChanged = true
         }
         info.put("label", label)
         info.put("icon", icon)
@@ -157,5 +190,3 @@ class Connection(private val client: LocalSocket) : Thread() {
         return Resources(assetManager, displayMetrics, configuration)
     }
 }
-
-class Cache(val label: String, val icon: String)

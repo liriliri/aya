@@ -13,7 +13,7 @@ const platformToolsPath = resolve(
 )
 const platformToolsDir = resolve(adbDir, 'platform-tools')
 const downloadUrl = `https://dl.google.com/android/repository/platform-tools-latest-${
-  isWindows ? 'windows' : (isMac ? 'darwin' : 'linux')
+  isWindows ? 'windows' : isMac ? 'darwin' : 'linux'
 }.zip`
 await $`curl -Lk ${downloadUrl} > ${platformToolsPath}`
 await $`unzip -o ${platformToolsPath} -d ${adbDir}`

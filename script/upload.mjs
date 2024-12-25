@@ -21,34 +21,40 @@ const client = new S3Client({
   },
 })
 
-let Key = `AYA-${version}-mac-arm64.dmg`
-if (isWindows) {
-  Key = `AYA-${version}-win-x64.exe`
-}
-
-const listObjects = new ListObjectsCommand({
-  Bucket,
-})
-
-const { Contents } = await client.send(listObjects)
-
-let fileExists = false
-each(Contents, (content) => {
-  if (content.Key === Key) {
-    fileExists = true
-  }
-})
-
-if (fileExists) {
-  console.log(`${Key} exists`)
-} else {
-  console.log(`upload ${Key}`)
+async function upload(Key) {
   const filePath = `release/${version}/${Key}`
-  const Body = fs.createReadStream(filePath)
-  const putObject = new PutObjectCommand({
+  if (!(await fs.exists(filePath))) {
+    console.log(`${filePath} not exists`)
+    return
+  }
+
+  const listObjects = new ListObjectsCommand({
     Bucket,
-    Key,
-    Body,
   })
-  await client.send(putObject)
+
+  const { Contents } = await client.send(listObjects)
+
+  let fileExists = false
+  each(Contents, (content) => {
+    if (content.Key === Key) {
+      fileExists = true
+    }
+  })
+
+  if (fileExists) {
+    console.log(`${Key} exists`)
+  } else {
+    console.log(`upload ${Key}`)
+    const Body = fs.createReadStream(filePath)
+    const putObject = new PutObjectCommand({
+      Bucket,
+      Key,
+      Body,
+    })
+    await client.send(putObject)
+  }
 }
+
+await upload(`AYA-${version}-win-x64.exe`)
+await upload(`AYA-${version}-mac-arm64.dmg`)
+await upload(`AYA-${version}-linux-x86_64.AppImage`)

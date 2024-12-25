@@ -26,7 +26,10 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-    - uses: android-actions/setup-android@v3    
+    - uses: android-actions/setup-android@v3
+    - if: github.event.inputs.os == 'ubuntu'
+      run: |
+        sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils
     - run: |
         npm i
         npm run adb
@@ -39,4 +42,5 @@ jobs:
         path: |
           release/**/*.dmg
           release/**/*.exe
+          release/**/*.AppImage
           !release/**/win-unpacked/

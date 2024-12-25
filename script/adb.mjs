@@ -1,4 +1,5 @@
 import isWindows from 'licia/isWindows.js'
+import isMac from 'licia/isMac.js'
 import normalizePath from 'licia/normalizePath.js'
 import path from 'path'
 
@@ -12,7 +13,7 @@ const platformToolsPath = resolve(
 )
 const platformToolsDir = resolve(adbDir, 'platform-tools')
 const downloadUrl = `https://dl.google.com/android/repository/platform-tools-latest-${
-  isWindows ? 'windows' : 'darwin'
+  isWindows ? 'windows' : (isMac ? 'darwin' : 'linux')
 }.zip`
 await $`curl -Lk ${downloadUrl} > ${platformToolsPath}`
 await $`unzip -o ${platformToolsPath} -d ${adbDir}`

@@ -2,20 +2,17 @@ name: Build
 
 on:
   workflow_dispatch:
-    inputs:
-      os:
-        type: choice
-        description: Operating System
-        required: true
-        options:
-        - windows
-        - ubuntu
-        - macos
+  release:
+    types: [created]
 
 jobs:
   build:
 
-    runs-on: ${{ github.event.inputs.os }}-latest
+    runs-on: ${{ matrix.os }}-latest
+
+    strategy:
+      matrix:
+        os: [windows, macos, ubuntu]
 
     steps:
     - uses: actions/checkout@v4
@@ -27,7 +24,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     - uses: android-actions/setup-android@v3
-    - if: github.event.inputs.os == 'ubuntu'
+    - if: matrix.os == 'ubuntu'
       run: |
         sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils
     - run: |
@@ -38,7 +35,7 @@ jobs:
         npm run pack
     - uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.event.inputs.os }}
+        name: ${{ matrix.os }}
         path: |
           release/**/*.dmg
           release/**/*.exe

@@ -60,9 +60,9 @@ export default observer(function Performance() {
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null
+    let destroyed = false
 
     async function getPerformance() {
-      timer = null
       if (device) {
         if (store.panel === 'performance') {
           try {
@@ -84,15 +84,16 @@ export default observer(function Performance() {
           } catch (e) {}
         }
       }
+      if (destroyed) {
+        return
+      }
       timer = setTimeout(getPerformance, 1000)
     }
 
     getPerformance()
 
     return () => {
-      if (timer) {
-        clearTimeout(timer)
-      }
+      destroyed = true
     }
   }, [])
 

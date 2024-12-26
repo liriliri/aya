@@ -252,8 +252,8 @@ async function screencap(deviceId: string) {
 }
 
 async function getScreen(deviceId: string) {
-  const resolution = await shell(deviceId, 'wm size')
-  const density = await shell(deviceId, 'wm density')
+  const resolution = (await shell(deviceId, 'wm size')).split('\n')[0]
+  const density = (await shell(deviceId, 'wm density')).split('\n')[0]
 
   return {
     resolution: trim(resolution.split(':')[1]),

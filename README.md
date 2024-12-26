@@ -18,7 +18,7 @@ Android adb desktop app.
 
 ## Installation
 
-Click [here](https://github.com/liriliri/aya/releases/) to download and install AYA. Both Windows x64 and Mac arm64 are supported.
+Click [here](https://github.com/liriliri/aya/releases/) to download and install AYA. Windows x64, Mac arm64 and Linux x86_64 are supported.
 
 ## Features
 

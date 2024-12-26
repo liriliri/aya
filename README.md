@@ -29,3 +29,13 @@ Click [here](https://github.com/liriliri/aya/releases/) to download and install 
 * Interactive shell
 
 For more detailed usage instructions, please read the documentation at [aya.liriliri.io](https://aya.liriliri.io)!
+
+## Related Projects
+
+* [licia](https://github.com/liriliri/licia): Utility library used by aya.
+* [luna](https://github.com/liriliri/luna): UI components used by aya.
+* [vivy](https://github.com/liriliri/vivy-docs): Icon image generation.
+
+## Contribution
+
+Read [Contributing Guide](https://aya.liriliri.io/guide/contributing.html) for development setup instructions.

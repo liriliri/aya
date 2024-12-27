@@ -1,7 +1,7 @@
 import Emitter from 'licia/Emitter'
 import types from 'licia/types'
 import { Client } from '@devicefarmer/adbkit'
-import { getPidNames } from './base'
+import { getDeviceStore, getPidNames, setDeviceStore } from './base'
 import uniqId from 'licia/uniqId'
 import * as window from '../window'
 import { handleEvent } from '../util'
@@ -11,7 +11,6 @@ let client: Client
 class Logcat extends Emitter {
   private reader: any
   private paused = false
-  private pidNames: types.PlainObj<string> = {}
   constructor(reader: any) {
     super()
 
@@ -24,10 +23,14 @@ class Logcat extends Emitter {
       if (this.paused) {
         return
       }
-      if (!this.pidNames[entry.pid] && entry.pid !== 0) {
-        this.pidNames = await getPidNames(deviceId)
+      if (entry.pid != 0) {
+        let pidNames = getDeviceStore(deviceId, 'pidNames')
+        if (!pidNames || !pidNames[entry.pid]) {
+          pidNames = await getPidNames(deviceId)
+          setDeviceStore(deviceId, 'pidNames', pidNames)
+        }
+        entry.package = pidNames[entry.pid] || `pid-${entry.pid}`
       }
-      entry.package = this.pidNames[entry.pid] || `pid-${entry.pid}`
       this.emit('entry', entry)
     })
   }

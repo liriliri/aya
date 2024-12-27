@@ -1,5 +1,5 @@
 import { Client } from '@devicefarmer/adbkit'
-import { getPidNames, shell } from './base'
+import { shell } from './base'
 import singleton from 'licia/singleton'
 import map from 'licia/map'
 import trim from 'licia/trim'
@@ -60,7 +60,7 @@ async function getMainComponent(deviceId: string, pkg: string) {
   throw new Error('Failed to get main activity')
 }
 
-async function getTopPackage(deviceId: string) {
+export const getTopPackage = singleton(async function (deviceId: string) {
   const topActivity: string = await shell(deviceId, 'dumpsys activity')
   const lines = topActivity.split('\n')
   let line = ''
@@ -78,16 +78,19 @@ async function getTopPackage(deviceId: string) {
     }
   }
 
-  const parts = line.split(/\s+/)
-  const pid = parseInt(parts[parts.length - 2], 10)
-  const pidNames = await getPidNames(deviceId)
-  const name = pidNames[pid] || `pid-${pid}`
+  let parts = line.split(/\s+/)
+  parts = parts[parts.length - 2].split(':')
+  const pid = parseInt(parts[0], 10)
+  let name = parts[1]
+  if (contain(name, '/')) {
+    name = name.split('/')[0]
+  }
 
   return {
     name,
     pid,
   }
-}
+})
 
 async function disablePackage(deviceId: string, pkg: string) {
   await shell(deviceId, `pm disable-user ${pkg}`)

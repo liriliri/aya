@@ -33,7 +33,7 @@ export default observer(function Process() {
   const { device } = store
 
   useEffect(() => {
-    let timer: NodeJS.Timeout | null = null
+    let destroyed = false
 
     const getPackageInfos = singleton(async function () {
       if (!device) {
@@ -44,7 +44,6 @@ export default observer(function Process() {
     })
 
     async function getProcesses() {
-      timer = null
       if (device) {
         if (store.panel === 'process') {
           if (isEmpty(packageInfos.current)) {
@@ -87,7 +86,9 @@ export default observer(function Process() {
           setProcesses(processes)
         }
       }
-      timer = setTimeout(getProcesses, 5000)
+      if (!destroyed) {
+        setTimeout(getProcesses, 5000)
+      }
     }
 
     getProcesses()
@@ -101,9 +102,7 @@ export default observer(function Process() {
     window.addEventListener('resize', resize)
 
     return () => {
-      if (timer) {
-        clearTimeout(timer)
-      }
+      destroyed = true
 
       window.removeEventListener('resize', resize)
     }

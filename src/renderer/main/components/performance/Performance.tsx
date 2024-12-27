@@ -23,21 +23,24 @@ import LunaToolbar, {
 } from 'luna-toolbar/react'
 import isEmpty from 'licia/isEmpty'
 import map from 'licia/map'
+import extend from 'licia/extend'
 import className from 'licia/className'
 
 export default observer(function Performance() {
   const [uptime, setUptime] = useState(0)
   const dataRef = useRef({
+    topPackage: {
+      name: '',
+      label: '',
+      pid: 0,
+    },
     memUsed: 0,
     memTotal: 0,
-    uptime: 0,
     batteryLevel: 0,
     batteryTemperature: 0,
     batteryVoltage: 0,
     cpuLoads: [],
     cpus: [],
-    frames: 0,
-    frameTime: 0,
     fps: 0,
   })
 
@@ -59,35 +62,37 @@ export default observer(function Performance() {
   const { device } = store
 
   useEffect(() => {
-    let timer: NodeJS.Timeout | null = null
     let destroyed = false
 
     async function getPerformance() {
       if (device) {
         if (store.panel === 'performance') {
           try {
-            const data = await main.getPerformance(device.id)
-            setUptime(data.uptime)
-            let fps = 0
-            const lastData = dataRef.current
-            if (lastData.frames) {
-              const duration = data.frameTime - lastData.frameTime
-              fps = Math.round(
-                ((data.frames - lastData.frames) * 1000) / duration
-              )
-            }
-            dataRef.current = {
-              ...data,
-              fps,
-            }
+            main.getUptime(device.id).then(setUptime)
+            main.getPerformance(device.id).then((performance) => {
+              extend(dataRef.current, performance)
+            })
+            main.getTopPackage(device.id).then(async (topPackage) => {
+              extend(dataRef.current.topPackage, topPackage)
+              if (topPackage.name) {
+                const packageInfos = await main.getPackageInfos(device.id, [
+                  topPackage.name,
+                ])
+                dataRef.current.topPackage.label = packageInfos[0].label
+              }
+            })
+            main
+              .getFps(device.id, dataRef.current.topPackage.name)
+              .then((fps) => {
+                dataRef.current.fps = fps
+              })
             /* eslint-disable @typescript-eslint/no-unused-vars, no-empty */
           } catch (e) {}
         }
       }
-      if (destroyed) {
-        return
+      if (!destroyed) {
+        setTimeout(getPerformance, 1000)
       }
-      timer = setTimeout(getPerformance, 1000)
     }
 
     getPerformance()
@@ -152,7 +157,7 @@ export default observer(function Performance() {
           unit="MB"
         />
         <LunaPerformanceMonitor
-          title="FPS"
+          title={`FPS ${data.topPackage.label}`}
           data={fpsData}
           theme={store.theme}
           smooth={false}

@@ -17,6 +17,9 @@ export default {
   getPerformance: (deviceId: string) => {
     return ipcRenderer.invoke('getPerformance', deviceId)
   },
+  getUptime: (deviceId: string) => ipcRenderer.invoke('getUptime', deviceId),
+  getFps: (deviceId: string, pkg: string) =>
+    ipcRenderer.invoke('getFps', deviceId, pkg),
   createShell: (deviceId: string) => {
     return ipcRenderer.invoke('createShell', deviceId)
   },

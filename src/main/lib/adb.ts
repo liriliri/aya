@@ -9,9 +9,7 @@ import each from 'licia/each'
 import singleton from 'licia/singleton'
 import trim from 'licia/trim'
 import startWith from 'licia/startWith'
-import sleep from 'licia/sleep'
 import toNum from 'licia/toNum'
-import now from 'licia/now'
 import contain from 'licia/contain'
 import * as window from './window'
 import fs from 'fs-extra'
@@ -26,6 +24,8 @@ import * as shellAdb from './adb/shell'
 import * as server from './adb/server'
 import * as packageAdb from './adb/package'
 import * as file from './adb/file'
+import * as fps from './adb/fps'
+import { getCpuLoads, getCpus } from './adb/cpu'
 
 const settingsStore = getSettingsStore()
 
@@ -109,122 +109,11 @@ async function getPerformance(deviceId: string) {
   const cpus = await getCpus(deviceId)
 
   return {
-    uptime: await getUptime(deviceId),
     cpus,
     cpuLoads: await getCpuLoads(deviceId, cpus),
     ...(await getMemory(deviceId)),
     ...(await getBattery(deviceId)),
-    ...(await getFrames(deviceId)),
   }
-}
-
-async function getFrames(deviceId: string) {
-  const result: string = await shell(deviceId, 'dumpsys SurfaceFlinger')
-  let frames = 0
-  const frameTime = now()
-  const match = result.match(/flips=(\d+)/)
-  if (match) {
-    frames = toNum(match[1])
-  }
-
-  return {
-    frames,
-    frameTime,
-  }
-}
-
-const DEFAULT_PERIOD = 50
-
-async function getCpuLoads(deviceId: string, allCpus: any[], period = 0) {
-  const cpuLoads: number[] = []
-  if (!period) {
-    period = DEFAULT_PERIOD
-  }
-
-  return new Promise(function (resolve) {
-    sleep(period).then(async () => {
-      const newAllCpus = await getCpus(deviceId, false)
-      each(allCpus, (cpu, idx) => {
-        cpuLoads[idx] = calculateCpuLoad(cpu, newAllCpus[idx])
-      })
-      resolve(cpuLoads)
-    })
-  })
-}
-
-function calculateCpuLoad(lastCpu, cpu) {
-  const lastTimes = lastCpu.times
-  const times = cpu.times
-  const lastLoad =
-    lastTimes.user +
-    lastTimes.sys +
-    lastTimes.nice +
-    lastTimes.irq +
-    lastTimes.iowait +
-    lastTimes.softirq
-  const lastTick = lastLoad + lastTimes.idle
-  const load =
-    times.user +
-    times.sys +
-    times.nice +
-    times.irq +
-    times.iowait +
-    times.softirq
-  const tick = load + times.idle
-
-  return (load - lastLoad) / (tick - lastTick)
-}
-
-async function getCpus(deviceId: string, speed = true) {
-  const result: string = await shell(deviceId, 'cat /proc/stat')
-  const lines = result.split('\n')
-  const cpus: any[] = []
-
-  each(lines, (line) => {
-    line = trim(line)
-    if (!startWith(line, 'cpu')) {
-      return
-    }
-
-    const parts = line.split(/\s+/)
-    if (parts[0] === 'cpu') {
-      return
-    }
-
-    const cpu: any = {}
-    cpu.times = {
-      user: toNum(parts[1]),
-      nice: toNum(parts[2]),
-      sys: toNum(parts[3]),
-      idle: toNum(parts[4]),
-      iowait: toNum(parts[5]),
-      irq: toNum(parts[6]),
-      softirq: toNum(parts[7]),
-    }
-
-    cpus.push(cpu)
-  })
-
-  if (speed) {
-    const freqCmd = map(cpus, (cpu, idx) => {
-      return `cat /sys/devices/system/cpu/cpu${idx}/cpufreq/scaling_cur_freq`
-    }).join('\n')
-    const freq: string = await shell(deviceId, freqCmd)
-    const speeds: number[] = []
-    each(freq.split('\n'), (line) => {
-      line = trim(line)
-      if (!line) {
-        return
-      }
-      speeds.push(Math.floor(toNum(line) / 1000))
-    })
-
-    each(cpus, (cpu, idx) => {
-      cpu.speed = speeds[idx]
-    })
-  }
-
-  return cpus
 }
 
 async function getUptime(deviceId: string) {
@@ -364,6 +253,7 @@ export async function init() {
   server.init(client)
   packageAdb.init(client)
   file.init(client)
+  fps.init()
 
   function onDeviceChange() {
     setTimeout(() => window.sendTo('main', 'changeDevice'), 2000)
@@ -376,4 +266,5 @@ export async function init() {
   handleEvent('getProcesses', getProcesses)
   handleEvent('getWebviews', getWebviews)
   handleEvent('getPerformance', getPerformance)
+  handleEvent('getUptime', getUptime)
 }

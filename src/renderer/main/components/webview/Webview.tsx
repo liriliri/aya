@@ -28,21 +28,22 @@ export default observer(function Webview() {
   const { device } = store
 
   useEffect(() => {
-    let timer: NodeJS.Timeout | null = null
+    let destroyed = false
 
     async function getWebviews() {
-      timer = null
       if (device) {
         if (store.panel === 'webview') {
           try {
             const topPackage = await main.getTopPackage(device.id)
-            const packageInfos = await main.getPackageInfos(device.id, [
-              topPackage.name,
-            ])
-            setTopPackage({
-              ...topPackage,
-              label: packageInfos[0].label,
-            })
+            if (topPackage.name) {
+              const packageInfos = await main.getPackageInfos(device.id, [
+                topPackage.name,
+              ])
+              setTopPackage({
+                ...topPackage,
+                label: packageInfos[0].label,
+              })
+            }
             if (topPackage.pid) {
               const webviews = await main.getWebviews(device.id, topPackage.pid)
               setWebviews(
@@ -64,7 +65,9 @@ export default observer(function Webview() {
           } catch (e) {}
         }
       }
-      timer = setTimeout(getWebviews, 2000)
+      if (!destroyed) {
+        setTimeout(getWebviews, 2000)
+      }
     }
 
     getWebviews()
@@ -78,9 +81,7 @@ export default observer(function Webview() {
     window.addEventListener('resize', resize)
 
     return () => {
-      if (timer) {
-        clearTimeout(timer)
-      }
+      destroyed = true
 
       window.removeEventListener('resize', resize)
     }

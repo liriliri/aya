@@ -289,3 +289,10 @@
   background: var(--aya-color-bg-container) !important;
   border: none;
 }
+
+.luna-performance-monitor-title {
+  display: inline-block;
+  height: 16px;
+  font-size: #{theme.$font-size}px;
+  line-height: 16px;
+}

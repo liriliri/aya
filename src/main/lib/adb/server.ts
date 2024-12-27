@@ -5,7 +5,7 @@ import { handleEvent, resolveUnpack } from '../util'
 import singleton from 'licia/singleton'
 import wire from '../wire'
 import waitUntil from 'licia/waitUntil'
-import { shell } from './base'
+import { getDeviceStore, setDeviceStore, shell } from './base'
 import contain from 'licia/contain'
 
 let client: Client
@@ -97,14 +97,13 @@ class AyaClient {
   }
 }
 
-const ayaClients: types.PlainObj<AyaClient> = {}
-
 async function getAyaClient(deviceId: string) {
-  if (!ayaClients[deviceId]) {
-    const ayaClient = new AyaClient(deviceId)
-    ayaClients[deviceId] = ayaClient
+  let ayaClient = getDeviceStore(deviceId, 'ayaClient')
+  if (!ayaClient) {
+    ayaClient = new AyaClient(deviceId)
+    setDeviceStore(deviceId, 'ayaClient', ayaClient)
   }
-  return ayaClients[deviceId]
+  return ayaClient
 }
 
 const getPackageInfos = singleton(async function (

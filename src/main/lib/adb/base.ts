@@ -7,6 +7,7 @@ import lowerCase from 'licia/lowerCase'
 import Adb, { Client } from '@devicefarmer/adbkit'
 import getPort from 'licia/getPort'
 import toNum from 'licia/toNum'
+import types from 'licia/types'
 
 let client: Client
 
@@ -90,7 +91,7 @@ export async function init(c: Client) {
   client = c
 }
 
-export async function shell(deviceId: string, cmd: string) {
+export async function shell(deviceId: string, cmd: string): Promise<string> {
   const device = await client.getDevice(deviceId)
   const socket = await device.shell(cmd)
   const output = await Adb.util.readAll(socket)
@@ -113,4 +114,17 @@ export async function forwardTcp(deviceId: string, remote: string) {
   await device.forward(local, remote)
 
   return port
+}
+
+const deviceStore: types.PlainObj<any> = {}
+
+export function getDeviceStore(deviceId: string, key: string) {
+  return deviceStore[deviceId] && deviceStore[deviceId][key]
+}
+
+export function setDeviceStore(deviceId: string, key: string, value: any) {
+  if (!deviceStore[deviceId]) {
+    deviceStore[deviceId] = {}
+  }
+  deviceStore[deviceId][key] = value
 }

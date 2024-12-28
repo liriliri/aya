@@ -11,6 +11,10 @@ const config = {
   files: ['main', 'preload', 'renderer', 'adb', 'server'],
   asarUnpack: ['adb/**/*', 'server/**/*'],
   artifactName: '${name}-${version}-${os}-${arch}.${ext}',
+  nsis: {
+    allowToChangeInstallationDirectory: true,
+    oneClick: false,
+  },
   win: {
     target: [
       {

@@ -146,9 +146,11 @@ export default observer(function Performance() {
           ))}
         </div>
         <LunaPerformanceMonitor
-          title={`${t('memory')} ${Math.round(
-            (data.memUsed / data.memTotal) * 100
-          )}%`}
+          title={`${t('memory')} ${
+            data.memUsed
+              ? Math.round((data.memUsed / data.memTotal) * 100) + '%'
+              : ''
+          }`}
           data={memData}
           theme={store.theme}
           smooth={false}

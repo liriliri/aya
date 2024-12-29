@@ -94,7 +94,11 @@ class Connection(private val client: LocalSocket) : Thread() {
         val result = JSONArray()
 
         packageNames.forEach {
-            result.put(getPackageInfo(it))
+            try {
+                result.put(getPackageInfo(it))
+            } catch (e: Exception) {
+                Log.e(TAG, "Fail to get package info", e)
+            }
         }
         savePackageCache()
 

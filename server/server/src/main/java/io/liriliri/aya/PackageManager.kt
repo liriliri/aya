@@ -23,11 +23,7 @@ class PackageManager(private val manager: IInterface) {
 
     fun getPackageInfo(packageName: String): PackageInfo {
         Log.i(TAG, "Get package info: $packageName")
-        try {
-            return getPackageInfoMethod.invoke(manager, packageName, 1, 0) as PackageInfo
-        } catch (e: Exception) {
-            Log.e(TAG, "Fail to get package info", e)
-            throw AssertionError(e)
-        }
+
+        return getPackageInfoMethod.invoke(manager, packageName, 1, 0) as PackageInfo
     }
 }

@@ -46,6 +46,10 @@
   white-space: nowrap;
 }
 
+.value:hover {
+  color: var(--aya-color-primary);
+}
+
 .title {
   margin-bottom: #{theme.$margin-x-x-s}px;
 }

@@ -51,12 +51,12 @@ async function getFpsByLatency(deviceId: string, pkg: string) {
     return fps
   }
 
-  const latencyCmd = map(layers, (layer) => {
-    return `dumpsys SurfaceFlinger --latency "${layer}"`
-  }).join('\n echo "aya_separator";\n')
-
-  const latency = await shell(deviceId, latencyCmd)
-  const latencies = latency.split('aya_separator')
+  const latencies = await shell(
+    deviceId,
+    map(layers, (layer) => {
+      return `dumpsys SurfaceFlinger --latency "${layer}"`
+    })
+  )
   const allFps = map(latencies, (latency) => {
     latency = trim(latency)
     let fps = 0

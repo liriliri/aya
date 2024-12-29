@@ -106,5 +106,8 @@
   "no": "No",
   "minSdkVersion": "Min SDK Version",
   "targetSdkVersion": "Target SDK Version",
-  "onlyPackage": "Only Packages"
+  "onlyPackage": "Only Packages",
+  "kernelVersion": "Kernel Version",
+  "physicalResolution": "Physical Resolution",
+  "fontScale": "Font Scale"
 }

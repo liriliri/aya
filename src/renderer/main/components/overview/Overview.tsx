@@ -44,19 +44,15 @@ export default observer(function Overview() {
             `Android ${overview.androidVersion} (API ${overview.sdkVersion})`,
             'android'
           )}
+          {item(t('kernelVersion'), overview.kernelVersion, 'android')}
+        </div>
+        <div className={Style.row}>
           {item(
             t('processor'),
             `${overview.processor || t('unknown')} ${t('cpuNum', {
               count: overview.cpuNum,
             })} (${overview.abi})`,
             'processor'
-          )}
-        </div>
-        <div className={Style.row}>
-          {item(
-            t('resolution'),
-            `${overview.resolution} (${overview.density}dpi)`,
-            'phone'
           )}
           {item(
             t('storage'),
@@ -66,6 +62,19 @@ export default observer(function Overview() {
             'storage'
           )}
           {item(t('memory'), fileSize(overview.memTotal as number), 'memory')}
+        </div>
+        <div className={Style.row}>
+          {item(
+            t('physicalResolution'),
+            `${overview.physicalResolution} (${overview.physicalDensity}dpi)`,
+            'phone'
+          )}
+          {item(
+            t('resolution'),
+            `${overview.resolution} (${overview.density}dpi)`,
+            'phone'
+          )}
+          {item(t('fontScale'), `${overview.fontScale}x`, 'font')}
         </div>
       </div>
     )
@@ -86,7 +95,7 @@ function item(title, value, icon = 'info') {
         <span className={`icon-${icon}`}></span>
         &nbsp;{title}
       </div>
-      <div>{value || t('unknown')}</div>
+      <div className={Style.value}>{value || t('unknown')}</div>
     </div>
   )
 }

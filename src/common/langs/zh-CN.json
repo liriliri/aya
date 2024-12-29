@@ -106,5 +106,8 @@
   "no": "否",
   "minSdkVersion": "最小 SDK 版本",
   "targetSdkVersion": "目标 SDK 版本",
-  "onlyPackage": "仅显示应用"
+  "onlyPackage": "仅显示应用",
+  "kernelVersion": "内核版本",
+  "physicalResolution": "物理分辨率",
+  "fontScale": "字体缩放"
 }

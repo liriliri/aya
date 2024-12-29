@@ -83,12 +83,14 @@ export async function getCpus(deviceId: string, speed = true) {
   })
 
   if (speed) {
-    const freqCmd = map(cpus, (cpu, idx) => {
-      return `cat /sys/devices/system/cpu/cpu${idx}/cpufreq/scaling_cur_freq`
-    }).join('\n')
-    const freq: string = await shell(deviceId, freqCmd)
+    const freqs = await shell(
+      deviceId,
+      map(cpus, (cpu, idx) => {
+        return `cat /sys/devices/system/cpu/cpu${idx}/cpufreq/scaling_cur_freq`
+      })
+    )
     const speeds: number[] = []
-    each(freq.split('\n'), (line) => {
+    each(freqs, (line) => {
       line = trim(line)
       if (!line) {
         return

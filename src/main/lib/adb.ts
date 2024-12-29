@@ -57,6 +57,10 @@ async function getOverview(deviceId: string) {
   const device = await client.getDevice(deviceId)
   const properties = await device.getProperties()
   const cpus = await getCpus(deviceId)
+  const [kernelVersion, fontScale] = await shell(deviceId, [
+    'uname -r',
+    'settings get system font_scale',
+  ])
 
   return {
     name: getMarketName(properties) || properties['ro.product.name'],
@@ -68,6 +72,8 @@ async function getOverview(deviceId: string) {
     sdkVersion: properties['ro.build.version.sdk'],
     serialNum: properties['ro.serialno'] || '',
     cpuNum: cpus.length,
+    kernelVersion,
+    fontScale: toNum(fontScale),
     ...(await getStorage(deviceId)),
     ...(await getMemory(deviceId)),
     ...(await getScreen(deviceId)),
@@ -141,23 +147,25 @@ async function screencap(deviceId: string) {
 }
 
 async function getScreen(deviceId: string) {
-  const wmSize = await shell(deviceId, 'wm size')
-  const wmDensity = await shell(deviceId, 'wm density')
+  const [wmSize, wmDensity] = await shell(deviceId, ['wm size', 'wm density'])
 
-  const useOverrideResolution = contain(wmSize, 'Override')
-  const useOverrideDensity = contain(wmDensity, 'Override')
-  const resolution = getPropValue(
-    useOverrideResolution ? 'Override size' : 'Physical size',
-    wmSize
-  )
-  const density = getPropValue(
-    useOverrideDensity ? 'Override density' : 'Physical density',
-    wmDensity
-  )
+  const physicalResolution = getPropValue('Physical size', wmSize)
+  const physicalDensity = getPropValue('Physical density', wmDensity)
+
+  const hasOverrideResolution = contain(wmSize, 'Override')
+  const hasOverrideDensity = contain(wmDensity, 'Override')
+  const resolution = hasOverrideResolution
+    ? getPropValue('Override size', wmSize)
+    : physicalResolution
+  const density = hasOverrideDensity
+    ? getPropValue('Override density', wmDensity)
+    : physicalDensity
 
   return {
     resolution,
+    physicalResolution,
     density,
+    physicalDensity,
   }
 }
 

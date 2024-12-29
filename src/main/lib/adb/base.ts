@@ -8,6 +8,7 @@ import Adb, { Client } from '@devicefarmer/adbkit'
 import getPort from 'licia/getPort'
 import toNum from 'licia/toNum'
 import types from 'licia/types'
+import isStr from 'licia/isStr'
 
 let client: Client
 
@@ -91,11 +92,23 @@ export async function init(c: Client) {
   client = c
 }
 
-export async function shell(deviceId: string, cmd: string): Promise<string> {
+export async function shell(deviceId: string, cmd: string): Promise<string>
+export async function shell(deviceId: string, cmd: string[]): Promise<string[]>
+export async function shell(
+  deviceId: string,
+  cmd: string | string[]
+): Promise<string | string[]> {
   const device = await client.getDevice(deviceId)
-  const socket = await device.shell(cmd)
-  const output = await Adb.util.readAll(socket)
-  return output.toString()
+  const cmds: string[] = isStr(cmd) ? [cmd] : cmd
+
+  const socket = await device.shell(cmds.join('\necho "aya_separator"\n'))
+  const output = (await Adb.util.readAll(socket)).toString()
+
+  if (cmds.length === 1) {
+    return output
+  }
+
+  return map(output.split('aya_separator'), trim)
 }
 
 export async function forwardTcp(deviceId: string, remote: string) {

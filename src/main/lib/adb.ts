@@ -141,12 +141,23 @@ async function screencap(deviceId: string) {
 }
 
 async function getScreen(deviceId: string) {
-  const resolution = (await shell(deviceId, 'wm size')).split('\n')[0]
-  const density = (await shell(deviceId, 'wm density')).split('\n')[0]
+  const wmSize = await shell(deviceId, 'wm size')
+  const wmDensity = await shell(deviceId, 'wm density')
+
+  const useOverrideResolution = contain(wmSize, 'Override')
+  const useOverrideDensity = contain(wmDensity, 'Override')
+  const resolution = getPropValue(
+    useOverrideResolution ? 'Override size' : 'Physical size',
+    wmSize
+  )
+  const density = getPropValue(
+    useOverrideDensity ? 'Override density' : 'Physical density',
+    wmDensity
+  )
 
   return {
-    resolution: trim(resolution.split(':')[1]),
-    density: trim(density.split(':')[1]),
+    resolution,
+    density,
   }
 }
 

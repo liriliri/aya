@@ -91,21 +91,26 @@ export default function Package(props: IProps) {
         type: 'separator',
       },
       {
-        label: props.enabled ? t('disablePackage') : t('enablePackage'),
+        label: t('disablePackage'),
         click: async () => {
-          if (props.enabled) {
-            const result = await LunaModal.confirm(
-              confirmText('disablePackageConfirm')
-            )
-            if (result) {
-              await main.disablePackage(device.id, props.packageName)
-              await props.onDisable()
-            }
-          } else {
-            await main.enablePackage(device.id, props.packageName)
-            await props.onEnable()
+          const result = await LunaModal.confirm(
+            confirmText('disablePackageConfirm')
+          )
+          if (result) {
+            await main.disablePackage(device.id, props.packageName)
+            await props.onDisable()
           }
         },
+      },
+      {
+        label: t('enablePackage'),
+        click: async () => {
+          await main.enablePackage(device.id, props.packageName)
+          await props.onEnable()
+        },
+      },
+      {
+        type: 'separator',
       },
       {
         label: t('clearData'),

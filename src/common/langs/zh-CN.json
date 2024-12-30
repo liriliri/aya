@@ -111,5 +111,6 @@
   "physicalResolution": "物理分辨率",
   "fontScale": "字体缩放",
   "fontAdjust": "字体调节",
-  "scale": "缩放"
+  "scale": "缩放",
+  "deviceRefreshed": "设备已刷新"
 }

@@ -111,5 +111,6 @@
   "physicalResolution": "Physical Resolution",
   "fontScale": "Font Scale",
   "fontAdjust": "Font Adjust",
-  "scale": "Scale"
+  "scale": "Scale",
+  "deviceRefreshed": "Device refreshed"
 }

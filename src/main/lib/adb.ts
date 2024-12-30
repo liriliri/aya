@@ -73,11 +73,15 @@ async function getOverview(deviceId: string) {
     serialNum: properties['ro.serialno'] || '',
     cpuNum: cpus.length,
     kernelVersion,
-    fontScale: toNum(fontScale),
+    fontScale: fontScale === 'null' ? 0 : toNum(fontScale),
     ...(await getStorage(deviceId)),
     ...(await getMemory(deviceId)),
     ...(await getScreen(deviceId)),
   }
+}
+
+async function setFontScale(deviceId: string, scale: number) {
+  await shell(deviceId, `settings put system font_scale ${scale}`)
 }
 
 function getMarketName(properties: types.PlainObj<string>) {
@@ -280,6 +284,7 @@ export async function init() {
 
   handleEvent('getDevices', getDevices)
   handleEvent('getOverview', getOverview)
+  handleEvent('setFontScale', setFontScale)
   handleEvent('screencap', screencap)
   handleEvent('getMemory', getMemory)
   handleEvent('getProcesses', getProcesses)

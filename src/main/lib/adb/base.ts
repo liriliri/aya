@@ -102,13 +102,13 @@ export async function shell(
   const cmds: string[] = isStr(cmd) ? [cmd] : cmd
 
   const socket = await device.shell(cmds.join('\necho "aya_separator"\n'))
-  const output = (await Adb.util.readAll(socket)).toString()
+  const output: string = (await Adb.util.readAll(socket)).toString()
 
   if (cmds.length === 1) {
-    return output
+    return trim(output)
   }
 
-  return map(output.split('aya_separator'), trim)
+  return map(output.split('aya_separator'), (val) => trim(val))
 }
 
 export async function forwardTcp(deviceId: string, remote: string) {

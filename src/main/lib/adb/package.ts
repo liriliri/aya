@@ -61,12 +61,12 @@ async function getMainComponent(deviceId: string, pkg: string) {
 }
 
 export const getTopPackage = singleton(async function (deviceId: string) {
-  const topActivity: string = await shell(deviceId, 'dumpsys activity')
+  const topActivity = await shell(deviceId, 'dumpsys activity')
   const lines = topActivity.split('\n')
   let line = ''
   for (let i = 0, len = lines.length; i < len; i++) {
-    line = trim(lines[i])
-    if (contain(line, 'top-activity')) {
+    if (contain(lines[i], 'top-activity')) {
+      line = trim(lines[i])
       break
     }
   }

@@ -6,11 +6,13 @@ import contain from 'licia/contain'
 import LunaNotification, { INotifyOptions } from 'luna-notification'
 import enUS from '../../common/langs/en-US.json'
 import zhCN from '../../common/langs/zh-CN.json'
+import trTR from '../../common/langs/tr-TR.json'
 import { isObservable, toJS } from 'mobx'
 
 export const i18n = new I18n('en-US', {
   'en-US': enUS,
   'zh-CN': defaults(zhCN, enUS),
+  'tr-TR': defaults(trTR, enUS),
 })
 
 export function t(path: string | string[], data?: types.PlainObj<any>) {

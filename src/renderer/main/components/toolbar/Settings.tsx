@@ -81,6 +81,7 @@ const SettingsModal = observer(function SettingsModal(
             [t('sysPreference')]: 'system',
             English: 'en-US',
             ['中文']: 'zh-CN',
+            ['Türkçe']: 'tr-TR',
           }}
         />
         <LunaSettingTitle title="ADB" />

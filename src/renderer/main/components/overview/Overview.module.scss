@@ -37,6 +37,11 @@
       top: 2px;
     }
   }
+  &:hover {
+    .value {
+      color: var(--aya-color-primary);
+    }
+  }
 }
 
 .title,
@@ -44,10 +49,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.value:hover {
-  color: var(--aya-color-primary);
 }
 
 .title {

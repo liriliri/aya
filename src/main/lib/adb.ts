@@ -57,10 +57,29 @@ async function getOverview(deviceId: string) {
   const device = await client.getDevice(deviceId)
   const properties = await device.getProperties()
   const cpus = await getCpus(deviceId)
-  const [kernelVersion, fontScale] = await shell(deviceId, [
+  const [kernelVersion, fontScale, wifi] = await shell(deviceId, [
     'uname -r',
     'settings get system font_scale',
+    'dumpsys wifi',
   ])
+
+  let ssidMatch = wifi.match(/mWifiInfo\s+SSID: "?(.+?)"?,/)
+  if (ssidMatch && ssidMatch[1] === '<unknown ssid>') {
+    ssidMatch = null
+  }
+  let ip = ''
+  let mac = ''
+  const wlan0 = await shell(deviceId, 'ip addr show wlan0')
+  const ipMatch = wlan0.match(/inet (\d+\.\d+\.\d+\.\d+)/)
+  if (ipMatch) {
+    ip = ipMatch[1]
+  }
+  const macMatch = wlan0.match(
+    /link\/ether (([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))/
+  )
+  if (macMatch) {
+    mac = macMatch[1]
+  }
 
   return {
     name: getMarketName(properties) || properties['ro.product.name'],
@@ -73,11 +92,18 @@ async function getOverview(deviceId: string) {
     serialNum: properties['ro.serialno'] || '',
     cpuNum: cpus.length,
     kernelVersion,
-    fontScale: toNum(fontScale),
+    fontScale: fontScale === 'null' ? 0 : toNum(fontScale),
+    wifi: ssidMatch ? ssidMatch[1] : '',
+    ip,
+    mac,
     ...(await getStorage(deviceId)),
     ...(await getMemory(deviceId)),
     ...(await getScreen(deviceId)),
   }
+}
+
+async function setFontScale(deviceId: string, scale: number) {
+  await shell(deviceId, `settings put system font_scale ${scale}`)
 }
 
 function getMarketName(properties: types.PlainObj<string>) {
@@ -280,6 +306,7 @@ export async function init() {
 
   handleEvent('getDevices', getDevices)
   handleEvent('getOverview', getOverview)
+  handleEvent('setFontScale', setFontScale)
   handleEvent('screencap', screencap)
   handleEvent('getMemory', getMemory)
   handleEvent('getProcesses', getProcesses)

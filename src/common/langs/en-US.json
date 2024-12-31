@@ -109,5 +109,10 @@
   "onlyPackage": "Only Packages",
   "kernelVersion": "Kernel Version",
   "physicalResolution": "Physical Resolution",
-  "fontScale": "Font Scale"
+  "fontScale": "Font Scale",
+  "fontAdjust": "Font Adjust",
+  "scale": "Scale",
+  "deviceRefreshed": "Device refreshed",
+  "ipAddress": "IP Address",
+  "macAddress": "MAC Address"
 }

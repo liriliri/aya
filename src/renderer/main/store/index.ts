@@ -61,9 +61,9 @@ class Store extends BaseStore {
     if (device) {
       runInAction(() => (this.device = device))
     }
-    await this.getDevices()
+    await this.refreshDevices()
   }
-  private getDevices = async () => {
+  refreshDevices = async () => {
     const devices = await main.getDevices()
     runInAction(() => (this.devices = devices))
     if (!isEmpty(devices)) {
@@ -82,7 +82,7 @@ class Store extends BaseStore {
     }
   }
   private bindEvent() {
-    main.on('changeDevice', this.getDevices)
+    main.on('changeDevice', this.refreshDevices)
   }
 }
 

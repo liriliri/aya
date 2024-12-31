@@ -109,5 +109,10 @@
   "onlyPackage": "仅显示应用",
   "kernelVersion": "内核版本",
   "physicalResolution": "物理分辨率",
-  "fontScale": "字体缩放"
+  "fontScale": "字体缩放",
+  "fontAdjust": "字体调节",
+  "scale": "缩放",
+  "deviceRefreshed": "设备已刷新",
+  "ipAddress": "IP 地址",
+  "macAddress": "MAC 地址"
 }

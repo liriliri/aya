@@ -9,15 +9,19 @@ import store from '../../store'
 import copy from 'licia/copy'
 import { PannelLoading } from '../../../components/loading'
 import className from 'licia/className'
+import FontAdjustModal from './FontAdjustModal'
 
 export default observer(function Overview() {
   const [overview, setOverview] = useState<types.PlainObj<string | number>>({})
+  const [fontAdjustModalVisible, setFontAdjustModalVisible] = useState(false)
 
-  useEffect(() => {
+  useEffect(() => refresh(), [])
+
+  function refresh() {
     if (store.device) {
       main.getOverview(store.device.id).then(setOverview)
     }
-  }, [])
+  }
 
   let content: JSX.Element | null = null
 
@@ -74,8 +78,28 @@ export default observer(function Overview() {
             `${overview.resolution} (${overview.density}dpi)`,
             'phone'
           )}
-          {item(t('fontScale'), `${overview.fontScale}x`, 'font')}
+          {item(
+            t('fontScale'),
+            overview.fontScale ? `${overview.fontScale}x` : '1x',
+            'font',
+            overview.fontScale
+              ? () => setFontAdjustModalVisible(true)
+              : undefined
+          )}
         </div>
+        <div className={Style.row}>
+          {item('Wi-Fi', overview.wifi, 'wifi')}
+          {item(t('ipAddress'), overview.ip, 'browser')}
+          {item(t('macAddress'), overview.mac, 'browser')}
+        </div>
+        <FontAdjustModal
+          visible={fontAdjustModalVisible}
+          initialScale={overview.fontScale as number}
+          onClose={() => {
+            setFontAdjustModalVisible(false)
+            refresh()
+          }}
+        />
       </div>
     )
   }
@@ -83,14 +107,31 @@ export default observer(function Overview() {
   return <div className={className('panel', Style.container)}>{content}</div>
 })
 
-function item(title, value, icon = 'info') {
+function item(title, value, icon = 'info', onDoubleClick?: () => void) {
   function copyValue() {
-    copy(value)
-    notify(t('copied'), { icon: 'info' })
+    setTimeout(() => {
+      if (hasDoubleClick) {
+        return
+      }
+      copy(value)
+      notify(t('copied'), { icon: 'info' })
+    }, 200)
   }
 
+  let hasDoubleClick = false
+
   return (
-    <div className={Style.item} onClick={copyValue}>
+    <div
+      className={Style.item}
+      onClick={copyValue}
+      onDoubleClick={() => {
+        if (!onDoubleClick) {
+          return
+        }
+        hasDoubleClick = true
+        onDoubleClick()
+      }}
+    >
       <div className={Style.title}>
         <span className={`icon-${icon}`}></span>
         &nbsp;{title}

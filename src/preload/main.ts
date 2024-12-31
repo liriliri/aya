@@ -14,6 +14,9 @@ export default {
   getOverview: (deviceId: string) => {
     return ipcRenderer.invoke('getOverview', deviceId)
   },
+  setFontScale: (deviceId: string, scale: number) => {
+    return ipcRenderer.invoke('setFontScale', deviceId, scale)
+  },
   getPerformance: (deviceId: string) => {
     return ipcRenderer.invoke('getPerformance', deviceId)
   },

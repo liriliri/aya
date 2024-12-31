@@ -109,5 +109,10 @@
   "onlyPackage": "Sadece Paketler",
   "kernelVersion": "Çekirdek Sürümü",
   "physicalResolution": "Fiziksel Çözünürlük",
-  "fontScale": "Yazı Tipi Ölçeği"
+  "fontScale": "Yazı Tipi Ölçeği",
+  "fontAdjust": "Yazı Tipi Ayarı",
+  "scale": "Ölçek",
+  "deviceRefreshed": "Cihaz yenilendi",
+  "ipAddress": "IP Adresi",
+  "macAddress": "MAC Adresi"
 }

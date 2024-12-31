@@ -87,6 +87,11 @@ export default observer(function Overview() {
               : undefined
           )}
         </div>
+        <div className={Style.row}>
+          {item('Wi-Fi', overview.wifi, 'wifi')}
+          {item(t('ipAddress'), overview.ip, 'browser')}
+          {item(t('macAddress'), overview.mac, 'browser')}
+        </div>
         <FontAdjustModal
           visible={fontAdjustModalVisible}
           initialScale={overview.fontScale as number}

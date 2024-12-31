@@ -112,5 +112,7 @@
   "fontScale": "字体缩放",
   "fontAdjust": "字体调节",
   "scale": "缩放",
-  "deviceRefreshed": "设备已刷新"
+  "deviceRefreshed": "设备已刷新",
+  "ipAddress": "IP 地址",
+  "macAddress": "MAC 地址"
 }

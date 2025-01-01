@@ -14,6 +14,7 @@ const config = {
   nsis: {
     allowToChangeInstallationDirectory: true,
     oneClick: false,
+    installerSidebar: 'build/installerSidebar.bmp',
   },
   win: {
     target: [

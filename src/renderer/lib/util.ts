@@ -5,12 +5,14 @@ import h from 'licia/h'
 import contain from 'licia/contain'
 import LunaNotification, { INotifyOptions } from 'luna-notification'
 import enUS from '../../common/langs/en-US.json'
+import arIQ from '../../common/langs/ar-IQ.json'
 import zhCN from '../../common/langs/zh-CN.json'
 import trTR from '../../common/langs/tr-TR.json'
 import { isObservable, toJS } from 'mobx'
 
 export const i18n = new I18n('en-US', {
   'en-US': enUS,
+  'ar-IQ': defaults(arIQ, enUS),
   'zh-CN': defaults(zhCN, enUS),
   'tr-TR': defaults(trTR, enUS),
 })

@@ -80,6 +80,7 @@ const SettingsModal = observer(function SettingsModal(
           options={{
             [t('sysPreference')]: 'system',
             English: 'en-US',
+            ["العربية"]:"ar-IQ",
             ['中文']: 'zh-CN',
             ['Türkçe']: 'tr-TR',
           }}

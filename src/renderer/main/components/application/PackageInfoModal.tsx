@@ -4,6 +4,8 @@ import { t } from '../../../lib/util'
 import Style from './PackageInfoModal.module.scss'
 import defaultIcon from '../../../assets/img/default-icon.png'
 import fileSize from 'licia/fileSize'
+import md5 from 'licia/md5'
+import convertBin from 'licia/convertBin'
 import dateFormat from 'licia/dateFormat'
 
 interface IProps {
@@ -23,10 +25,13 @@ interface IPackageInfo {
   lastUpdateTime: number
   minSdkVersion?: number
   targetSdkVersion?: number
+  signatures: string[]
 }
 
 export default function PackageInfoModal(props: IProps) {
   const { packageInfo } = props
+
+  const signature = packageInfo.signatures[0]
 
   return createPortal(
     <LunaModal
@@ -62,6 +67,8 @@ export default function PackageInfoModal(props: IProps) {
         dateFormat(new Date(packageInfo.lastUpdateTime), 'yyyy-mm-dd HH:MM:ss')
       )}
       {item(t('apkSize'), fileSize(packageInfo.apkSize))}
+      {signature &&
+        item(t('signature') + ' MD5', md5(convertBin(signature, 'Unit8Array')))}
     </LunaModal>,
     document.body
   )

@@ -21,9 +21,9 @@ class PackageManager(private val manager: IInterface) {
         )
     }
 
-    fun getPackageInfo(packageName: String): PackageInfo {
+    fun getPackageInfo(packageName: String, flags: Int): PackageInfo {
         Log.i(TAG, "Get package info: $packageName")
 
-        return getPackageInfoMethod.invoke(manager, packageName, 1, 0) as PackageInfo
+        return getPackageInfoMethod.invoke(manager, packageName, flags, 0) as PackageInfo
     }
 }

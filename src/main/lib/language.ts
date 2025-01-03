@@ -1,5 +1,6 @@
 import { getSettingsStore } from './store'
 import enUS from '../../common/langs/en-US.json'
+import arIQ from "../../common/langs/ar-IQ.json"
 import zhCN from '../../common/langs/zh-CN.json'
 import trTR from '../../common/langs/tr-TR.json'
 import I18n from 'licia/I18n'
@@ -12,6 +13,7 @@ const store = getSettingsStore()
 
 const langs = {
   'en-US': enUS,
+  'ar-IQ': defaults(arIQ, enUS),
   'zh-CN': defaults(zhCN, enUS),
   'tr-TR': defaults(trTR, enUS),
 }

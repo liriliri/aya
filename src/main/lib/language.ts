@@ -1,6 +1,6 @@
 import { getSettingsStore } from './store'
 import enUS from '../../common/langs/en-US.json'
-import arIQ from "../../common/langs/ar-IQ.json"
+import arIQ from '../../common/langs/ar-IQ.json'
 import zhCN from '../../common/langs/zh-CN.json'
 import trTR from '../../common/langs/tr-TR.json'
 import I18n from 'licia/I18n'

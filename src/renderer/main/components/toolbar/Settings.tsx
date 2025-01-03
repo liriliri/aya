@@ -79,10 +79,10 @@ const SettingsModal = observer(function SettingsModal(
           title={t('language')}
           options={{
             [t('sysPreference')]: 'system',
+            ['العربية']: 'ar-IQ',
             English: 'en-US',
-            ["العربية"]:"ar-IQ",
-            ['中文']: 'zh-CN',
             ['Türkçe']: 'tr-TR',
+            ['中文']: 'zh-CN',
           }}
         />
         <LunaSettingTitle title="ADB" />

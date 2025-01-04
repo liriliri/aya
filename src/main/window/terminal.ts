@@ -1,8 +1,6 @@
 import { BrowserWindow, ipcMain } from 'electron'
 import { getTerminalStore } from '../lib/store'
 import * as window from '../lib/window'
-import isWindows from 'licia/isWindows'
-import contain from 'licia/contain'
 import isBuffer from 'licia/isBuffer'
 
 const store = getTerminalStore()
@@ -59,12 +57,16 @@ export function init() {
     if (isBuffer(data)) {
       data = data.toString('utf8')
     }
-    if (isWindows && contain(data, '|')) {
-      data = (data as string).replace(/\ufffd/g, '█')
-    }
     logs.push(data as string)
-    window.sendAll('addLog', data)
+    window.sendTo('terminal', 'addLog', data)
   }
+
+  function logError(err: Error) {
+    console.error(err)
+  }
+
+  process.on('uncaughtException', logError)
+  process.on('unhandledRejection', logError)
 }
 
 function initIpc() {

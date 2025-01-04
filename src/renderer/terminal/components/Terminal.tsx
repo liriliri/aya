@@ -53,7 +53,7 @@ export default observer(function () {
     main.getLogs().then((logs: string[]) => {
       each(logs, (log) => write(log))
     })
-    main.on('addLog', (event, log) => write(log))
+    main.on('addLog', (log) => write(log))
 
     termRef.current = term
 

@@ -1,9 +1,10 @@
 import isMac from 'licia/isMac'
 import { lazy } from 'react'
 import { createRoot } from 'react-dom/client'
-import { i18n } from './lib/util'
+import { i18n, t } from './lib/util'
 import { isDev } from '../common/util'
 import hotKey from 'licia/hotkey'
+import getUrlParam from 'licia/getUrlParam'
 import './main.scss'
 import './icon.css'
 import 'luna-toolbar/css'
@@ -21,8 +22,15 @@ import LunaModal from 'luna-modal'
 function renderApp() {
   const container: HTMLElement = document.getElementById('app') as HTMLElement
 
-  const App = lazy(() => import('./main/App.js') as Promise<any>)
-  const title = 'AYA'
+  let App = lazy(() => import('./main/App.js') as Promise<any>)
+  let title = 'AYA'
+
+  switch (getUrlParam('page')) {
+    case 'terminal':
+      App = lazy(() => import('./terminal/App.js') as Promise<any>)
+      title = t('terminal')
+      break
+  }
 
   preload.setTitle(title)
 

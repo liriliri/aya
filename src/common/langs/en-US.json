@@ -115,5 +115,7 @@
   "deviceRefreshed": "Device refreshed",
   "ipAddress": "IP Address",
   "macAddress": "MAC Address",
-  "signature": "Signature"
+  "signature": "Signature",
+  "terminal": "Terminal",
+  "tools": "Tools"
 }

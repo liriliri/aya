@@ -1,4 +1,6 @@
 @use './theme' as theme;
+@use 'sass:meta';
+@use 'sass:map';
 
 .luna-setting {
   font-family: theme.$font-family;
@@ -245,6 +247,30 @@
 .I {
   .luna-logcat-priority {
     background: var(--aya-color-info-text);
+  }
+}
+
+$colors: 'blue', 'purple', 'cyan', 'green', 'magenta', 'pink', 'red', 'orange',
+  'yellow', 'volcano', 'geekblue', 'gold', 'lime';
+
+$variables: meta.module-variables(theme);
+@each $color in $colors {
+  @for $i from 6 through 10 {
+    .luna-logcat-color-#{$color}-#{$i} {
+      $variable-name: #{$color}-#{$i};
+      color: map.get($variables, $variable-name);
+    }
+  }
+}
+
+.-theme-with-dark-background {
+  @each $color in $colors {
+    @for $i from 6 through 10 {
+      .luna-logcat-color-#{$color}-#{$i} {
+        $variable-name: #{$color}-#{$i}-dark;
+        color: map.get($variables, $variable-name);
+      }
+    }
   }
 }
 

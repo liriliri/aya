@@ -96,14 +96,19 @@ export default observer(function Logcat() {
     entriesRef.current = []
   }
 
-  const onContextMenu = (e: React.MouseEvent) => {
+  const onContextMenu = (e: PointerEvent, entry: any) => {
+    e.preventDefault()
     const logcat = logcatRef.current!
     const template: any[] = [
       {
         label: t('copy'),
         click: () => {
           if (logcat.hasSelection()) {
+            console.log('a')
             copy(logcat.getSelection())
+          } else if (entry) {
+            console.log('b')
+            copy(entry.message)
           }
         },
       },

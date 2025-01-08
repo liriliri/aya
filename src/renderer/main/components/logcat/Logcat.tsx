@@ -104,10 +104,8 @@ export default observer(function Logcat() {
         label: t('copy'),
         click: () => {
           if (logcat.hasSelection()) {
-            console.log('a')
             copy(logcat.getSelection())
           } else if (entry) {
-            console.log('b')
             copy(entry.message)
           }
         },

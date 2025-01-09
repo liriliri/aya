@@ -5,7 +5,7 @@ import LunaToolbar, {
   LunaToolbarSpace,
   LunaToolbarText,
 } from 'luna-toolbar/react'
-import map from 'licia/map'
+import LunaIconList from 'luna-icon-list/react'
 import isEmpty from 'licia/isEmpty'
 import Style from './Application.module.scss'
 import { observer } from 'mobx-react-lite'
@@ -14,41 +14,38 @@ import store from '../../store'
 import { PannelLoading } from '../../../components/loading'
 import ToolbarIcon from '../../../components/ToolbarIcon'
 import { notify, t, isFileDrop } from '../../../lib/util'
-import isStrBlank from 'licia/isStrBlank'
-import contain from 'licia/contain'
-import lowerCase from 'licia/lowerCase'
 import className from 'licia/className'
 import endWith from 'licia/endWith'
 import find from 'licia/find'
 import chunk from 'licia/chunk'
+import map from 'licia/map'
 import concat from 'licia/concat'
-import Package from './Package'
+import LunaModal from 'luna-modal'
 import PackageInfoModal from './PackageInfoModal'
+import defaultIcon from '../../../assets/img/default-icon.png'
+import contextMenu from '../../../lib/contextMenu'
 
 export default observer(function Application() {
   const [isLoading, setIsLoading] = useState(false)
   const [packageInfo, setPackageInfo] = useState<any>({})
   const [packageInfos, setPackageInfos] = useState<any[]>([])
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [filter, setFilter] = useState('')
   const [dropHighlight, setDropHighlight] = useState(false)
   const [packageInfoModalVisible, setPackageInfoModalVisible] = useState(false)
+  const [isOpenEffectAnimating, setIsOpenEffectAnimating] = useState(false)
+  const [openEffectStyle, setOpenEffectStyle] = useState({
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0,
+  })
   const dragging = useRef(0)
+  const icons = useRef<any[]>([])
 
   const { device } = store
 
   useEffect(() => {
     refresh()
-
-    function resize() {
-      setWindowWidth(window.innerWidth)
-    }
-    resize()
-    window.addEventListener('resize', resize)
-
-    return () => {
-      window.removeEventListener('resize', resize)
-    }
   }, [])
 
   async function refresh() {
@@ -69,6 +66,14 @@ export default observer(function Application() {
         packageInfos,
         await main.getPackageInfos(device.id, chunk)
       )
+      icons.current = map(packageInfos, (info) => {
+        return {
+          info: info,
+          src: info.icon || defaultIcon,
+          name: info.label,
+          style: info.enabled ? {} : { filter: 'grayscale(100%)' },
+        }
+      })
       setPackageInfos(packageInfos)
     }
     setIsLoading(false)
@@ -119,9 +124,6 @@ export default observer(function Application() {
     }
   }
 
-  const columnCount = Math.round(windowWidth / store.application.itemSize)
-  const gapSize = store.application.itemSize < 150 ? 10 : 20
-
   function onShowInfo(packageName: string) {
     const packageInfo = find(
       packageInfos,
@@ -133,14 +135,126 @@ export default observer(function Application() {
     }
   }
 
+  function confirmText(key: string, info: any) {
+    const ret = t(key, { name: info.label })
+
+    if (info.system) {
+      return t('sysPackageTip') + ' ' + ret
+    }
+
+    return ret
+  }
+
+  async function open(packageName: string) {
+    try {
+      await main.startPackage(store.device!.id, packageName)
+      // eslint-disable-next-line
+    } catch (e) {
+      notify(t('startPackageErr'), { icon: 'error' })
+    }
+  }
+
+  function onContextMenu(e: PointerEvent, info: any) {
+    const device = store.device!
+
+    const template: any[] = [
+      {
+        label: t('packageInfo'),
+        click() {
+          onShowInfo(info.packageName)
+        },
+      },
+      {
+        label: t('exportApk'),
+        click: async () => {
+          const { canceled, filePath } = await main.showSaveDialog({
+            defaultPath: `${info.packageName}-${info.versionName}.apk`,
+          })
+          if (canceled) {
+            return
+          }
+          await main.pullFile(device.id, info.apkPath, filePath)
+          notify(t('apkExported', { path: filePath }), {
+            icon: 'success',
+            duration: 5000,
+          })
+        },
+      },
+      {
+        type: 'separator',
+      },
+      {
+        label: t('open'),
+        click: () => open(info.packageName),
+      },
+      {
+        label: t('stop'),
+        click: async () => {
+          const result = await LunaModal.confirm(
+            confirmText('stopPackageConfirm', info)
+          )
+          if (result) {
+            await main.stopPackage(device.id, info.packageName)
+          }
+        },
+      },
+      {
+        type: 'separator',
+      },
+      {
+        label: t('disablePackage'),
+        click: async () => {
+          const result = await LunaModal.confirm(
+            confirmText('disablePackageConfirm', info)
+          )
+          if (result) {
+            await main.disablePackage(device.id, info.packageName)
+            refresh()
+          }
+        },
+      },
+      {
+        label: t('enablePackage'),
+        click: async () => {
+          await main.enablePackage(device.id, info.packageName)
+          refresh()
+        },
+      },
+      {
+        type: 'separator',
+      },
+      {
+        label: t('clearData'),
+        click: async () => {
+          const result = await LunaModal.confirm(
+            confirmText('clearDataConfirm', info)
+          )
+          if (result) {
+            await main.clearPackage(device.id, info.packageName)
+            notify(t('dataCleared'), { icon: 'success' })
+          }
+        },
+      },
+      {
+        label: t('uninstall'),
+        click: async () => {
+          const result = await LunaModal.confirm(
+            confirmText('uninstallConfirm', info)
+          )
+          if (result) {
+            await main.uninstallPackage(device.id, info.packageName)
+            refresh()
+          }
+        },
+      },
+    ]
+
+    contextMenu(e, template)
+  }
+
   const applications = (
     <div
       className={Style.applications}
-      style={{
-        gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
-        gap: `${gapSize}px ${gapSize}px`,
-        padding: `${gapSize}px`,
-      }}
       onDrop={onDrop}
       onDragEnter={() => {
         dragging.current++
@@ -159,24 +273,40 @@ export default observer(function Application() {
         setDropHighlight(true)
       }}
     >
-      {map(packageInfos, (info: any) => {
-        if (!isStrBlank(filter)) {
-          if (!contain(lowerCase(info.label), lowerCase(filter))) {
-            return null
-          }
-        }
-
-        return (
-          <Package
-            key={info.packageName}
-            {...info}
-            onUninstall={refresh}
-            onDisable={refresh}
-            onEnable={refresh}
-            onShowInfo={onShowInfo}
-          />
-        )
-      })}
+      <LunaIconList
+        icons={icons.current}
+        size={store.application.itemSize}
+        selectable={false}
+        filter={filter}
+        onClick={(e: any, icon) => {
+          const info = (icon.data as any).info
+          onShowInfo(info.packageName)
+        }}
+        onDoubleClick={(e: any, icon) => {
+          const info = (icon.data as any).info
+          const container: HTMLElement = icon.container
+          const clientRect = container.getBoundingClientRect()
+          setOpenEffectStyle({
+            left: clientRect.left,
+            top: clientRect.top - 60,
+            width: clientRect.width,
+            height: clientRect.width,
+          })
+          open(info.packageName)
+          setIsOpenEffectAnimating(true)
+        }}
+        onContextMenu={(e: any, icon) => {
+          onContextMenu(e, (icon.data as any).info)
+        }}
+      />
+      <div
+        className={className({
+          [Style.openEffect]: true,
+          [Style.openEffectAnimation]: isOpenEffectAnimating,
+        })}
+        style={openEffectStyle}
+        onAnimationEnd={() => setIsOpenEffectAnimating(false)}
+      />
     </div>
   )
 
@@ -214,7 +344,7 @@ export default observer(function Application() {
         <ToolbarIcon
           icon="zoom-in"
           title={t('zoomIn')}
-          disabled={store.application.itemSize > 220 || isEmpty(packageInfos)}
+          disabled={store.application.itemSize > 256 || isEmpty(packageInfos)}
           onClick={() => {
             const itemSize = Math.round(store.application.itemSize * 1.2)
             store.application.set('itemSize', itemSize)
@@ -223,7 +353,7 @@ export default observer(function Application() {
         <ToolbarIcon
           icon="zoom-out"
           title={t('zoomOut')}
-          disabled={store.application.itemSize < 120 || isEmpty(packageInfos)}
+          disabled={store.application.itemSize < 32 || isEmpty(packageInfos)}
           onClick={() => {
             const itemSize = Math.round(store.application.itemSize * 0.8)
             store.application.set('itemSize', itemSize)

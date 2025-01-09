@@ -16,6 +16,7 @@ import 'luna-image-viewer/css'
 import 'luna-logcat/css'
 import 'luna-data-grid/css'
 import 'luna-performance-monitor/css'
+import 'luna-icon-list/css'
 import './luna.scss'
 import LunaModal from 'luna-modal'
 

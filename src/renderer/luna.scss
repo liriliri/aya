@@ -322,3 +322,15 @@ $variables: meta.module-variables(theme);
   font-size: #{theme.$font-size}px;
   line-height: 16px;
 }
+
+.luna-icon-list-item {
+  color: var(--aya-color-text);
+  &.luna-icon-list-selected {
+    .luna-icon-list-icon {
+      background-color: var(--aya-color-border);
+    }
+    .luna-icon-list-name {
+      background-color: var(--aya-color-primary);
+    }
+  }
+}

@@ -67,11 +67,18 @@ export default observer(function Application() {
         await main.getPackageInfos(device.id, chunk)
       )
       icons.current = map(packageInfos, (info) => {
+        const style: any = {
+          borderRadius: '20%',
+        }
+        if (!info.enabled) {
+          style.filter = 'grayscale(100%)'
+        }
+
         return {
           info: info,
           src: info.icon || defaultIcon,
           name: info.label,
-          style: info.enabled ? {} : { filter: 'grayscale(100%)' },
+          style,
         }
       })
       setPackageInfos(packageInfos)
@@ -254,7 +261,6 @@ export default observer(function Application() {
 
   const applications = (
     <div
-      className={Style.applications}
       onDrop={onDrop}
       onDragEnter={() => {
         dragging.current++

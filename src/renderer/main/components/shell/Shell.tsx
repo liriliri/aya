@@ -17,7 +17,7 @@ import {
 import copy from 'licia/copy'
 import Style from './Shell.module.scss'
 import '@xterm/xterm/css/xterm.css'
-import { t } from '../../../lib/util'
+import { t } from '../../../../common/util'
 import contextMenu from '../../../lib/contextMenu'
 
 export default observer(function Shell() {

@@ -18,7 +18,7 @@ import {
 import store from '../store'
 import '@xterm/xterm/css/xterm.css'
 import contextMenu from '../../lib/contextMenu'
-import { t } from '../../lib/util'
+import { t } from '../../../common/util'
 import copy from 'licia/copy'
 
 export default observer(function () {

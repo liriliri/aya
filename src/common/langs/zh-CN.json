@@ -117,5 +117,7 @@
   "macAddress": "MAC 地址",
   "signature": "签名",
   "terminal": "终端",
-  "tools": "工具"
+  "tools": "工具",
+  "ok": "确定",
+  "cancel": "取消"
 }

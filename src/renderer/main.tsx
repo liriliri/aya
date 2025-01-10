@@ -1,8 +1,7 @@
 import isMac from 'licia/isMac'
 import { lazy } from 'react'
 import { createRoot } from 'react-dom/client'
-import { i18n, t } from './lib/util'
-import { isDev } from '../common/util'
+import { isDev, t, i18n } from '../common/util'
 import hotKey from 'licia/hotkey'
 import getUrlParam from 'licia/getUrlParam'
 import './main.scss'
@@ -45,7 +44,12 @@ if (isDev()) {
 ;(async function () {
   const language = await main.getLanguage()
   i18n.locale(language)
-  LunaModal.i18n.locale(language)
+
+  LunaModal.i18n.locale('en-US')
+  LunaModal.i18n.set('en-US', {
+    ok: t('ok'),
+    cancel: t('cancel'),
+  })
 
   document.body.classList.add(`platform-${isMac ? 'mac' : 'windows'}`)
 

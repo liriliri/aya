@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { t } from '../lib/util'
+import { t } from '../../common/util'
 import className from 'licia/className'
 
 interface IProps {

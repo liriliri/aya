@@ -1,6 +1,6 @@
 import LunaModal from 'luna-modal/react'
 import { createPortal } from 'react-dom'
-import { t } from '../../../lib/util'
+import { t } from '../../../../common/util'
 import Style from './PackageInfoModal.module.scss'
 import defaultIcon from '../../../assets/img/default-icon.png'
 import fileSize from 'licia/fileSize'

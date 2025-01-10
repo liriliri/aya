@@ -6,7 +6,7 @@ import LunaToolbar, {
   LunaToolbarText,
 } from 'luna-toolbar/react'
 import { useEffect, useState } from 'react'
-import { t } from '../../../lib/util'
+import { t } from '../../../../common/util'
 import toEl from 'licia/toEl'
 import LunaDataGrid from 'luna-data-grid/react'
 import map from 'licia/map'

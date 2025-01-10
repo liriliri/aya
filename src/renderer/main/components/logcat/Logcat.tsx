@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from 'react'
 import store from '../../store'
 import copy from 'licia/copy'
 import download from 'licia/download'
-import { t } from '../../../lib/util'
+import { t } from '../../../../common/util'
 import ToolbarIcon from '../../../components/ToolbarIcon'
 import contextMenu from '../../../lib/contextMenu'
 

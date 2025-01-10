@@ -1,8 +1,27 @@
-.applications {
-  display: grid;
-  overflow: hidden;
-}
-
 .highlight {
   background: var(--aya-color-primary-bg);
+}
+
+.open-effect {
+  position: absolute;
+  border-radius: 50%;
+  content: '';
+  opacity: 0;
+  pointer-events: none;
+  background: rgba(79, 177, 85, 0.2);
+}
+
+.open-effect-animation {
+  animation: open-effect 0.3s ease-out forwards;
+}
+
+@keyframes open-effect {
+  0% {
+    opacity: 1;
+    transform: scale3d(0.1, 0.1, 1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale3d(4, 4, 1);
+  }
 }

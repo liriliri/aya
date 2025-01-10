@@ -19,7 +19,7 @@ import ImageViewer from 'luna-image-viewer'
 import ToolbarIcon from '../../../components/ToolbarIcon'
 import { useEffect, useRef, useState } from 'react'
 import store from '../../store'
-import { t } from '../../../lib/util'
+import { t } from '../../../../common/util'
 import CopyButton from '../../../components/CopyButton'
 import { copyData } from '../../lib/util'
 

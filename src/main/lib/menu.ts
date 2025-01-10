@@ -1,7 +1,8 @@
 import { Menu, MenuItemConstructorOptions, app, shell } from 'electron'
 import * as window from '../lib/window'
+import * as terminal from '../window/terminal'
 import isMac from 'licia/isMac'
-import { t } from './language'
+import { t } from '../../common/util'
 import upperCase from 'licia/upperCase'
 import isWindows from 'licia/isWindows'
 import { handleEvent } from './util'
@@ -75,6 +76,18 @@ function getTemplate(): MenuItemConstructorOptions[] {
     ],
   }
 
+  const tools = {
+    label: t('tools'),
+    submenu: [
+      {
+        label: t('terminal'),
+        click() {
+          terminal.showWin()
+        },
+      },
+    ],
+  }
+
   const help: any = {
     role: 'help',
     label: t('help'),
@@ -95,11 +108,10 @@ function getTemplate(): MenuItemConstructorOptions[] {
     ],
   }
 
-  const template = [help]
+  const template = [tools, help]
   if (isMac) {
     template.unshift(aya, edit)
   } else {
-    template.unshift(edit)
     template.push(aya)
   }
 

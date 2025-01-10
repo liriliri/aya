@@ -1,26 +1,9 @@
 import { getSettingsStore } from './store'
-import enUS from '../../common/langs/en-US.json'
-import zhCN from '../../common/langs/zh-CN.json'
-import trTR from '../../common/langs/tr-TR.json'
-import I18n from 'licia/I18n'
-import defaults from 'licia/defaults'
-import types from 'licia/types'
+import { i18n, hasLocale } from '../../common/util'
 import { app } from 'electron'
 import { handleEvent } from './util'
 
 const store = getSettingsStore()
-
-const langs = {
-  'en-US': enUS,
-  'zh-CN': defaults(zhCN, enUS),
-  'tr-TR': defaults(trTR, enUS),
-}
-
-const i18n = new I18n('en-US', langs)
-
-export function t(path: string | string[], data?: types.PlainObj<any>) {
-  return i18n.t(path, data)
-}
 
 let language = 'en-US'
 export function get() {
@@ -30,7 +13,7 @@ export function get() {
 export function init() {
   const lang = store.get('language')
   let systemLanguage = 'en-US'
-  if (langs[app.getLocale()]) {
+  if (hasLocale(app.getLocale())) {
     systemLanguage = app.getLocale()
   }
   language = lang === 'system' ? systemLanguage : lang

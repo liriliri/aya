@@ -1,6 +1,9 @@
 package io.liriliri.aya
 
+import android.annotation.TargetApi
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.content.res.AssetManager
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -105,15 +108,23 @@ class Connection(private val client: LocalSocket) : Thread() {
         return result
     }
 
+    @TargetApi(Build.VERSION_CODES.P)
     private fun getPackageInfo(packageName: String): JSONObject {
+        var flags = PackageManager.GET_ACTIVITIES
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            flags = flags or PackageManager.GET_SIGNING_CERTIFICATES
+        } else {
+            flags = flags or PackageManager.GET_SIGNATURES
+        }
         val packageInfo =
-            ServiceManager.packageManager.getPackageInfo(packageName)
+            ServiceManager.packageManager.getPackageInfo(packageName, flags)
 
         val info = JSONObject()
         info.put("packageName", packageInfo.packageName)
         info.put("versionName", packageInfo.versionName)
         info.put("firstInstallTime", packageInfo.firstInstallTime)
         info.put("lastUpdateTime", packageInfo.lastUpdateTime)
+        info.put("signatures", getSignatures(packageInfo))
 
         val applicationInfo = packageInfo.applicationInfo
         var apkSize = 0L
@@ -156,7 +167,7 @@ class Connection(private val client: LocalSocket) : Thread() {
                     icon = "data:image/png;base64,${
                         Base64.encodeToString(
                             Util.bitMapToPng(bitmapIcon, 20),
-                            Base64.DEFAULT
+                            Base64.NO_WRAP
                         )
                     }"
                 } catch (e: Exception) {
@@ -192,5 +203,19 @@ class Connection(private val client: LocalSocket) : Thread() {
         configuration.setToDefaults()
 
         return Resources(assetManager, displayMetrics, configuration)
+    }
+
+    private fun getSignatures(packageInfo: PackageInfo): JSONArray {
+        val signatures = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            packageInfo.signingInfo.apkContentsSigners
+        } else {
+            packageInfo.signatures
+        }
+
+        val array = JSONArray()
+        signatures.forEach {
+            array.put(Base64.encodeToString(it.toByteArray(), Base64.NO_WRAP))
+        }
+        return array
     }
 }

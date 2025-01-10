@@ -2,7 +2,7 @@ import { makeObservable, observable, runInAction } from 'mobx'
 import extend from 'licia/extend'
 
 export class Application {
-  itemSize = 150
+  itemSize = 72
   sysPackage = true
   constructor() {
     makeObservable(this, {

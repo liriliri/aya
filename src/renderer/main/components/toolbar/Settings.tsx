@@ -5,7 +5,8 @@ import LunaSetting, {
   LunaSettingSelect,
   LunaSettingTitle,
 } from 'luna-setting/react'
-import { t, notify } from '../../../lib/util'
+import { notify } from '../../../lib/util'
+import { t } from '../../../../common/util'
 import ToolbarIcon from '../../../components/ToolbarIcon'
 import Style from './Settings.module.scss'
 import { useState } from 'react'
@@ -79,9 +80,11 @@ const SettingsModal = observer(function SettingsModal(
           title={t('language')}
           options={{
             [t('sysPreference')]: 'system',
+            ['العربية']: 'ar-IQ',
             English: 'en-US',
-            ['中文']: 'zh-CN',
+            ['Русский']: 'ru-RU',
             ['Türkçe']: 'tr-TR',
+            ['中文']: 'zh-CN',
           }}
         />
         <LunaSettingTitle title="ADB" />

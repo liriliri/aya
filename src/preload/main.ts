@@ -98,6 +98,8 @@ export default {
   showSaveDialog: (options: SaveDialogOptions = {}) => {
     return ipcRenderer.invoke('showSaveDialog', options)
   },
+  getLogs: () => ipcRenderer.invoke('getLogs'),
+  clearLogs: () => ipcRenderer.invoke('clearLogs'),
   relaunch: () => ipcRenderer.invoke('relaunch'),
   on: (event: string, cb: types.AnyFn) => {
     const listener = (e, ...args) => cb(...args)

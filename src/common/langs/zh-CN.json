@@ -114,5 +114,10 @@
   "scale": "缩放",
   "deviceRefreshed": "设备已刷新",
   "ipAddress": "IP 地址",
-  "macAddress": "MAC 地址"
+  "macAddress": "MAC 地址",
+  "signature": "签名",
+  "terminal": "终端",
+  "tools": "工具",
+  "ok": "确定",
+  "cancel": "取消"
 }

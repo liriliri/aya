@@ -1,4 +1,6 @@
 @use './theme' as theme;
+@use 'sass:meta';
+@use 'sass:map';
 
 .luna-setting {
   font-family: theme.$font-family;
@@ -248,6 +250,30 @@
   }
 }
 
+$colors: 'blue', 'purple', 'cyan', 'green', 'magenta', 'pink', 'red', 'orange',
+  'yellow', 'volcano', 'geekblue', 'gold', 'lime';
+
+$variables: meta.module-variables(theme);
+@each $color in $colors {
+  @for $i from 6 through 10 {
+    .luna-logcat-color-#{$color}-#{$i} {
+      $variable-name: #{$color}-#{$i};
+      color: map.get($variables, $variable-name);
+    }
+  }
+}
+
+.-theme-with-dark-background {
+  @each $color in $colors {
+    @for $i from 6 through 10 {
+      .luna-logcat-color-#{$color}-#{$i} {
+        $variable-name: #{$color}-#{$i}-dark;
+        color: map.get($variables, $variable-name);
+      }
+    }
+  }
+}
+
 .luna-data-grid {
   color: var(--aya-color-text);
   background: var(--aya-color-bg-container);
@@ -295,4 +321,16 @@
   height: 16px;
   font-size: #{theme.$font-size}px;
   line-height: 16px;
+}
+
+.luna-icon-list-item {
+  color: var(--aya-color-text);
+  &.luna-icon-list-selected {
+    .luna-icon-list-icon {
+      background-color: var(--aya-color-border);
+    }
+    .luna-icon-list-name {
+      background-color: var(--aya-color-primary);
+    }
+  }
 }

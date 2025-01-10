@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from 'react'
 import store from '../../store'
 import copy from 'licia/copy'
 import download from 'licia/download'
-import { t } from '../../../lib/util'
+import { t } from '../../../../common/util'
 import ToolbarIcon from '../../../components/ToolbarIcon'
 import contextMenu from '../../../lib/contextMenu'
 
@@ -96,7 +96,8 @@ export default observer(function Logcat() {
     entriesRef.current = []
   }
 
-  const onContextMenu = (e: React.MouseEvent) => {
+  const onContextMenu = (e: PointerEvent, entry: any) => {
+    e.preventDefault()
     const logcat = logcatRef.current!
     const template: any[] = [
       {
@@ -104,6 +105,8 @@ export default observer(function Logcat() {
         click: () => {
           if (logcat.hasSelection()) {
             copy(logcat.getSelection())
+          } else if (entry) {
+            copy(entry.message)
           }
         },
       },

@@ -114,5 +114,10 @@
   "scale": "Scale",
   "deviceRefreshed": "Device refreshed",
   "ipAddress": "IP Address",
-  "macAddress": "MAC Address"
+  "macAddress": "MAC Address",
+  "signature": "Signature",
+  "terminal": "Terminal",
+  "tools": "Tools",
+  "ok": "OK",
+  "cancel": "Cancel"
 }

@@ -114,5 +114,10 @@
   "scale": "Ölçek",
   "deviceRefreshed": "Cihaz yenilendi",
   "ipAddress": "IP Adresi",
-  "macAddress": "MAC Adresi"
+  "macAddress": "MAC Adresi",
+  "signature": "İmza",
+  "terminal": "Terminal",
+  "tools": "Araçlar",
+  "ok": "Tamam",
+  "cancel": "Iptal"
 }

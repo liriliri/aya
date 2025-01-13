@@ -130,5 +130,6 @@
   "directory": "Directory",
   "upload": "Upload",
   "fileUploading": "Uploading file {{path}}",
-  "uploadFileErr": "Failed to upload file"
+  "uploadFileErr": "Failed to upload file",
+  "fileDownloading": "Downloading file {{path}}"
 }

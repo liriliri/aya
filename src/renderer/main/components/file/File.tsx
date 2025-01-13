@@ -40,8 +40,15 @@ export default observer(function File() {
   }
 
   function onDoubleClick(e: MouseEvent, file: IFile) {
+    if (!store.device) {
+      return
+    }
+
     if (file.directory) {
       getFiles(path + file.name + '/')
+    } else {
+      notify(t('fileDownloading', { path: file.name }), { icon: 'info' })
+      main.openFile(store.device.id, path + file.name)
     }
   }
 

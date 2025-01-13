@@ -1,6 +1,9 @@
 import { Client } from '@devicefarmer/adbkit'
 import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
 import { handleEvent } from '../util'
+import { shell } from 'electron'
 
 let client: Client
 
@@ -18,6 +21,12 @@ async function pullFile(deviceId: string, path: string, dest: string) {
       reject(err)
     }
   })
+}
+
+async function openFile(deviceId: string, p: string) {
+  const dest = path.join(os.tmpdir(), path.basename(p))
+  await pullFile(deviceId, p, dest)
+  shell.openPath(dest)
 }
 
 async function pushFile(deviceId: string, src: string, dest: string) {
@@ -59,4 +68,5 @@ export async function init(c: Client) {
   handleEvent('pullFile', pullFile)
   handleEvent('pushFile', pushFile)
   handleEvent('readDir', readDir)
+  handleEvent('openFile', openFile)
 }

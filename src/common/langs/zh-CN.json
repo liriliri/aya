@@ -130,5 +130,6 @@
   "directory": "文件夹",
   "upload": "上传",
   "fileUploading": "正在上传文件 {{path}}",
-  "uploadFileErr": "上传文件失败"
+  "uploadFileErr": "上传文件失败",
+  "fileDownloading": "正在下载文件 {{path}}"
 }

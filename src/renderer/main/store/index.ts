@@ -5,6 +5,7 @@ import BaseStore from '../../store/BaseStore'
 import { Settings } from './settings'
 import { Application } from './application'
 import { Process } from './process'
+import { File } from './file'
 import { setMainStore } from '../../lib/util'
 import isEmpty from 'licia/isEmpty'
 
@@ -20,6 +21,7 @@ class Store extends BaseStore {
   settings = new Settings()
   application = new Application()
   process = new Process()
+  file = new File()
   constructor() {
     super()
 

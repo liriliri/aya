@@ -119,5 +119,13 @@
   "terminal": "Terminal",
   "tools": "Tools",
   "ok": "OK",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "back": "Back",
+  "forward": "Forward",
+  "up": "Up",
+  "iconView": "Icon View",
+  "listView": "List View",
+  "size": "Size",
+  "dateModified": "Date Modified",
+  "directory": "Directory"
 }

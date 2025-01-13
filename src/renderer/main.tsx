@@ -19,6 +19,7 @@ import 'luna-icon-list/css'
 import 'luna-file-list/css'
 import './luna.scss'
 import LunaModal from 'luna-modal'
+import LunaFileList from 'luna-file-list'
 
 function renderApp() {
   const container: HTMLElement = document.getElementById('app') as HTMLElement
@@ -50,6 +51,15 @@ if (isDev()) {
   LunaModal.i18n.set('en-US', {
     ok: t('ok'),
     cancel: t('cancel'),
+  })
+  LunaFileList.i18n.locale('en-US')
+  LunaFileList.i18n.set('en-US', {
+    name: t('name'),
+    size: t('size'),
+    type: t('type'),
+    dateModified: t('dateModified'),
+    directory: t('directory'),
+    file: t('file'),
   })
 
   document.body.classList.add(`platform-${isMac ? 'mac' : 'windows'}`)

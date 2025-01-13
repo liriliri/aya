@@ -1,0 +1,12 @@
+.path {
+  flex-grow: 1;
+  input {
+    width: 100%;
+  }
+}
+
+.file-list {
+  :global(.luna-data-grid) {
+    border: none !important;
+  }
+}

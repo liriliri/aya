@@ -119,5 +119,13 @@
   "terminal": "终端",
   "tools": "工具",
   "ok": "确定",
-  "cancel": "取消"
+  "cancel": "取消",
+  "back": "返回",
+  "forward": "前进",
+  "up": "上一级",
+  "iconView": "图标视图",
+  "listView": "列表视图",
+  "size": "大小",
+  "dateModified": "修改日期",
+  "directory": "文件夹"
 }

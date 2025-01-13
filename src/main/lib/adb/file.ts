@@ -1,6 +1,7 @@
 import { Client } from '@devicefarmer/adbkit'
 import fs from 'node:fs'
 import { handleEvent } from '../util'
+import map from 'licia/map'
 
 let client: Client
 
@@ -20,8 +21,21 @@ async function pullFile(deviceId: string, path: string, dest: string) {
   })
 }
 
+async function readDir(deviceId: string, path: string) {
+  const device = await client.getDevice(deviceId)
+  const files: any[] = await device.readdir(path)
+
+  return map(files, (file) => {
+    return {
+      name: file.name,
+      directory: file.isDirectory(),
+    }
+  })
+}
+
 export async function init(c: Client) {
   client = c
 
   handleEvent('pullFile', pullFile)
+  handleEvent('readDir', readDir)
 }

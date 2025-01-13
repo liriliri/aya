@@ -83,6 +83,9 @@ export default {
   pullFile: (deviceId: string, path: string, dest: string) => {
     return ipcRenderer.invoke('pullFile', deviceId, path, dest)
   },
+  readDir: (deviceId: string, path: string) => {
+    return ipcRenderer.invoke('readDir', deviceId, path)
+  },
   openExternal: (url: string) => ipcRenderer.invoke('openExternal', url),
   showContextMenu: (x: number, y: number, template: any) => {
     ipcRenderer.invoke(

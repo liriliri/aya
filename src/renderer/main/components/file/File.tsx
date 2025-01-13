@@ -15,6 +15,7 @@ import className from 'licia/className'
 export default observer(function File() {
   const [fileList, setFileList] = useState([])
   const [path, setPath] = useState('/')
+  const [filter, setFilter] = useState('')
 
   useEffect(() => getFiles('/'), [])
 
@@ -23,6 +24,7 @@ export default observer(function File() {
       main.readDir(store.device.id, path).then((files) => {
         setPath(path)
         setFileList(files)
+        setFilter('')
       })
     }
   }
@@ -58,6 +60,12 @@ export default observer(function File() {
           title={t('refresh')}
           onClick={() => getFiles(path)}
         />
+        <LunaToolbarInput
+          keyName="filter"
+          value={filter}
+          placeholder={t('filter')}
+          onChange={(val) => setFilter(val)}
+        />
         <LunaToolbarSeparator />
         <ToolbarIcon
           icon="grid"
@@ -83,6 +91,7 @@ export default observer(function File() {
       <LunaFileList
         className={className('panel-body', Style.fileList)}
         files={fileList}
+        filter={filter}
         listView={store.file.listView}
         onDoubleClick={onDoubleClick}
       />

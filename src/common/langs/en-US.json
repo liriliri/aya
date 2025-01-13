@@ -127,5 +127,8 @@
   "listView": "List View",
   "size": "Size",
   "dateModified": "Date Modified",
-  "directory": "Directory"
+  "directory": "Directory",
+  "upload": "Upload",
+  "fileUploading": "Uploading file {{path}}",
+  "uploadFileErr": "Failed to upload file"
 }

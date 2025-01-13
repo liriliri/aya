@@ -83,6 +83,9 @@ export default {
   pullFile: (deviceId: string, path: string, dest: string) => {
     return ipcRenderer.invoke('pullFile', deviceId, path, dest)
   },
+  pushFile: (deviceId: string, src: string, dest: string) => {
+    return ipcRenderer.invoke('pushFile', deviceId, src, dest)
+  },
   readDir: (deviceId: string, path: string) => {
     return ipcRenderer.invoke('readDir', deviceId, path)
   },

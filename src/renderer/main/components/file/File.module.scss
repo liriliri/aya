@@ -6,7 +6,12 @@
 }
 
 .file-list {
+  height: 100%;
   :global(.luna-data-grid) {
     border: none !important;
   }
+}
+
+.highlight {
+  background: var(--aya-color-primary-bg);
 }

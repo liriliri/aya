@@ -127,5 +127,8 @@
   "listView": "列表视图",
   "size": "大小",
   "dateModified": "修改日期",
-  "directory": "文件夹"
+  "directory": "文件夹",
+  "upload": "上传",
+  "fileUploading": "正在上传文件 {{path}}",
+  "uploadFileErr": "上传文件失败"
 }

@@ -20,6 +20,16 @@ async function pullFile(deviceId: string, path: string, dest: string) {
   })
 }
 
+async function pushFile(deviceId: string, src: string, dest: string) {
+  const device = await client.getDevice(deviceId)
+  const transfer = await device.push(src, dest)
+
+  return new Promise((resolve, reject) => {
+    transfer.on('end', () => resolve(null))
+    transfer.on('error', reject)
+  })
+}
+
 async function readDir(deviceId: string, path: string) {
   const device = await client.getDevice(deviceId)
   const files: any[] = await device.readdir(path)
@@ -47,5 +57,6 @@ export async function init(c: Client) {
   client = c
 
   handleEvent('pullFile', pullFile)
+  handleEvent('pushFile', pushFile)
   handleEvent('readDir', readDir)
 }

@@ -17,7 +17,7 @@ import splitPath from 'licia/splitPath'
 
 export default observer(function File() {
   const [fileList, setFileList] = useState([])
-  const [path, setPath] = useState('/')
+  const [path, setPath] = useState('')
   const [filter, setFilter] = useState('')
   const [dropHighlight, setDropHighlight] = useState(false)
   const [history, setHistory] = useState<string[]>([])
@@ -136,7 +136,7 @@ export default observer(function File() {
           icon="arrow-up"
           title={t('up')}
           onClick={up}
-          disabled={path === '/'}
+          disabled={path === '/' || !store.device}
         />
         <LunaToolbarInput
           keyName="path"
@@ -201,7 +201,9 @@ export default observer(function File() {
             return
           }
           e.preventDefault()
-          setDropHighlight(true)
+          if (store.device) {
+            setDropHighlight(true)
+          }
         }}
         className={className('panel-body', {
           [Style.highlight]: dropHighlight,

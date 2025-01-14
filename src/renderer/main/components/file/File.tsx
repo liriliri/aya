@@ -20,10 +20,12 @@ export default observer(function File() {
   const [path, setPath] = useState('/')
   const [filter, setFilter] = useState('')
   const [dropHighlight, setDropHighlight] = useState(false)
+  const [history, setHistory] = useState<string[]>([])
+  const [historyIdx, setHistoryIdx] = useState(-1)
   const dragging = useRef(0)
 
   useEffect(() => {
-    getFiles('/')
+    go('/')
   }, [])
 
   async function getFiles(path: string) {
@@ -35,8 +37,30 @@ export default observer(function File() {
     }
   }
 
-  function up() {
-    getFiles(path.split('/').slice(0, -2).join('/') + '/')
+  async function back() {
+    if (historyIdx <= 0) {
+      return
+    }
+    await getFiles(history[historyIdx - 1])
+    setHistoryIdx(historyIdx - 1)
+  }
+
+  async function forward() {
+    if (historyIdx >= history.length - 1) {
+      return
+    }
+    await getFiles(history[historyIdx + 1])
+    setHistoryIdx(historyIdx + 1)
+  }
+
+  async function go(p: string) {
+    await getFiles(p)
+    setHistory([...history.slice(0, historyIdx + 1), p])
+    setHistoryIdx(historyIdx + 1)
+  }
+
+  async function up() {
+    await go(path.split('/').slice(0, -2).join('/') + '/')
   }
 
   function onDoubleClick(e: MouseEvent, file: IFile) {
@@ -45,7 +69,7 @@ export default observer(function File() {
     }
 
     if (file.directory) {
-      getFiles(path + file.name + '/')
+      go(path + file.name + '/')
     } else {
       notify(t('fileDownloading', { path: file.name }), { icon: 'info' })
       main.openFile(store.device.id, path + file.name)
@@ -96,11 +120,17 @@ export default observer(function File() {
   return (
     <div className="panel-with-toolbar">
       <LunaToolbar className="panel-toolbar">
-        <ToolbarIcon icon="arrow-left" title={t('back')} onClick={() => {}} />
+        <ToolbarIcon
+          icon="arrow-left"
+          title={t('back')}
+          onClick={back}
+          disabled={historyIdx <= 0}
+        />
         <ToolbarIcon
           icon="arrow-right"
           title={t('forward')}
-          onClick={() => {}}
+          onClick={forward}
+          disabled={historyIdx >= history.length - 1}
         />
         <ToolbarIcon
           icon="arrow-up"

@@ -291,6 +291,9 @@ export async function init() {
     tracker.on('add', onDeviceChange)
     tracker.on('remove', onDeviceChange)
   })
+  function onDeviceChange() {
+    setTimeout(() => window.sendTo('main', 'changeDevice'), 2000)
+  }
 
   base.init(client)
   logcat.init(client)
@@ -299,10 +302,6 @@ export async function init() {
   packageAdb.init(client)
   file.init(client)
   fps.init()
-
-  function onDeviceChange() {
-    setTimeout(() => window.sendTo('main', 'changeDevice'), 2000)
-  }
 
   handleEvent('getDevices', getDevices)
   handleEvent('getOverview', getOverview)

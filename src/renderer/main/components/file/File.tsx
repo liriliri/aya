@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react-lite'
 import LunaToolbar, {
+  LunaToolbarHtml,
   LunaToolbarInput,
   LunaToolbarSeparator,
 } from 'luna-toolbar/react'
@@ -14,10 +15,15 @@ import { IFile } from 'luna-file-list'
 import className from 'licia/className'
 import isEmpty from 'licia/isEmpty'
 import splitPath from 'licia/splitPath'
+import contextMenu from '../../../lib/contextMenu'
+import LunaModal from 'luna-modal'
+import endWith from 'licia/endWith'
+import normalizePath from 'licia/normalizePath'
 
 export default observer(function File() {
-  const [fileList, setFileList] = useState([])
+  const [fileList, setFileList] = useState<any[]>([])
   const [path, setPath] = useState('')
+  const [customPath, setCustomPath] = useState('')
   const [filter, setFilter] = useState('')
   const [dropHighlight, setDropHighlight] = useState(false)
   const [history, setHistory] = useState<string[]>([])
@@ -32,9 +38,20 @@ export default observer(function File() {
     if (store.device) {
       const files = await main.readDir(store.device.id, path)
       setPath(path)
+      setCustomPath(path)
       setFileList(files)
       setFilter('')
     }
+  }
+
+  function fileExist(name: string) {
+    for (let i = 0, len = fileList.length; i < len; i++) {
+      if (fileList[i].name === name) {
+        return true
+      }
+    }
+
+    return false
   }
 
   async function back() {
@@ -63,7 +80,7 @@ export default observer(function File() {
     await go(path.split('/').slice(0, -2).join('/') + '/')
   }
 
-  function onDoubleClick(e: MouseEvent, file: IFile) {
+  function open(file: IFile) {
     if (!store.device) {
       return
     }
@@ -71,8 +88,104 @@ export default observer(function File() {
     if (file.directory) {
       go(path + file.name + '/')
     } else {
-      notify(t('fileDownloading', { path: file.name }), { icon: 'info' })
+      notify(t('fileDownloading', { path: path + file.name }), { icon: 'info' })
       main.openFile(store.device.id, path + file.name)
+    }
+  }
+
+  function onContextMenu(e: MouseEvent, file?: IFile) {
+    const device = store.device!
+
+    if (file) {
+      const template: any[] = [
+        {
+          label: t('open'),
+          click: () => open(file),
+        },
+      ]
+      if (!file.directory) {
+        template.push({
+          label: t('download'),
+          click: async () => {
+            const { canceled, filePath } = await main.showSaveDialog({
+              defaultPath: file.name,
+            })
+            if (canceled) {
+              return
+            }
+            notify(t('fileDownloading', { path: path + file.name }), {
+              icon: 'info',
+            })
+            await main.pullFile(device.id, path + file.name, filePath)
+            notify(t('fileDownloaded', { path: filePath }), {
+              icon: 'success',
+              duration: 5000,
+            })
+          },
+        })
+      }
+      template.push(
+        {
+          type: 'separator',
+        },
+        {
+          label: t('delete'),
+          click: async () => {
+            const result = await LunaModal.confirm(
+              t('deleteFileConfirm', { name: file.name })
+            )
+            if (result) {
+              const filePath = path + file.name
+              if (file.directory) {
+                await main.deleteDir(device.id, filePath)
+              } else {
+                await main.deleteFile(device.id, filePath)
+              }
+              getFiles(path)
+            }
+          },
+        }
+      )
+      template.push({
+        label: t('rename'),
+        click: async () => {
+          const name = await LunaModal.prompt(
+            t(file.directory ? 'newFolderName' : 'newFileName'),
+            file.name
+          )
+          if (name && name !== file.name) {
+            if (fileExist(name)) {
+              notify(t('fileExistErr', { name }), { icon: 'error' })
+              return
+            }
+            await main.moveFile(device.id, path + file.name, path + name)
+            getFiles(path)
+          }
+        },
+      })
+      contextMenu(e, template)
+    } else {
+      const template: any[] = [
+        {
+          label: t('upload'),
+          click: uploadFiles,
+        },
+        {
+          label: t('newFolder'),
+          click: async () => {
+            const name = await LunaModal.prompt(t('newFolderName'))
+            if (name) {
+              await main.createDir(device.id, path + name)
+              getFiles(path)
+            }
+          },
+        },
+        {
+          label: t('refresh'),
+          click: () => getFiles(path),
+        },
+      ]
+      contextMenu(e, template)
     }
   }
 
@@ -105,7 +218,7 @@ export default observer(function File() {
     for (let i = 0, len = files!.length; i < len; i++) {
       const file = files![i]
       const { name } = splitPath(file)
-      notify(t('fileUploading', { path: name }), { icon: 'info' })
+      notify(t('fileUploading', { path: file }), { icon: 'info' })
       try {
         await main.pushFile(store.device.id, file, path + name)
         // eslint-disable-next-line
@@ -115,6 +228,24 @@ export default observer(function File() {
     }
 
     await getFiles(path)
+  }
+
+  async function goCustomPath() {
+    let p = customPath
+    if (!endWith(p, '/')) {
+      p = p + '/'
+    }
+    p = normalizePath(p)
+
+    try {
+      const stat = await main.statFile(store.device!.id, customPath)
+      if (stat.directory) {
+        go(p)
+      }
+      // eslint-disable-next-line
+    } catch (e) {
+      notify(t('folderNotExistErr'), { icon: 'error' })
+    }
   }
 
   return (
@@ -138,12 +269,22 @@ export default observer(function File() {
           onClick={up}
           disabled={path === '/' || !store.device}
         />
-        <LunaToolbarInput
-          keyName="path"
-          value={path}
-          className={Style.path}
+        <LunaToolbarHtml
+          className={className(Style.path, 'luna-toolbar-item-input')}
           disabled={!store.device}
-        />
+        >
+          <input
+            value={customPath}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setCustomPath(e.target.value)
+            }}
+            onKeyDown={async (e: React.KeyboardEvent) => {
+              if (e.key === 'Enter') {
+                goCustomPath()
+              }
+            }}
+          />
+        </LunaToolbarHtml>
         <ToolbarIcon
           icon="refresh"
           title={t('refresh')}
@@ -214,7 +355,8 @@ export default observer(function File() {
           files={fileList}
           filter={filter}
           listView={store.file.listView}
-          onDoubleClick={onDoubleClick}
+          onDoubleClick={(e: MouseEvent, file: IFile) => open(file)}
+          onContextMenu={onContextMenu}
         />
       </div>
     </div>

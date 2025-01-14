@@ -131,5 +131,14 @@
   "upload": "Upload",
   "fileUploading": "Uploading file {{path}}",
   "uploadFileErr": "Failed to upload file",
-  "fileDownloading": "Downloading file {{path}}"
+  "fileDownloading": "Downloading file {{path}}",
+  "download": "Download",
+  "fileDownloaded": "File downloaded to {{path}}",
+  "deleteFileConfirm": "Are you sure you want to delete {{name}}?",
+  "newFolder": "New Folder",
+  "newFolderName": "New Folder Name",
+  "newFileName": "New File Name",
+  "rename": "Rename",
+  "fileExistErr": "File already exists",
+  "folderNotExistErr": "Folder does not exist"
 }

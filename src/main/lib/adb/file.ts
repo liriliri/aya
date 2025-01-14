@@ -3,7 +3,8 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { handleEvent } from '../util'
-import { shell } from 'electron'
+import { shell as electronShell } from 'electron'
+import { shell } from './base'
 
 let client: Client
 
@@ -26,7 +27,19 @@ async function pullFile(deviceId: string, path: string, dest: string) {
 async function openFile(deviceId: string, p: string) {
   const dest = path.join(os.tmpdir(), path.basename(p))
   await pullFile(deviceId, p, dest)
-  shell.openPath(dest)
+  electronShell.openPath(dest)
+}
+
+async function deleteFile(deviceId: string, path: string) {
+  await shell(deviceId, `rm "${path}"`)
+}
+
+async function deleteDir(deviceId: string, path: string) {
+  await shell(deviceId, `rm -rf "${path}"`)
+}
+
+async function createDir(deviceId: string, path: string) {
+  await shell(deviceId, `mkdir -p "${path}"`)
 }
 
 async function pushFile(deviceId: string, src: string, dest: string) {
@@ -37,6 +50,10 @@ async function pushFile(deviceId: string, src: string, dest: string) {
     transfer.on('end', () => resolve(null))
     transfer.on('error', reject)
   })
+}
+
+async function moveFile(deviceId: string, src: string, dest: string) {
+  await shell(deviceId, `mv "${src}" "${dest}"`)
 }
 
 async function readDir(deviceId: string, path: string) {
@@ -62,6 +79,17 @@ async function readDir(deviceId: string, path: string) {
   return ret
 }
 
+async function statFile(deviceId: string, path: string) {
+  const device = await client.getDevice(deviceId)
+  const stat = await device.stat(path)
+
+  return {
+    size: stat.size,
+    mtime: new Date(stat.mtimeMs),
+    directory: !stat.isFile(),
+  }
+}
+
 export async function init(c: Client) {
   client = c
 
@@ -69,4 +97,9 @@ export async function init(c: Client) {
   handleEvent('pushFile', pushFile)
   handleEvent('readDir', readDir)
   handleEvent('openFile', openFile)
+  handleEvent('deleteFile', deleteFile)
+  handleEvent('deleteDir', deleteDir)
+  handleEvent('createDir', createDir)
+  handleEvent('moveFile', moveFile)
+  handleEvent('statFile', statFile)
 }

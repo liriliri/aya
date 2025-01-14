@@ -131,5 +131,14 @@
   "upload": "上传",
   "fileUploading": "正在上传文件 {{path}}",
   "uploadFileErr": "上传文件失败",
-  "fileDownloading": "正在下载文件 {{path}}"
+  "fileDownloading": "正在下载文件 {{path}}",
+  "download": "下载",
+  "fileDownloaded": "文件已下载至 {{path}}",
+  "deleteFileConfirm": "确定要删除 {{name}} 吗？",
+  "newFolder": "新建文件夹",
+  "newFolderName": "新文件夹名称",
+  "newFileName": "新文件名称",
+  "rename": "重命名",
+  "fileExistErr": "文件已存在",
+  "folderNotExistErr": "文件夹不存在"
 }

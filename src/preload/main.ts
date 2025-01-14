@@ -89,8 +89,23 @@ export default {
   openFile: (deviceId: string, path: string) => {
     return ipcRenderer.invoke('openFile', deviceId, path)
   },
+  deleteFile: (deviceId: string, path: string) => {
+    return ipcRenderer.invoke('deleteFile', deviceId, path)
+  },
+  deleteDir: (deviceId: string, path: string) => {
+    return ipcRenderer.invoke('deleteDir', deviceId, path)
+  },
+  createDir: (deviceId: string, path: string) => {
+    return ipcRenderer.invoke('createDir', deviceId, path)
+  },
   readDir: (deviceId: string, path: string) => {
     return ipcRenderer.invoke('readDir', deviceId, path)
+  },
+  statFile: (deviceId: string, path: string) => {
+    return ipcRenderer.invoke('statFile', deviceId, path)
+  },
+  moveFile: (deviceId: string, src: string, dest: string) => {
+    return ipcRenderer.invoke('moveFile', deviceId, src, dest)
   },
   openExternal: (url: string) => ipcRenderer.invoke('openExternal', url),
   showContextMenu: (x: number, y: number, template: any) => {

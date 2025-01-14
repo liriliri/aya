@@ -22,6 +22,7 @@ Click [here](https://github.com/liriliri/aya/releases/) to download and install 
 
 ## Features
 
+* File explorer
 * Application manager
 * Process monitor
 * CPU, memory and FPS monitor

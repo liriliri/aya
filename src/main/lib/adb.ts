@@ -108,9 +108,18 @@ async function setFontScale(deviceId: string, scale: number) {
 
 function getMarketName(properties: types.PlainObj<string>) {
   const keys = [
+    // Oppo
     'ro.oppo.market.name',
+    // Huawei, Honor
     'ro.config.marketing_name',
+    // OnePlus, Realme
     'ro.vendor.oplus.market.enname',
+    // Vivo
+    'ro.vivo.market.name',
+    // Xiaomi, Redmi
+    'ro.product.marketname',
+    // Asus
+    'ro.asus.product.mkt_name',
   ]
   for (let i = 0, len = keys.length; i < len; i++) {
     const key = keys[i]

@@ -1,3 +1,13 @@
+## v0.3.0 (14 Jan 2025)
+
+* feat: file explorer [#2](https://github.com/liriliri/aya/issues/2)
+* feat: add terminal to view logs
+* feat: support russian [#14](https://github.com/liriliri/aya/pull/14)
+* fix: logcat dark mode color
+* fix: global error handling
+* fix: modal i18n
+* fix: vivo, xiaomi market name
+
 ## v0.2.0 (3 Jan 2025)
 
 * feat: show kernel version

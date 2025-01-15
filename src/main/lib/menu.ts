@@ -112,7 +112,7 @@ function getTemplate(): MenuItemConstructorOptions[] {
   if (isMac) {
     template.unshift(aya, edit)
   } else {
-    template.push(aya)
+    template.unshift(aya)
   }
 
   return template

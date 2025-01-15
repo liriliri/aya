@@ -101,7 +101,8 @@ export async function shell(
   deviceId: string,
   cmd: string | string[]
 ): Promise<string | string[]> {
-  logger.debug('shell', deviceId, cmd)
+  logger.debug('shell', cmd)
+
   const device = await client.getDevice(deviceId)
   const cmds: string[] = isStr(cmd) ? [cmd] : cmd
 

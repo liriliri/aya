@@ -20,8 +20,17 @@ import 'luna-file-list/css'
 import './luna.scss'
 import LunaModal from 'luna-modal'
 import LunaFileList from 'luna-file-list'
+import log from '../common/log'
+
+if (!isDev()) {
+  log.setLevel('info')
+}
+const logger = log('renderer')
+logger.info('start')
 
 function renderApp() {
+  logger.info('render app')
+
   const container: HTMLElement = document.getElementById('app') as HTMLElement
 
   let App = lazy(() => import('./main/App.js') as Promise<any>)

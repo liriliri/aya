@@ -23,4 +23,4 @@ await fs.writeJson('package.json', pkg, {
   spaces: 2,
 })
 
-await $`npm i`
+await $`npm i --production`

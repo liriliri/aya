@@ -2,6 +2,9 @@ import { nativeTheme } from 'electron'
 import { getSettingsStore } from './store'
 import { getTheme, handleEvent } from './util'
 import * as window from './window'
+import log from '../../common/log'
+
+const logger = log('theme')
 
 type Theme = 'system' | 'light' | 'dark'
 
@@ -16,6 +19,8 @@ function set(theme: Theme) {
 }
 
 export function init() {
+  logger.info('init')
+
   set(store.get('theme'))
   handleEvent('getTheme', get)
   nativeTheme.on('updated', () => {

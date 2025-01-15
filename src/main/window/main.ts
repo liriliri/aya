@@ -2,6 +2,9 @@ import { app, BrowserWindow } from 'electron'
 import { getMainStore, getSettingsStore } from '../lib/store'
 import { handleEvent } from '../lib/util'
 import * as window from '../lib/window'
+import log from '../../common/log'
+
+const logger = log('mainWin')
 
 const store = getMainStore()
 const settingsStore = getSettingsStore()
@@ -11,6 +14,8 @@ let win: BrowserWindow | null = null
 let isIpcInit = false
 
 export function showWin() {
+  logger.info('show')
+
   if (win) {
     win.focus()
     return

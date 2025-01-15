@@ -26,6 +26,9 @@ import * as packageAdb from './adb/package'
 import * as file from './adb/file'
 import * as fps from './adb/fps'
 import { getCpuLoads, getCpus } from './adb/cpu'
+import log from '../../common/log'
+
+const logger = log('adb')
 
 const settingsStore = getSettingsStore()
 
@@ -287,6 +290,8 @@ function getPropValue(key: string, str: string) {
 }
 
 export async function init() {
+  logger.info('init')
+
   let bin = isWindows ? resolveUnpack('adb/adb.exe') : resolveUnpack('adb/adb')
   const adbPath = settingsStore.get('adbPath')
   if (adbPath === 'adb' || (!isStrBlank(adbPath) && fs.existsSync(adbPath))) {

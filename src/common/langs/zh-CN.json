@@ -116,7 +116,7 @@
   "ipAddress": "IP 地址",
   "macAddress": "MAC 地址",
   "signature": "签名",
-  "terminal": "终端",
+  "terminal": "控制台",
   "tools": "工具",
   "ok": "确定",
   "cancel": "取消",

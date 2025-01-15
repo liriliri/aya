@@ -2,6 +2,9 @@ import { getSettingsStore } from './store'
 import { i18n, hasLocale } from '../../common/util'
 import { app } from 'electron'
 import { handleEvent } from './util'
+import log from '../../common/log'
+
+const logger = log('language')
 
 const store = getSettingsStore()
 
@@ -11,6 +14,8 @@ export function get() {
 }
 
 export function init() {
+  logger.info('init')
+
   const lang = store.get('language')
   let systemLanguage = 'en-US'
   if (hasLocale(app.getLocale())) {

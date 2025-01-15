@@ -7,6 +7,14 @@ import * as theme from './lib/theme'
 import * as adb from './lib/adb'
 import * as terminal from './window/terminal'
 import { setupTitlebar } from 'custom-electron-titlebar/main'
+import log from '../common/log'
+import { isDev } from '../common/util'
+
+if (!isDev()) {
+  log.setLevel('info')
+}
+const logger = log('main')
+logger.info('start')
 
 if (!app.requestSingleInstanceLock()) {
   app.quit()
@@ -16,12 +24,14 @@ if (!app.requestSingleInstanceLock()) {
 app.setName('Aya')
 
 app.on('ready', () => {
+  logger.info('app ready')
+
   setupTitlebar()
+  terminal.init()
   language.init()
   theme.init()
   adb.init()
   ipc.init()
-  terminal.init()
   main.showWin()
   menu.init()
 })

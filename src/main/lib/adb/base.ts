@@ -9,6 +9,9 @@ import getPort from 'licia/getPort'
 import toNum from 'licia/toNum'
 import types from 'licia/types'
 import isStr from 'licia/isStr'
+import log from '../../../common/log'
+
+const logger = log('adbBase')
 
 let client: Client
 
@@ -98,6 +101,7 @@ export async function shell(
   deviceId: string,
   cmd: string | string[]
 ): Promise<string | string[]> {
+  logger.debug('shell', deviceId, cmd)
   const device = await client.getDevice(deviceId)
   const cmds: string[] = isStr(cmd) ? [cmd] : cmd
 

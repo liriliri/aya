@@ -141,5 +141,14 @@
   "rename": "重命名",
   "fileExistErr": "文件已存在",
   "folderNotExistErr": "文件夹不存在",
-  "add": "添加"
+  "add": "添加",
+  "typeCmd": "输入命令",
+  "cmdPalette": "命令面板",
+  "shortcut": "快捷命令",
+  "start": "启动",
+  "memInfo": "内存信息",
+  "batteryInfo": "电池信息",
+  "reboot": "重启",
+  "rebootRecovery": "重启到恢复模式",
+  "rebootBootloader": "重启到引导模式"
 }

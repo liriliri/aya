@@ -141,5 +141,13 @@
   "rename": "Rename",
   "fileExistErr": "File already exists",
   "folderNotExistErr": "Folder does not exist",
-  "add": "Add"
+  "add": "Add",
+  "typeCmd": "Type a command",
+  "shortcut": "Shortcut",
+  "start": "Start",
+  "memInfo": "Memory Info",
+  "batteryInfo": "Battery Info",
+  "reboot": "Reboot",
+  "rebootRecovery": "Reboot to Recovery",
+  "rebootBootloader": "Reboot to Bootloader"
 }

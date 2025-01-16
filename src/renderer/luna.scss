@@ -334,3 +334,33 @@ $variables: meta.module-variables(theme);
     }
   }
 }
+
+.luna-command-palette {
+  top: 28px;
+  z-index: theme.$z-index-popup-base;
+  color: var(--aya-color-text);
+}
+
+.luna-command-palette-body {
+  background: var(--aya-color-bg-container);
+  border: 1px solid var(--aya-color-border);
+  padding: #{theme.$padding-x-x-s}px;
+  border-radius: #{theme.$border-radius-x-s}px;
+}
+
+.luna-command-palette-input {
+  border-radius: #{theme.$border-radius-x-s}px;
+  border: 1px solid var(--aya-color-border);
+  padding: #{theme.$padding-x-x-s}px;
+  margin-bottom: #{theme.$margin-x-x-s}px;
+  color: var(--aya-color-text);
+}
+
+.luna-command-palette-list {
+  li {
+    border-radius: #{theme.$border-radius-x-s}px;
+    &.luna-command-palette-active {
+      background: var(--aya-color-primary);
+    }
+  }
+}

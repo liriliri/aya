@@ -57,7 +57,12 @@ export default observer(function Shell() {
   })
 
   const terms = map(shells, (shell) => {
-    return <Term key={shell.id} visible={selectedShell === shell.id} />
+    return (
+      <Term
+        key={shell.id}
+        visible={selectedShell === shell.id && store.panel === 'shell'}
+      />
+    )
   })
 
   return (

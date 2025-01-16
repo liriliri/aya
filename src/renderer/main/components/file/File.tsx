@@ -30,13 +30,15 @@ export default observer(function File() {
   const [historyIdx, setHistoryIdx] = useState(-1)
   const dragging = useRef(0)
 
+  const { device } = store
+
   useEffect(() => {
     go('/')
   }, [])
 
   async function getFiles(path: string) {
-    if (store.device) {
-      const files = await main.readDir(store.device.id, path)
+    if (device) {
+      const files = await main.readDir(device.id, path)
       setPath(path)
       setCustomPath(path)
       setFileList(files)
@@ -81,7 +83,7 @@ export default observer(function File() {
   }
 
   function open(file: IFile) {
-    if (!store.device) {
+    if (!device) {
       return
     }
 
@@ -89,12 +91,14 @@ export default observer(function File() {
       go(path + file.name + '/')
     } else {
       notify(t('fileDownloading', { path: path + file.name }), { icon: 'info' })
-      main.openFile(store.device.id, path + file.name)
+      main.openFile(device.id, path + file.name)
     }
   }
 
   function onContextMenu(e: MouseEvent, file?: IFile) {
-    const device = store.device!
+    if (!device) {
+      return
+    }
 
     if (file) {
       const template: any[] = [
@@ -201,7 +205,7 @@ export default observer(function File() {
   }
 
   async function uploadFiles(files?: string[]) {
-    if (!store.device) {
+    if (!device) {
       return
     }
 
@@ -220,7 +224,7 @@ export default observer(function File() {
       const { name } = splitPath(file)
       notify(t('fileUploading', { path: file }), { icon: 'info' })
       try {
-        await main.pushFile(store.device.id, file, path + name)
+        await main.pushFile(device.id, file, path + name)
         // eslint-disable-next-line
       } catch (e) {
         notify(t('uploadFileErr'), { icon: 'error' })
@@ -238,7 +242,7 @@ export default observer(function File() {
     p = normalizePath(p)
 
     try {
-      const stat = await main.statFile(store.device!.id, customPath)
+      const stat = await main.statFile(device!.id, customPath)
       if (stat.directory) {
         go(p)
       }
@@ -267,11 +271,11 @@ export default observer(function File() {
           icon="arrow-up"
           title={t('up')}
           onClick={up}
-          disabled={path === '/' || !store.device}
+          disabled={path === '/' || !device}
         />
         <LunaToolbarHtml
           className={className(Style.path, 'luna-toolbar-item-input')}
-          disabled={!store.device}
+          disabled={!device}
         >
           <input
             value={customPath}
@@ -289,7 +293,7 @@ export default observer(function File() {
           icon="refresh"
           title={t('refresh')}
           onClick={() => getFiles(path)}
-          disabled={!store.device}
+          disabled={!device}
         />
         <LunaToolbarInput
           keyName="filter"
@@ -302,7 +306,7 @@ export default observer(function File() {
           icon="upload"
           title={t('upload')}
           onClick={() => uploadFiles()}
-          disabled={!store.device}
+          disabled={!device}
         />
         <LunaToolbarSeparator />
         <ToolbarIcon
@@ -342,7 +346,7 @@ export default observer(function File() {
             return
           }
           e.preventDefault()
-          if (store.device) {
+          if (device) {
             setDropHighlight(true)
           }
         }}

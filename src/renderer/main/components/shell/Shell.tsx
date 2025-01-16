@@ -1,159 +1,93 @@
 import { observer } from 'mobx-react-lite'
-import store from '../../store'
-import { Terminal, ITheme } from '@xterm/xterm'
-import { FitAddon } from '@xterm/addon-fit'
-import { CanvasAddon } from '@xterm/addon-canvas'
-import { WebglAddon } from '@xterm/addon-webgl'
-import { Unicode11Addon } from '@xterm/addon-unicode11'
-import { useEffect, useRef } from 'react'
-import {
-  colorBgContainer,
-  colorBgContainerDark,
-  colorPrimary,
-  colorText,
-  colorTextDark,
-  fontFamilyCode,
-} from '../../../../common/theme'
-import copy from 'licia/copy'
-import Style from './Shell.module.scss'
-import '@xterm/xterm/css/xterm.css'
+import LunaToolbar, {
+  LunaToolbarSeparator,
+  LunaToolbarSpace,
+} from 'luna-toolbar/react'
+import Term from './Term'
+import LunaTab, { LunaTabItem } from 'luna-tab/react'
 import { t } from '../../../../common/util'
-import contextMenu from '../../../lib/contextMenu'
+import ToolbarIcon from '../../../components/ToolbarIcon'
+import store from '../../store'
+import Style from './Shell.module.scss'
+import className from 'licia/className'
+import { useEffect, useRef, useState } from 'react'
+import uuid from 'licia/uuid'
+import map from 'licia/map'
+import filter from 'licia/filter'
 
 export default observer(function Shell() {
-  const terminalRef = useRef<HTMLDivElement>(null)
-  const termRef = useRef<Terminal>()
-
+  const [shells, setShells] = useState<Array<{ id: string; name: string }>>([])
+  const [selectedShell, setSelectedShell] = useState('')
+  const num = useRef(1)
   const { device } = store
 
-  useEffect(() => {
-    const term = new Terminal({
-      allowProposedApi: true,
-      fontSize: 14,
-      fontFamily: fontFamilyCode,
-      theme: getTheme(store.theme === 'dark'),
-    })
+  useEffect(() => add(), [])
 
-    const fitAddon = new FitAddon()
-    term.loadAddon(fitAddon)
-    const fit = () => fitAddon.fit()
-    window.addEventListener('resize', fit)
-
-    term.loadAddon(new Unicode11Addon())
-    term.unicode.activeVersion = '11'
-
-    try {
-      term.loadAddon(new WebglAddon())
-      /* eslint-disable @typescript-eslint/no-unused-vars */
-    } catch (e) {
-      term.loadAddon(new CanvasAddon())
-    }
-
-    term.open(terminalRef.current!)
-    termRef.current = term
-
-    let sessionId = ''
-    function onShellData(id, data) {
-      if (sessionId !== id) {
-        return
-      }
-      term.write(data)
-    }
-    const offShellData = main.on('shellData', onShellData)
-
-    if (device) {
-      main.createShell(device.id).then((id) => {
-        sessionId = id
-        term.onData((data) => main.writeShell(sessionId, data))
-        term.onResize((size) => {
-          main.resizeShell(sessionId, size.cols, size.rows)
-        })
-        fit()
-      })
-    }
-
-    return () => {
-      offShellData()
-      if (sessionId) {
-        main.killShell(sessionId)
-      }
-      term.dispose()
-      window.removeEventListener('resize', fit)
-    }
-  }, [])
-
-  const theme = getTheme(store.theme === 'dark')
-  if (termRef.current) {
-    termRef.current.options.theme = theme
+  function add() {
+    const id = uuid()
+    setShells([
+      ...shells,
+      {
+        id,
+        name: `${t('shell')} ${num.current++}`,
+      },
+    ])
+    setSelectedShell(id)
   }
 
-  if (store.panel === 'shell') {
-    setTimeout(() => {
-      if (termRef.current) {
-        termRef.current.focus()
-      }
-    }, 500)
+  function close() {
+    let selectedIdx = shells.findIndex((shell) => shell.id === selectedShell)
+    const newShells = filter(shells, (shell) => shell.id !== selectedShell)
+    setShells(newShells)
+    if (selectedIdx >= newShells.length) {
+      selectedIdx = newShells.length - 1
+    }
+    setSelectedShell(newShells[selectedIdx].id)
   }
-  const onContextMenu = (e: React.MouseEvent) => {
-    const term = termRef.current!
-    const template: any[] = [
-      {
-        label: t('copy'),
-        click: () => {
-          if (term.hasSelection()) {
-            copy(term.getSelection())
-            term.focus()
-          }
-        },
-      },
-      {
-        label: t('selectAll'),
-        click: () => {
-          term.selectAll()
-        },
-      },
-      {
-        type: 'separator',
-      },
-      {
-        label: t('clear'),
-        click: () => {
-          term.clear()
-          term.focus()
-        },
-      },
-    ]
 
-    contextMenu(e, template)
-  }
+  const tabItems = map(shells, (shell) => {
+    return (
+      <LunaTabItem
+        key={shell.id}
+        id={shell.id}
+        title={shell.name}
+        selected={selectedShell === shell.id}
+      />
+    )
+  })
+
+  const terms = map(shells, (shell) => {
+    return <Term key={shell.id} visible={selectedShell === shell.id} />
+  })
 
   return (
-    <div
-      className={Style.container}
-      ref={terminalRef}
-      onContextMenu={onContextMenu}
-    ></div>
+    <div className="panel-with-toolbar">
+      <div className={className('panel-toolbar', Style.toolbar)}>
+        <LunaTab
+          className={Style.tabs}
+          height={31}
+          onSelect={(id) => setSelectedShell(id)}
+        >
+          {tabItems}
+        </LunaTab>
+        <LunaToolbar>
+          <LunaToolbarSpace />
+          <ToolbarIcon
+            icon="add"
+            title={t('add')}
+            onClick={add}
+            disabled={!device}
+          />
+          <LunaToolbarSeparator />
+          <ToolbarIcon
+            icon="delete"
+            title={t('close')}
+            onClick={close}
+            disabled={!device || shells.length <= 1}
+          />
+        </LunaToolbar>
+      </div>
+      <div className="panel-body">{terms}</div>
+    </div>
   )
 })
-
-function getTheme(dark = false) {
-  let theme: ITheme = {
-    background: colorBgContainer,
-    foreground: colorText,
-    cursor: colorText,
-  }
-
-  if (dark) {
-    theme = {
-      background: colorBgContainerDark,
-      foreground: colorTextDark,
-      cursor: colorTextDark,
-    }
-  }
-
-  return {
-    selectionForeground: '#fff',
-    selectionBackground: colorPrimary,
-    ...theme,
-  }
-}

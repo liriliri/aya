@@ -140,5 +140,6 @@
   "newFileName": "New File Name",
   "rename": "Rename",
   "fileExistErr": "File already exists",
-  "folderNotExistErr": "Folder does not exist"
+  "folderNotExistErr": "Folder does not exist",
+  "add": "Add"
 }

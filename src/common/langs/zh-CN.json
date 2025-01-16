@@ -140,5 +140,6 @@
   "newFileName": "新文件名称",
   "rename": "重命名",
   "fileExistErr": "文件已存在",
-  "folderNotExistErr": "文件夹不存在"
+  "folderNotExistErr": "文件夹不存在",
+  "add": "添加"
 }

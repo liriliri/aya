@@ -19,6 +19,7 @@ import Style from './Term.module.scss'
 import '@xterm/xterm/css/xterm.css'
 import { t } from '../../../../common/util'
 import contextMenu from '../../../lib/contextMenu'
+import isHidden from 'licia/isHidden'
 
 interface ITermProps {
   visible: boolean
@@ -27,6 +28,7 @@ interface ITermProps {
 export default observer(function Term(props: ITermProps) {
   const terminalRef = useRef<HTMLDivElement>(null)
   const termRef = useRef<Terminal>()
+  const fitAddonRef = useRef<FitAddon>()
 
   const { device } = store
 
@@ -39,8 +41,13 @@ export default observer(function Term(props: ITermProps) {
     })
 
     const fitAddon = new FitAddon()
+    fitAddonRef.current = fitAddon
     term.loadAddon(fitAddon)
-    const fit = () => fitAddon.fit()
+    const fit = () => {
+      if (!isHidden(terminalRef.current!)) {
+        fitAddon.fit()
+      }
+    }
     window.addEventListener('resize', fit)
 
     term.loadAddon(new Unicode11Addon())
@@ -85,6 +92,12 @@ export default observer(function Term(props: ITermProps) {
       window.removeEventListener('resize', fit)
     }
   }, [])
+
+  useEffect(() => {
+    if (fitAddonRef.current && props.visible) {
+      fitAddonRef.current.fit()
+    }
+  }, [props.visible])
 
   const theme = getTheme(store.theme === 'dark')
   if (termRef.current) {

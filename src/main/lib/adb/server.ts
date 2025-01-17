@@ -7,6 +7,9 @@ import wire from '../wire'
 import waitUntil from 'licia/waitUntil'
 import { getDeviceStore, setDeviceStore, shell } from './base'
 import contain from 'licia/contain'
+import log from '../../../common/log'
+
+const logger = log('server')
 
 let client: Client
 
@@ -37,6 +40,7 @@ class AyaClient {
     })
   }
   private async connect(tryStart = true) {
+    logger.info('connect')
     try {
       const device = client.getDevice(this.deviceId)
       const socket = await device.openLocal('localabstract:aya')
@@ -83,6 +87,7 @@ class AyaClient {
     return contain(result, '@aya')
   })
   private async push() {
+    logger.info('push')
     const device = client.getDevice(this.deviceId)
     await device.push(
       resolveUnpack('server/aya.dex'),
@@ -90,6 +95,7 @@ class AyaClient {
     )
   }
   private async start() {
+    logger.info('start')
     const device = client.getDevice(this.deviceId)
     await device.shell(
       'CLASSPATH=/data/local/tmp/aya/aya.dex app_process /system/bin io.liriliri.aya.Server'

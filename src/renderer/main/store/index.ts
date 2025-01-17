@@ -12,6 +12,8 @@ import isEmpty from 'licia/isEmpty'
 interface IDevice {
   id: string
   name: string
+  androidVersion: string
+  sdkVersion: string
 }
 
 class Store extends BaseStore {

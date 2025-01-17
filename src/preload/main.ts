@@ -107,6 +107,12 @@ export default {
   moveFile: (deviceId: string, src: string, dest: string) => {
     return ipcRenderer.invoke('moveFile', deviceId, src, dest)
   },
+  connectDevice: (host: string, port?: number) => {
+    return ipcRenderer.invoke('connectDevice', host, port)
+  },
+  disconnectDevice: (host: string, port?: number) => {
+    return ipcRenderer.invoke('disconnectDevice', host, port)
+  },
   openExternal: (url: string) => ipcRenderer.invoke('openExternal', url),
   showContextMenu: (x: number, y: number, template: any) => {
     ipcRenderer.invoke(

@@ -4,12 +4,16 @@ import Style from './Device.module.scss'
 import { observer } from 'mobx-react-lite'
 import isEmpty from 'licia/isEmpty'
 import store from '../../store'
-import { notify } from '../../../lib/util'
 import { t } from '../../../../common/util'
 import each from 'licia/each'
 import ToolbarIcon from '../../../components/ToolbarIcon'
+import { useState } from 'react'
+import DeviceMangerModal from './DeviceManagerModal'
 
 export default observer(function Device() {
+  const [deviceManagerModalVisible, setDeviceManagerModalVisible] =
+    useState(false)
+
   let deviceOptions: types.PlainObj<string> = {}
   let deviceDisabled = false
   if (!isEmpty(store.devices)) {
@@ -23,28 +27,31 @@ export default observer(function Device() {
   }
 
   return (
-    <LunaToolbar
-      className={Style.container}
-      onChange={(key, val) => {
-        if (key === 'device') {
-          store.selectDevice(val)
-        }
-      }}
-    >
-      <LunaToolbarSelect
-        keyName="device"
-        disabled={deviceDisabled}
-        value={store.device ? store.device.id : ''}
-        options={deviceOptions}
-      />
-      <ToolbarIcon
-        icon="refresh"
-        title={t('refresh')}
-        onClick={async () => {
-          await store.refreshDevices()
-          notify(t('deviceRefreshed'), { icon: 'success' })
+    <>
+      <LunaToolbar
+        className={Style.container}
+        onChange={(key, val) => {
+          if (key === 'device') {
+            store.selectDevice(val)
+          }
         }}
+      >
+        <LunaToolbarSelect
+          keyName="device"
+          disabled={deviceDisabled}
+          value={store.device ? store.device.id : ''}
+          options={deviceOptions}
+        />
+        <ToolbarIcon
+          icon="manage"
+          title={t('deviceManager')}
+          onClick={() => setDeviceManagerModalVisible(true)}
+        />
+      </LunaToolbar>
+      <DeviceMangerModal
+        visible={deviceManagerModalVisible}
+        onClose={() => setDeviceManagerModalVisible(false)}
       />
-    </LunaToolbar>
+    </>
   )
 })

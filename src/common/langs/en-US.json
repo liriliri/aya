@@ -149,5 +149,10 @@
   "batteryInfo": "Battery Info",
   "reboot": "Reboot",
   "rebootRecovery": "Reboot to Recovery",
-  "rebootBootloader": "Reboot to Bootloader"
+  "rebootBootloader": "Reboot to Bootloader",
+  "deviceManager": "Device Manager",
+  "port": "Port",
+  "connect": "Connect",
+  "disconnect": "Disconnect",
+  "connectErr": "Failed to connect"
 }

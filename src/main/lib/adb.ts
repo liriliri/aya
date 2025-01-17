@@ -51,6 +51,8 @@ async function getDevices() {
       return {
         id: device.id,
         name,
+        androidVersion: properties['ro.build.version.release'],
+        sdkVersion: properties['ro.build.version.sdk'],
       }
     })
   ).catch(() => [])
@@ -90,8 +92,6 @@ async function getOverview(deviceId: string) {
     abi: properties['ro.product.cpu.abi'],
     brand: properties['ro.product.brand'],
     model: properties['ro.product.model'],
-    androidVersion: properties['ro.build.version.release'],
-    sdkVersion: properties['ro.build.version.sdk'],
     serialNum: properties['ro.serialno'] || '',
     cpuNum: cpus.length,
     kernelVersion,
@@ -289,6 +289,14 @@ function getPropValue(key: string, str: string) {
   return ''
 }
 
+async function connectDevice(host: string, port?: number) {
+  await client.connect(host, port)
+}
+
+async function disconnectDevice(host: string, port?: number) {
+  await client.disconnect(host, port)
+}
+
 export async function init() {
   logger.info('init')
 
@@ -326,4 +334,6 @@ export async function init() {
   handleEvent('getWebviews', getWebviews)
   handleEvent('getPerformance', getPerformance)
   handleEvent('getUptime', getUptime)
+  handleEvent('connectDevice', connectDevice)
+  handleEvent('disconnectDevice', disconnectDevice)
 }

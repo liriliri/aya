@@ -16,17 +16,19 @@ export default observer(function Overview() {
   const [overview, setOverview] = useState<types.PlainObj<string | number>>({})
   const [fontAdjustModalVisible, setFontAdjustModalVisible] = useState(false)
 
+  const { device } = store
+
   useEffect(() => refresh(), [])
 
   function refresh() {
-    if (store.device) {
-      main.getOverview(store.device.id).then(setOverview)
+    if (device) {
+      main.getOverview(device.id).then(setOverview)
     }
   }
 
   let content: JSX.Element | null = null
 
-  if (!store.device) {
+  if (!device) {
     content = (
       <div className={className('panel', Style.container)}>
         {t('deviceNotConnected')}
@@ -46,7 +48,7 @@ export default observer(function Overview() {
           {item(t('serialNum'), overview.serialNum, 'serial-number')}
           {item(
             t('androidVersion'),
-            `Android ${overview.androidVersion} (API ${overview.sdkVersion})`,
+            `Android ${device.androidVersion} (API ${device.sdkVersion})`,
             'android'
           )}
           {item(t('kernelVersion'), overview.kernelVersion, 'android')}

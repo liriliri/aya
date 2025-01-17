@@ -1,3 +1,12 @@
+## v0.4.0 (17 Jan 2025)
+
+* feat: support multiple shells
+* feat: add shell shortcuts
+* feat: shell reconnection
+* feat: device manager
+* feat: connect and disconnect devices wirelessly
+* fix: not able to select the same model phone 
+
 ## v0.3.0 (14 Jan 2025)
 
 * feat: file explorer [#2](https://github.com/liriliri/aya/issues/2)

@@ -359,6 +359,9 @@ $variables: meta.module-variables(theme);
 .luna-command-palette-list {
   li {
     border-radius: #{theme.$border-radius-x-s}px;
+    &:hover {
+      background: var(--aya-color-fill-secondary);
+    }
     &.luna-command-palette-active {
       background: var(--aya-color-primary);
     }

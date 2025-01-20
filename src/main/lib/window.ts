@@ -13,6 +13,10 @@ import debounce from 'licia/debounce'
 import { isDev } from '../../common/util'
 import isEmpty from 'licia/isEmpty'
 import query from 'licia/query'
+import log from '../../common/log'
+import once from 'licia/once'
+
+const logger = log('window')
 
 interface IWinOptions {
   name: string
@@ -87,7 +91,8 @@ export function create(opts: IWinOptions) {
     }
   }, 1000)
 
-  win.once('ready-to-show', () => {
+  const readyAndShow = once(() => {
+    logger.info(opts.name, 'ready and show')
     if (winOptions.maximized && isWindows) {
       win.maximize()
     }
@@ -95,6 +100,13 @@ export function create(opts: IWinOptions) {
     win.on('resize', onSavePos)
     win.on('moved', onSavePos)
   })
+  win.once('ready-to-show', () => {
+    logger.info(opts.name, 'on ready-to-show')
+    readyAndShow()
+  })
+  // Make sure the window is shown even if the ready-to-show event is not emitted
+  setTimeout(() => readyAndShow(), 1000)
+
   win.on('show', () => visibleWins.push(win))
   win.on('focus', () => (focusedWin = win))
   win.on('hide', () => remove(visibleWins, (window) => window === win))

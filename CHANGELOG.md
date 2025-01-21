@@ -1,3 +1,7 @@
+## v0.4.1 (21 Jan 2025)
+
+* fix: main window cannot be opened on windows [#5](https://github.com/liriliri/aya/issues/5)
+
 ## v0.4.0 (17 Jan 2025)
 
 * feat: support multiple shells

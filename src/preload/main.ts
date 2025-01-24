@@ -115,8 +115,8 @@ export default {
   disconnectDevice: (host: string, port?: number) => {
     return ipcRenderer.invoke('disconnectDevice', host, port)
   },
-  startScrcpy: (deviceId: string, scid: number) => {
-    return ipcRenderer.invoke('startScrcpy', deviceId, scid)
+  startScrcpy: (deviceId: string, args: string[]) => {
+    return ipcRenderer.invoke('startScrcpy', deviceId, args)
   },
   reverseTcp: (deviceId: string, remote: string) => {
     return ipcRenderer.invoke('reverseTcp', deviceId, remote)

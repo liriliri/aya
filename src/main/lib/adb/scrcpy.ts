@@ -1,7 +1,6 @@
 import { Client } from '@devicefarmer/adbkit'
 import { handleEvent, resolveUnpack } from '../util'
 import { getDeviceStore, setDeviceStore } from './base'
-import toStr from 'licia/toStr'
 import log from '../../../common/log'
 
 const logger = log('scrcpy')
@@ -13,15 +12,16 @@ class ScrcpyClient {
   constructor(deviceId: string) {
     this.deviceId = deviceId
   }
-  async start(options: string[]) {
+  async start(args: string[]) {
     await this.push()
 
-    logger.info('start', options)
+    logger.info('start', args)
 
     const device = client.getDevice(this.deviceId)
-    const args = options.join(' ')
     const socket = await device.shell(
-      `CLASSPATH=/data/local/tmp/aya/scrcpy.jar app_process /system/bin com.genymobile.scrcpy.Server 3.1 ${args}`
+      `CLASSPATH=/data/local/tmp/aya/scrcpy.jar app_process /system/bin com.genymobile.scrcpy.Server 3.1 ${args.join(
+        ' '
+      )}`
     )
     socket.on('readable', () => {
       const data = socket.read()
@@ -50,14 +50,9 @@ async function getScrcpyClient(deviceId: string): Promise<ScrcpyClient> {
   return scrcpyClient
 }
 
-async function startScrcpy(deviceId: string, scid: number) {
+async function startScrcpy(deviceId: string, args: string[]) {
   const client = await getScrcpyClient(deviceId)
-  const { ScrcpyOptions3_1 } = await import('@yume-chan/scrcpy')
-  const options = new ScrcpyOptions3_1({
-    scid: toStr(scid),
-    clipboardAutosync: false,
-  })
-  await client.start(options.serialize())
+  await client.start(args)
 }
 
 export async function init(c: Client) {

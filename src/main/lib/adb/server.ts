@@ -103,7 +103,7 @@ class AyaClient {
   }
 }
 
-async function getAyaClient(deviceId: string) {
+async function getAyaClient(deviceId: string): Promise<AyaClient> {
   let ayaClient = getDeviceStore(deviceId, 'ayaClient')
   if (!ayaClient) {
     ayaClient = new AyaClient(deviceId)

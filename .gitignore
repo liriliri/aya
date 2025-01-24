@@ -9,3 +9,4 @@ package-lock.json
 server/**/build/
 local.properties
 aya.dex
+scrcpy.jar

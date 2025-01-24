@@ -42,6 +42,10 @@ function renderApp() {
       App = lazy(() => import('./terminal/App.js') as Promise<any>)
       title = t('terminal')
       break
+    case 'screencast':
+      App = lazy(() => import('./screencast/App.js') as Promise<any>)
+      title = t('screencast')
+      break
   }
 
   preload.setTitle(title)

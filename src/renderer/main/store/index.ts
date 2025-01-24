@@ -8,13 +8,7 @@ import { Process } from './process'
 import { File } from './file'
 import { setMainStore } from '../../lib/util'
 import isEmpty from 'licia/isEmpty'
-
-interface IDevice {
-  id: string
-  name: string
-  androidVersion: string
-  sdkVersion: string
-}
+import { IDevice } from '../../../common/types'
 
 class Store extends BaseStore {
   devices: IDevice[] = []

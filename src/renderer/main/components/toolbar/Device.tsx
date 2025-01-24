@@ -1,4 +1,7 @@
-import LunaToolbar, { LunaToolbarSelect } from 'luna-toolbar/react'
+import LunaToolbar, {
+  LunaToolbarSelect,
+  LunaToolbarSeparator,
+} from 'luna-toolbar/react'
 import types from 'licia/types'
 import Style from './Device.module.scss'
 import { observer } from 'mobx-react-lite'
@@ -46,6 +49,13 @@ export default observer(function Device() {
           icon="manage"
           title={t('deviceManager')}
           onClick={() => setDeviceManagerModalVisible(true)}
+        />
+        <LunaToolbarSeparator />
+        <ToolbarIcon
+          icon="screencast"
+          disabled={!store.device}
+          title={t('screencast')}
+          onClick={() => main.showScreencast()}
         />
       </LunaToolbar>
       <DeviceMangerModal

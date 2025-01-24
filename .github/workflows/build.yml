@@ -29,6 +29,7 @@ jobs:
         npm i
         npm run adb
         npm run server
+        npm run scrcpy
         npm run build
         npm run pack
     - uses: actions/upload-artifact@v4

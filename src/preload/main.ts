@@ -11,6 +11,8 @@ export default {
   setSettingsStore: (name, val) => {
     return ipcRenderer.invoke('setSettingsStore', name, val)
   },
+  showScreencast: () => ipcRenderer.invoke('showScreencast'),
+  closeScreencast: () => ipcRenderer.invoke('closeScreencast'),
   getOverview: (deviceId: string) => {
     return ipcRenderer.invoke('getOverview', deviceId)
   },
@@ -112,6 +114,12 @@ export default {
   },
   disconnectDevice: (host: string, port?: number) => {
     return ipcRenderer.invoke('disconnectDevice', host, port)
+  },
+  startScrcpy: (deviceId: string, scid: number) => {
+    return ipcRenderer.invoke('startScrcpy', deviceId, scid)
+  },
+  reverseTcp: (deviceId: string, remote: string) => {
+    return ipcRenderer.invoke('reverseTcp', deviceId, remote)
   },
   openExternal: (url: string) => ipcRenderer.invoke('openExternal', url),
   showContextMenu: (x: number, y: number, template: any) => {

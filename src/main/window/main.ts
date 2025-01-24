@@ -42,6 +42,9 @@ export function showWin() {
 function initIpc() {
   handleEvent('setMainStore', (name, val) => store.set(name, val))
   handleEvent('getMainStore', (name) => store.get(name))
+  store.on('change', (name, val) => {
+    window.sendAll('changeMainStore', name, val)
+  })
   handleEvent('setSettingsStore', (name, val) => {
     settingsStore.set(name, val)
   })

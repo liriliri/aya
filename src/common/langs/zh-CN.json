@@ -155,5 +155,6 @@
   "port": "端口",
   "connect": "连接",
   "disconnect": "断开",
-  "connectErr": "连接失败"
+  "connectErr": "连接失败",
+  "screencast": "投屏"
 }

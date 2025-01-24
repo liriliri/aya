@@ -22,6 +22,7 @@ import { shell, getProcesses } from './adb/base'
 import * as logcat from './adb/logcat'
 import * as shellAdb from './adb/shell'
 import * as server from './adb/server'
+import * as scrcpy from './adb/scrcpy'
 import * as packageAdb from './adb/package'
 import * as file from './adb/file'
 import * as fps from './adb/fps'
@@ -321,6 +322,7 @@ export async function init() {
   logcat.init(client)
   shellAdb.init(client)
   server.init(client)
+  scrcpy.init(client)
   packageAdb.init(client)
   file.init(client)
   fps.init()

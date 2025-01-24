@@ -154,5 +154,6 @@
   "port": "Port",
   "connect": "Connect",
   "disconnect": "Disconnect",
-  "connectErr": "Failed to connect"
+  "connectErr": "Failed to connect",
+  "screencast": "Screencast"
 }

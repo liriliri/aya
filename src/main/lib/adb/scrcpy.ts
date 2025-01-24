@@ -14,15 +14,21 @@ class ScrcpyClient {
     this.deviceId = deviceId
   }
   async start(options: string[]) {
-    logger.info('start', options)
-
     await this.push()
+
+    logger.info('start', options)
 
     const device = client.getDevice(this.deviceId)
     const args = options.join(' ')
-    await device.shell(
+    const socket = await device.shell(
       `CLASSPATH=/data/local/tmp/aya/scrcpy.jar app_process /system/bin com.genymobile.scrcpy.Server 3.1 ${args}`
     )
+    socket.on('readable', () => {
+      const data = socket.read()
+      if (data) {
+        logger.info(data.toString())
+      }
+    })
   }
   async push() {
     logger.info('push')

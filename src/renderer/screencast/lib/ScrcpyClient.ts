@@ -3,6 +3,7 @@ import toStr from 'licia/toStr'
 
 export default class ScrcpyClient {
   private deviceId: string
+  private server: any = null
   constructor(deviceId: string) {
     this.deviceId = deviceId
   }
@@ -14,13 +15,18 @@ export default class ScrcpyClient {
       this.deviceId,
       `localabstract:scrcpy_${toStr(scid).padStart(8, '0')}`
     )
-    const tcpServer = node.createServer(function (socket) {
+    const server = node.createServer(function (socket) {
       socket.on('data', (data) => {
         console.log('Received:', data)
       })
     })
-    tcpServer.listern(port)
+    server.listen(port)
 
     await main.startScrcpy(deviceId, scid)
+  }
+  destroy() {
+    if (this.server) {
+      this.server.close()
+    }
   }
 }

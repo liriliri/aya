@@ -10,6 +10,8 @@ export default observer(function Screencast() {
   useEffect(() => {
     preload.setTitle(device.name)
     scrcpyClient.current.start()
+
+    return () => scrcpyClient.current.destroy()
   }, [])
 
   return <div>Screencast</div>

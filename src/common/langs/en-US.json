@@ -155,5 +155,8 @@
   "connect": "Connect",
   "disconnect": "Disconnect",
   "connectErr": "Failed to connect",
-  "screencast": "Screencast"
+  "screencast": "Screencast",
+  "power": "Power",
+  "volumeUp": "Volume Up",
+  "volumeDown": "Volume Down"
 }

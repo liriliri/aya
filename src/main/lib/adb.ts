@@ -298,6 +298,10 @@ async function disconnectDevice(host: string, port?: number) {
   await client.disconnect(host, port)
 }
 
+async function inputKey(deviceId: string, keyCode: number) {
+  await base.shell(deviceId, `input keyevent ${keyCode}`)
+}
+
 export async function init() {
   logger.info('init')
 
@@ -338,4 +342,5 @@ export async function init() {
   handleEvent('getUptime', getUptime)
   handleEvent('connectDevice', connectDevice)
   handleEvent('disconnectDevice', disconnectDevice)
+  handleEvent('inputKey', inputKey)
 }

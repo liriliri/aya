@@ -121,6 +121,9 @@ export default {
   reverseTcp: (deviceId: string, remote: string) => {
     return ipcRenderer.invoke('reverseTcp', deviceId, remote)
   },
+  inputKey: (deviceId: string, keyCode: number) => {
+    return ipcRenderer.invoke('inputKey', deviceId, keyCode)
+  },
   openExternal: (url: string) => ipcRenderer.invoke('openExternal', url),
   showContextMenu: (x: number, y: number, template: any) => {
     ipcRenderer.invoke(

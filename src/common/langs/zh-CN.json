@@ -156,5 +156,8 @@
   "connect": "连接",
   "disconnect": "断开",
   "connectErr": "连接失败",
-  "screencast": "投屏"
+  "screencast": "投屏",
+  "power": "电源",
+  "volumeUp": "增加音量",
+  "volumeDown": "减小音量"
 }

@@ -15,7 +15,7 @@ export function showWin() {
   win = window.create({
     name: 'screencast',
     minWidth: 360,
-    minHeight: 800,
+    minHeight: 640,
     ...store.get('bounds'),
     onSavePos: () => window.savePos(win, store),
   })

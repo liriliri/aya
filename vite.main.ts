@@ -21,4 +21,11 @@ export default defineConfig({
   resolve: {
     mainFields: ['main', 'module'],
   },
+  optimizeDeps: {
+    exclude: ['@yume-chan/scrcpy-decoder-tinyh264'],
+    include: [
+      '@yume-chan/scrcpy-decoder-tinyh264 > yuv-buffer',
+      '@yume-chan/scrcpy-decoder-tinyh264 > yuv-canvas',
+    ],
+  },
 })

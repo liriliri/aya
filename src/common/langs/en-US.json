@@ -158,5 +158,7 @@
   "screencast": "Screencast",
   "power": "Power",
   "volumeUp": "Volume Up",
-  "volumeDown": "Volume Down"
+  "volumeDown": "Volume Down",
+  "home": "Home",
+  "appSwitch": "App Switch"
 }

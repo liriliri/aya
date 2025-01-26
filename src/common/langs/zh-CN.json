@@ -159,5 +159,7 @@
   "screencast": "投屏",
   "power": "电源",
   "volumeUp": "增加音量",
-  "volumeDown": "减小音量"
+  "volumeDown": "减小音量",
+  "home": "主界面",
+  "appSwitch": "应用切换"
 }

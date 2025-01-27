@@ -10,7 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "NodeNext",
+    "module": "ES2015",
     "typeRoots": ["types"],
     "moduleResolution": "bundler",
     "resolveJsonModule": true,

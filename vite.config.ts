@@ -35,6 +35,9 @@ export default defineConfig(async (): Promise<UserConfig> => {
     define: {
       AYA_VERSION: JSON.stringify(pkg.version),
     },
+    optimizeDeps: {
+      exclude: ['@yume-chan/pcm-player'],
+    },
     // @ts-ignore
     test: {
       environment: 'jsdom',

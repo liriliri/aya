@@ -40,6 +40,7 @@
     "@xterm/addon-unicode11": "^0.8.0",
     "@xterm/addon-webgl": "^0.18.0",
     "@xterm/xterm": "^5.5.0",
+    "@yume-chan/pcm-player": "^1.0.0",
     "@yume-chan/scrcpy": "^1.1.0",
     "@yume-chan/scrcpy-decoder-webcodecs": "^1.1.0",
     "@yume-chan/stream-extra": "^1.0.0",

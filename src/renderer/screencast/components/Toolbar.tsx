@@ -2,13 +2,14 @@ import { observer } from 'mobx-react-lite'
 import LunaToolbar, { LunaToolbarSeparator } from 'luna-toolbar/react'
 import ToolbarIcon from '../../components/ToolbarIcon'
 import { t } from '../../../common/util'
+import Style from './Toolbar.module.scss'
 import store from '../store'
 
 export default observer(function Toolbar() {
   const device = store.device!
 
   return (
-    <LunaToolbar>
+    <LunaToolbar className={Style.container}>
       <ToolbarIcon
         icon="power"
         title={t('power')}

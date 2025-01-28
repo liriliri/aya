@@ -7,6 +7,9 @@ export default {
         on(event: string, listener: (...args: any[]) => void) {
           socket.on(event, listener)
         },
+        write(buffer: Uint8Array | string, cb?: (err?: Error) => void) {
+          return socket.write(buffer, cb)
+        },
       } as any)
     })
 

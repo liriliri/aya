@@ -9,12 +9,11 @@ import {
   ScrcpyOptions3_1,
   ScrcpyVideoCodecId,
   ScrcpyAudioCodec,
+  ScrcpyControlMessageWriter,
+  AndroidMotionEventAction,
+  AndroidMotionEventButton,
 } from '@yume-chan/scrcpy'
-import {
-  ReadableStream,
-  InspectStream,
-  WritableStream,
-} from '@yume-chan/stream-extra'
+import { InspectStream, WritableStream } from '@yume-chan/stream-extra'
 import {
   WebCodecsVideoDecoder,
   InsertableStreamVideoFrameRenderer,
@@ -22,6 +21,8 @@ import {
 import { Float32PcmPlayer } from '@yume-chan/pcm-player'
 import Readiness from 'licia/Readiness'
 import { OpusStream } from './AudioStream'
+import { socketToReadableStream, socketToReadableWritablePair } from './util'
+import clamp from 'licia/clamp'
 
 const logger = log('ScrcpyClient')
 
@@ -30,6 +31,7 @@ export default class ScrcpyClient extends Emitter {
   private server?: net.Server
   private video: any
   private audio: any
+  private control: any
   private started = false
   private options: ScrcpyOptions3_1
   private readiness = new Readiness()
@@ -61,33 +63,18 @@ export default class ScrcpyClient extends Emitter {
     )
 
     const server = node.createServer(async (socket) => {
-      const readableStream = new ReadableStream<Uint8Array>({
-        start(controller) {
-          socket.on('data', (data) => {
-            controller.enqueue(data)
-          })
-          socket.on('end', () => {
-            logger.info('stream end')
-            controller.close()
-          })
-          socket.on('error', (e) => {
-            logger.error('stream error', e)
-            controller.error(e)
-          })
-        },
-        cancel() {
-          socket.destroy()
-        },
-      })
-
       if (!this.video) {
         logger.info('video stream connected')
         this.video = {}
-        await this.createVideo(readableStream)
+        await this.createVideo(socket)
       } else if (!this.audio) {
         logger.info('audio stream connected')
         this.audio = {}
-        await this.createAudio(readableStream)
+        await this.createAudio(socket)
+      } else if (!this.control) {
+        logger.info('control stream connected')
+        this.control = {}
+        await this.createControl(socket)
       }
     })
     server.listen(port)
@@ -95,14 +82,15 @@ export default class ScrcpyClient extends Emitter {
     main.startScrcpy(deviceId, options.serialize())
 
     return this.readiness
-      .ready(['video', 'audio'])
+      .ready(['video', 'audio', 'control'])
       .then(() => (this.started = true))
   })
-  private async createVideo(readableStream: ReadableStream<Uint8Array>) {
+  private async createVideo(socket: net.Socket) {
     const { options } = this
+    const videoStream = socketToReadableStream(socket)
 
     const { stream, metadata } = await options.parseVideoStreamMetadata(
-      readableStream
+      videoStream
     )
 
     logger.info('video metadata', metadata)
@@ -113,9 +101,10 @@ export default class ScrcpyClient extends Emitter {
         codec = ScrcpyVideoCodecId.H264
         break
     }
+    const renderer = new InsertableStreamVideoFrameRenderer()
     const decoder = new WebCodecsVideoDecoder({
       codec,
-      renderer: new InsertableStreamVideoFrameRenderer(),
+      renderer,
     })
 
     this.video = {
@@ -132,12 +121,93 @@ export default class ScrcpyClient extends Emitter {
       decoder,
     }
 
+    this.bindPointerEvent(renderer.element)
+
     this.readiness.signal('video')
   }
-  private async createAudio(readableStream: ReadableStream<Uint8Array>) {
-    const { options } = this
+  private bindPointerEvent(el: HTMLVideoElement) {
+    logger.info('bind pointer event')
 
-    const metadata = await options.parseAudioStreamMetadata(readableStream)
+    el.addEventListener('pointerdown', (e) => this.injectTouch(el, e))
+    el.addEventListener('pointermove', (e) => this.injectTouch(el, e))
+    el.addEventListener('pointerup', (e) => this.injectTouch(el, e))
+  }
+  private injectTouch(el: HTMLVideoElement, e: PointerEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const target = e.currentTarget as HTMLElement
+    target.setPointerCapture(e.pointerId)
+
+    const { type, clientX, clientY, button, buttons } = e
+
+    let action: AndroidMotionEventAction
+    switch (type) {
+      case 'pointerdown':
+        action = AndroidMotionEventAction.Down
+        break
+      case 'pointermove':
+        if (buttons === 0) {
+          action = AndroidMotionEventAction.HoverMove
+        } else {
+          action = AndroidMotionEventAction.Move
+        }
+        break
+      case 'pointerup':
+        action = AndroidMotionEventAction.Up
+        break
+      default:
+        throw new Error(`Unsupported event type: ${type}`)
+    }
+
+    const screenWidth = el.width
+    const screenHeight = el.height
+
+    const rect = el.getBoundingClientRect()
+
+    const videoRect = {
+      width: 0,
+      height: 0,
+      x: 0,
+      y: 0,
+    }
+    if (screenWidth / screenHeight < rect.width / rect.height) {
+      videoRect.height = rect.height
+      videoRect.width = videoRect.height * (screenWidth / screenHeight)
+      videoRect.x = rect.x + (rect.width - videoRect.width) / 2
+      videoRect.y = rect.y
+    } else {
+      videoRect.width = rect.width
+      videoRect.height = videoRect.width * (screenHeight / screenWidth)
+      videoRect.x = rect.x
+      videoRect.y = rect.y + (rect.height - videoRect.height) / 2
+    }
+    const percentageX = clamp((clientX - videoRect.x) / videoRect.width, 0, 1)
+    const percentageY = clamp((clientY - videoRect.y) / videoRect.height, 0, 1)
+
+    const pointerX = percentageX * screenWidth
+    const pointerY = percentageY * screenHeight
+
+    if (this.control) {
+      const controller: ScrcpyControlMessageWriter = this.control.controller
+      controller.injectTouch({
+        action,
+        pointerId: BigInt(e.pointerId),
+        pointerX,
+        pointerY,
+        screenWidth,
+        screenHeight,
+        pressure: buttons === 0 ? 0 : 1,
+        actionButton: PointerEventButtonToAndroidButton[button],
+        buttons,
+      })
+    }
+  }
+  private async createAudio(socket: net.Socket) {
+    const { options } = this
+    const audioStream = socketToReadableStream(socket)
+
+    const metadata = await options.parseAudioStreamMetadata(audioStream)
 
     logger.info('audio metadata', metadata)
 
@@ -182,4 +252,27 @@ export default class ScrcpyClient extends Emitter {
 
     this.readiness.signal('audio')
   }
+  private async createControl(socket: net.Socket) {
+    const { options } = this
+    const controlStream = socketToReadableWritablePair(socket)
+
+    const controller = new ScrcpyControlMessageWriter(
+      controlStream.writable.getWriter(),
+      options
+    )
+
+    this.control = {
+      controller,
+    }
+
+    this.readiness.signal('control')
+  }
 }
+
+const PointerEventButtonToAndroidButton = [
+  AndroidMotionEventButton.Primary,
+  AndroidMotionEventButton.Tertiary,
+  AndroidMotionEventButton.Secondary,
+  AndroidMotionEventButton.Back,
+  AndroidMotionEventButton.Forward,
+]

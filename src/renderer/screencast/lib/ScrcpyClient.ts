@@ -125,6 +125,7 @@ export default class ScrcpyClient extends Emitter {
 
     this.readiness.signal('video')
   }
+  // https://docs.tangoapp.dev/scrcpy/control/touch/
   private bindPointerEvent(el: HTMLVideoElement) {
     logger.info('bind pointer event')
 

@@ -1,3 +1,7 @@
+## v0.5.0 (28 Jan 2025)
+
+* feat: support screen mirror, implemented based on scrcpy
+
 ## v0.4.1 (21 Jan 2025)
 
 * fix: main window cannot be opened on windows [#5](https://github.com/liriliri/aya/issues/5)

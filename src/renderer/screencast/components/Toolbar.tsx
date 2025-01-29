@@ -4,9 +4,15 @@ import ToolbarIcon from '../../components/ToolbarIcon'
 import { t } from '../../../common/util'
 import Style from './Toolbar.module.scss'
 import store from '../store'
+import download from 'licia/download'
 
 export default observer(function Toolbar() {
-  const device = store.device!
+  const { device, scrcpyClient } = store
+
+  async function captureScreenshot() {
+    const blob = await scrcpyClient.captureScreenshot()
+    download(blob, 'screenshot.png', 'image/png')
+  }
 
   return (
     <LunaToolbar className={Style.container}>
@@ -40,6 +46,12 @@ export default observer(function Toolbar() {
         icon="square"
         title={t('appSwitch')}
         onClick={() => main.inputKey(device.id, 187)}
+      />
+      <LunaToolbarSeparator />
+      <ToolbarIcon
+        icon="camera"
+        title={t('screenshot')}
+        onClick={captureScreenshot}
       />
     </LunaToolbar>
   )

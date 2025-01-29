@@ -1,9 +1,12 @@
 import BaseStore from '../store/BaseStore'
 import { IDevice } from '../../common/types'
 import { action, makeObservable, observable } from 'mobx'
+import ScrcpyClient from './lib/ScrcpyClient'
+import { ScrcpyOptions3_1 } from '@yume-chan/scrcpy'
 
 class Store extends BaseStore {
-  device: IDevice | null = null
+  device!: IDevice
+  scrcpyClient!: ScrcpyClient
   constructor() {
     super()
 
@@ -18,8 +21,16 @@ class Store extends BaseStore {
   setDevice(device: IDevice | null) {
     if (device === null) {
       main.closeScreencast()
+    } else {
+      this.scrcpyClient = new ScrcpyClient(
+        device.id,
+        new ScrcpyOptions3_1({
+          audio: true,
+          clipboardAutosync: false,
+        })
+      )
+      this.device = device
     }
-    this.device = device
   }
   private async init() {
     const device = await main.getMainStore('device')

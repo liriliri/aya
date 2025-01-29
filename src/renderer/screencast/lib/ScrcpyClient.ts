@@ -23,6 +23,7 @@ import Readiness from 'licia/Readiness'
 import { OpusStream } from './AudioStream'
 import { socketToReadableStream, socketToReadableWritablePair } from './util'
 import clamp from 'licia/clamp'
+import h from 'licia/h'
 
 const logger = log('ScrcpyClient')
 
@@ -45,6 +46,22 @@ export default class ScrcpyClient extends Emitter {
   async getVideo() {
     await this.start()
     return this.video
+  }
+  async captureScreenshot(): Promise<Blob> {
+    await this.start()
+    const video = this.video.decoder.renderer.element
+
+    const canvas = h('canvas') as HTMLCanvasElement
+    canvas.width = video.videoWidth
+    canvas.height = video.videoHeight
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+
+    return new Promise((resolve) => {
+      canvas.toBlob(async (blob: Blob | null) => {
+        resolve(blob as Blob)
+      })
+    })
   }
   destroy() {
     if (this.server) {

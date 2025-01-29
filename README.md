@@ -22,6 +22,7 @@ Click [here](https://github.com/liriliri/aya/releases/) to download and install 
 
 ## Features
 
+* Screen mirror
 * File explorer
 * Application manager
 * Process monitor

@@ -160,5 +160,6 @@
   "volumeUp": "Volume Up",
   "volumeDown": "Volume Down",
   "home": "Home",
-  "appSwitch": "App Switch"
+  "appSwitch": "App Switch",
+  "fullscreen": "Fullscreen"
 }

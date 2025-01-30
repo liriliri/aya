@@ -161,5 +161,6 @@
   "volumeUp": "增加音量",
   "volumeDown": "减小音量",
   "home": "主界面",
-  "appSwitch": "应用切换"
+  "appSwitch": "应用切换",
+  "fullscreen": "全屏"
 }

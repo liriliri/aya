@@ -1,10 +1,14 @@
 import { observer } from 'mobx-react-lite'
-import LunaToolbar, { LunaToolbarSeparator } from 'luna-toolbar/react'
+import LunaToolbar, {
+  LunaToolbarSeparator,
+  LunaToolbarSpace,
+} from 'luna-toolbar/react'
 import ToolbarIcon from '../../components/ToolbarIcon'
 import { t } from '../../../common/util'
 import Style from './Toolbar.module.scss'
 import store from '../store'
 import download from 'licia/download'
+import fullscreen from 'licia/fullscreen'
 
 export default observer(function Toolbar() {
   const { device, scrcpyClient } = store
@@ -12,6 +16,12 @@ export default observer(function Toolbar() {
   async function captureScreenshot() {
     const blob = await scrcpyClient.captureScreenshot()
     download(blob, 'screenshot.png', 'image/png')
+  }
+
+  async function toggleFullscreen() {
+    const video = await scrcpyClient.getVideo()
+
+    fullscreen.toggle(video.decoder.renderer.element.parentElement)
   }
 
   return (
@@ -52,6 +62,12 @@ export default observer(function Toolbar() {
         icon="camera"
         title={t('screenshot')}
         onClick={captureScreenshot}
+      />
+      <LunaToolbarSpace />
+      <ToolbarIcon
+        icon="fullscreen"
+        title={t('fullscreen')}
+        onClick={toggleFullscreen}
       />
     </LunaToolbar>
   )

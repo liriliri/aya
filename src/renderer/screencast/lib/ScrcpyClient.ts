@@ -138,17 +138,69 @@ export default class ScrcpyClient extends Emitter {
       decoder,
     }
 
-    this.bindPointerEvent(renderer.element)
+    this.bindVideoEvent(renderer.element)
 
     this.readiness.signal('video')
   }
-  // https://docs.tangoapp.dev/scrcpy/control/touch/
-  private bindPointerEvent(el: HTMLVideoElement) {
-    logger.info('bind pointer event')
+  private bindVideoEvent(el: HTMLVideoElement) {
+    logger.info('bind video event')
 
     el.addEventListener('pointerdown', (e) => this.injectTouch(el, e))
     el.addEventListener('pointermove', (e) => this.injectTouch(el, e))
     el.addEventListener('pointerup', (e) => this.injectTouch(el, e))
+
+    el.addEventListener('wheel', (e) => this.injectScroll(el, e))
+  }
+  private injectScroll(el: HTMLVideoElement, e: WheelEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (this.control) {
+      const controller: ScrcpyControlMessageWriter = this.control.controller
+      controller.injectScroll({
+        ...this.getPointer(el, e.clientX, e.clientY),
+        scrollX: -e.deltaX / 100,
+        scrollY: -e.deltaY / 100,
+        buttons: 0,
+      })
+    }
+  }
+  private getPointer(el: HTMLVideoElement, clientX: number, clientY: number) {
+    const screenWidth = el.width
+    const screenHeight = el.height
+
+    const rect = el.getBoundingClientRect()
+
+    const videoRect = {
+      width: 0,
+      height: 0,
+      x: 0,
+      y: 0,
+    }
+    if (screenWidth / screenHeight < rect.width / rect.height) {
+      videoRect.height = rect.height
+      videoRect.width = videoRect.height * (screenWidth / screenHeight)
+      videoRect.x = rect.x + (rect.width - videoRect.width) / 2
+      videoRect.y = rect.y
+    } else {
+      videoRect.width = rect.width
+      videoRect.height = videoRect.width * (screenHeight / screenWidth)
+      videoRect.x = rect.x
+      videoRect.y = rect.y + (rect.height - videoRect.height) / 2
+    }
+
+    const percentageX = clamp((clientX - videoRect.x) / videoRect.width, 0, 1)
+    const percentageY = clamp((clientY - videoRect.y) / videoRect.height, 0, 1)
+
+    const pointerX = percentageX * screenWidth
+    const pointerY = percentageY * screenHeight
+
+    return {
+      screenWidth,
+      screenHeight,
+      pointerX,
+      pointerY,
+    }
   }
   private injectTouch(el: HTMLVideoElement, e: PointerEvent) {
     e.preventDefault()
@@ -178,43 +230,12 @@ export default class ScrcpyClient extends Emitter {
         throw new Error(`Unsupported event type: ${type}`)
     }
 
-    const screenWidth = el.width
-    const screenHeight = el.height
-
-    const rect = el.getBoundingClientRect()
-
-    const videoRect = {
-      width: 0,
-      height: 0,
-      x: 0,
-      y: 0,
-    }
-    if (screenWidth / screenHeight < rect.width / rect.height) {
-      videoRect.height = rect.height
-      videoRect.width = videoRect.height * (screenWidth / screenHeight)
-      videoRect.x = rect.x + (rect.width - videoRect.width) / 2
-      videoRect.y = rect.y
-    } else {
-      videoRect.width = rect.width
-      videoRect.height = videoRect.width * (screenHeight / screenWidth)
-      videoRect.x = rect.x
-      videoRect.y = rect.y + (rect.height - videoRect.height) / 2
-    }
-    const percentageX = clamp((clientX - videoRect.x) / videoRect.width, 0, 1)
-    const percentageY = clamp((clientY - videoRect.y) / videoRect.height, 0, 1)
-
-    const pointerX = percentageX * screenWidth
-    const pointerY = percentageY * screenHeight
-
     if (this.control) {
       const controller: ScrcpyControlMessageWriter = this.control.controller
       controller.injectTouch({
         action,
         pointerId: BigInt(e.pointerId),
-        pointerX,
-        pointerY,
-        screenWidth,
-        screenHeight,
+        ...this.getPointer(el, clientX, clientY),
         pressure: buttons === 0 ? 0 : 1,
         actionButton: PointerEventButtonToAndroidButton[button],
         buttons,

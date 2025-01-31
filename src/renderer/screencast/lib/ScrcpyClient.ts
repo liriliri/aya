@@ -12,6 +12,8 @@ import {
   ScrcpyControlMessageWriter,
   AndroidMotionEventAction,
   AndroidMotionEventButton,
+  AndroidKeyEventAction,
+  AndroidKeyCode,
 } from '@yume-chan/scrcpy'
 import { InspectStream, WritableStream } from '@yume-chan/stream-extra'
 import {
@@ -128,11 +130,49 @@ export default class ScrcpyClient extends Emitter {
   private bindVideoEvent(el: HTMLVideoElement) {
     logger.info('bind video event')
 
-    el.addEventListener('pointerdown', (e) => this.injectTouch(el, e))
+    el.addEventListener('pointerdown', (e) => {
+      el.focus()
+      this.injectTouch(el, e)
+    })
     el.addEventListener('pointermove', (e) => this.injectTouch(el, e))
     el.addEventListener('pointerup', (e) => this.injectTouch(el, e))
 
     el.addEventListener('wheel', (e) => this.injectScroll(el, e))
+
+    el.setAttribute('tabindex', '0')
+    el.addEventListener('keydown', (e) => this.injectKeyCode(e))
+    el.addEventListener('keyup', (e) => this.injectKeyCode(e))
+  }
+  private injectKeyCode(e: KeyboardEvent) {
+    console.log(e)
+    e.preventDefault()
+    e.stopPropagation()
+
+    const { type, code } = e
+
+    let action: AndroidKeyEventAction
+    switch (type) {
+      case 'keydown':
+        action = AndroidKeyEventAction.Down
+        break
+      case 'keyup':
+        action = AndroidKeyEventAction.Up
+        break
+      default:
+        throw new Error(`Unsupported event type: ${type}`)
+    }
+
+    const keyCode = AndroidKeyCode[code as keyof typeof AndroidKeyCode]
+
+    if (this.control) {
+      const controller: ScrcpyControlMessageWriter = this.control.controller
+      controller.injectKeyCode({
+        action,
+        keyCode,
+        repeat: 0,
+        metaState: 0,
+      })
+    }
   }
   private injectScroll(el: HTMLVideoElement, e: WheelEvent) {
     e.preventDefault()

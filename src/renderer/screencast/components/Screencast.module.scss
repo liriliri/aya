@@ -11,8 +11,6 @@
   video {
     width: 100%;
     height: 100%;
-    &::-webkit-media-controls-fullscreen-button {
-      display: none;
-    }
+    outline: none !important;
   }
 }

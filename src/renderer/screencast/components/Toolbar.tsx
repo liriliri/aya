@@ -14,7 +14,8 @@ export default observer(function Toolbar() {
   const { device, scrcpyClient } = store
 
   async function captureScreenshot() {
-    const blob = await scrcpyClient.captureScreenshot()
+    const video = await scrcpyClient.getVideo()
+    const blob = await video.decoder.snapshot()
     download(blob, 'screenshot.png', 'image/png')
   }
 

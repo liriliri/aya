@@ -23,6 +23,13 @@ android {
         versionName pkgJson.version
     }
 
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }

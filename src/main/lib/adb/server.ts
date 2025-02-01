@@ -76,7 +76,7 @@ class AyaClient {
             return started
           },
           10000,
-          1000
+          100
         )
         await this.connect(false)
       }

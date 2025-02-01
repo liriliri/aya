@@ -20,31 +20,13 @@ class Connection(private val client: LocalSocket) : Thread() {
     private companion object {
         private const val TAG = "Aya.Connection"
         private var packageCache = JSONObject()
-        private var packageCacheChanged = false
-        private const val PACKAGE_CACHE_FILE = "/data/local/tmp/aya/packageCache.json"
+        private const val ICON_CACHE_DIR = "/data/local/tmp/aya/icons"
 
         init {
-            loadPackageCache()
-        }
-
-        private fun loadPackageCache() {
-            Log.i(TAG, "Load package cache")
-
-            val file = File(PACKAGE_CACHE_FILE)
-            if (file.exists()) {
-                packageCache = JSONObject(file.readText())
+            val iconCacheDir = File(ICON_CACHE_DIR)
+            if (!iconCacheDir.exists()) {
+                iconCacheDir.mkdirs()
             }
-        }
-
-        private fun savePackageCache() {
-            Log.i(TAG, "Save package cache")
-            if (!packageCacheChanged) {
-                return
-            }
-            packageCacheChanged = false
-
-            val file = File(PACKAGE_CACHE_FILE)
-            file.writeText(packageCache.toString())
         }
     }
 
@@ -103,7 +85,6 @@ class Connection(private val client: LocalSocket) : Thread() {
                 Log.e(TAG, "Fail to get package info", e)
             }
         }
-        savePackageCache()
 
         return result
     }
@@ -143,7 +124,7 @@ class Connection(private val client: LocalSocket) : Thread() {
         var label = packageName
         var icon = ""
 
-        val cacheKey = packageName + apkSize
+        val cacheKey = "$packageName.$apkSize"
 
         if (packageCache.has(cacheKey)) {
             val cacheInfo = packageCache.getJSONObject(cacheKey)
@@ -162,14 +143,24 @@ class Connection(private val client: LocalSocket) : Thread() {
 
             if (applicationInfo.icon != 0) {
                 try {
-                    val resIcon = resources.getDrawable(applicationInfo.icon)
-                    val bitmapIcon = Util.drawableToBitmap(resIcon)
-                    icon = "data:image/png;base64,${
-                        Base64.encodeToString(
-                            Util.bitMapToPng(bitmapIcon, 20),
-                            Base64.NO_WRAP
-                        )
-                    }"
+                    val iconCachePath = "$ICON_CACHE_DIR/$cacheKey.png"
+                    val file = File(iconCachePath)
+                    if (file.exists()) {
+                        icon = "data:image/png;base64,${
+                            Base64.encodeToString(file.readBytes(), Base64.NO_WRAP)
+                        }"
+                    } else {
+                        val resIcon = resources.getDrawable(applicationInfo.icon)
+                        val bitmapIcon = Util.drawableToBitmap(resIcon)
+                        val pngIcon = Util.bitMapToPng(bitmapIcon, 20)
+                        icon = "data:image/png;base64,${
+                            Base64.encodeToString(
+                                pngIcon,
+                                Base64.NO_WRAP
+                            )
+                        }"
+                        file.writeBytes(pngIcon)
+                    }
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to get icon for $packageName")
                 }
@@ -178,7 +169,6 @@ class Connection(private val client: LocalSocket) : Thread() {
             cacheInfo.put("label", label)
             cacheInfo.put("icon", icon)
             packageCache.put(cacheKey, cacheInfo)
-            packageCacheChanged = true
         }
         info.put("label", label)
         info.put("icon", icon)

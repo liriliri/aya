@@ -36,6 +36,8 @@ export function showWin() {
     menu: true,
   })
 
+  win.on('close', () => app.quit())
+
   window.loadPage(win)
 }
 

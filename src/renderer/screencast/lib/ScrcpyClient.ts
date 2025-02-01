@@ -49,6 +49,8 @@ export default class ScrcpyClient extends Emitter {
     return this.video
   }
   destroy() {
+    logger.info('destroy')
+
     if (this.server) {
       this.server.close()
     }
@@ -80,6 +82,7 @@ export default class ScrcpyClient extends Emitter {
       }
     })
     server.listen(port)
+    this.server = server
 
     main.startScrcpy(deviceId, options.serialize())
 
@@ -126,6 +129,8 @@ export default class ScrcpyClient extends Emitter {
     this.bindVideoEvent(renderer.element)
 
     this.readiness.signal('video')
+
+    socket.on('close', () => this.emit('close'))
   }
   private bindVideoEvent(el: HTMLVideoElement) {
     logger.info('bind video event')
@@ -144,7 +149,6 @@ export default class ScrcpyClient extends Emitter {
     el.addEventListener('keyup', (e) => this.injectKeyCode(e))
   }
   private injectKeyCode(e: KeyboardEvent) {
-    console.log(e)
     e.preventDefault()
     e.stopPropagation()
 

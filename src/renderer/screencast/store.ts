@@ -29,6 +29,11 @@ class Store extends BaseStore {
           clipboardAutosync: false,
         })
       )
+      this.scrcpyClient.on('close', () => {
+        if (this.device.id === device.id) {
+          this.setDevice(null)
+        }
+      })
       this.device = device
     }
   }

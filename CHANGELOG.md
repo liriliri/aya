@@ -1,3 +1,11 @@
+## v0.6.0 (2 Feb 2025)
+
+* feat: screencast capture screenshot
+* feat: screencast fullscreen
+* feat: screencast mouse wheel
+* feat: screencast keyboard
+* feat: screencast toggle device screen
+
 ## v0.5.0 (28 Jan 2025)
 
 * feat: support screen mirror, implemented based on scrcpy

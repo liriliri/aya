@@ -1,6 +1,6 @@
 {
   "name": "AYA",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Android adb desktop app",
   "main": "dist/main/index.js",
   "scripts": {

@@ -161,5 +161,7 @@
   "volumeDown": "Volume Down",
   "home": "Home",
   "appSwitch": "App Switch",
-  "fullscreen": "Fullscreen"
+  "fullscreen": "Fullscreen",
+  "screenOff": "Turn off device screen",
+  "screenOn": "Turn on device screen"
 }

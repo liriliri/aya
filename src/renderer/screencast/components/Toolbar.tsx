@@ -60,6 +60,17 @@ export default observer(function Toolbar() {
       />
       <LunaToolbarSeparator />
       <ToolbarIcon
+        icon="screen-on"
+        title={t('screenOn')}
+        onClick={() => scrcpyClient.turnOnScreen()}
+      />
+      <ToolbarIcon
+        icon="screen-off"
+        title={t('screenOff')}
+        onClick={() => scrcpyClient.turnOffScreen()}
+      />
+      <LunaToolbarSeparator />
+      <ToolbarIcon
         icon="camera"
         title={t('screenshot')}
         onClick={captureScreenshot}

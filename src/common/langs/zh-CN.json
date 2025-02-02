@@ -162,5 +162,7 @@
   "volumeDown": "减小音量",
   "home": "主界面",
   "appSwitch": "应用切换",
-  "fullscreen": "全屏"
+  "fullscreen": "全屏",
+  "screenOff": "关闭设备屏幕",
+  "screenOn": "开启设备屏幕"
 }

@@ -14,6 +14,7 @@ import {
   AndroidMotionEventButton,
   AndroidKeyEventAction,
   AndroidKeyCode,
+  AndroidScreenPowerMode,
 } from '@yume-chan/scrcpy'
 import { InspectStream, WritableStream } from '@yume-chan/stream-extra'
 import {
@@ -53,6 +54,20 @@ export default class ScrcpyClient extends Emitter {
 
     if (this.server) {
       this.server.close()
+    }
+  }
+  async turnOffScreen() {
+    await this.start()
+    if (this.control) {
+      const controller: ScrcpyControlMessageWriter = this.control.controller
+      controller.setScreenPowerMode(AndroidScreenPowerMode.Off)
+    }
+  }
+  async turnOnScreen() {
+    await this.start()
+    if (this.control) {
+      const controller: ScrcpyControlMessageWriter = this.control.controller
+      controller.setScreenPowerMode(AndroidScreenPowerMode.Normal)
     }
   }
   private start = singleton(async () => {

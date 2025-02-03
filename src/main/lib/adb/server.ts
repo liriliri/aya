@@ -69,15 +69,7 @@ class AyaClient {
       if (tryStart) {
         await this.push()
         await this.start()
-        let started = false
-        await waitUntil(
-          () => {
-            this.isRunning().then((val) => (started = val))
-            return started
-          },
-          10000,
-          100
-        )
+        await waitUntil(this.isRunning, 10000, 100)
         await this.connect(false)
       }
     }

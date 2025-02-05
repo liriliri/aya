@@ -15,15 +15,24 @@ import {
   AndroidKeyCode,
   AndroidScreenPowerMode,
 } from '@yume-chan/scrcpy'
-import { InspectStream, WritableStream } from '@yume-chan/stream-extra'
+import {
+  InspectStream,
+  WritableStream,
+  ReadableStream,
+  BufferedReadableStream,
+  PushReadableStream,
+  Consumable,
+} from '@yume-chan/stream-extra'
 import {
   WebCodecsVideoDecoder,
   InsertableStreamVideoFrameRenderer,
 } from '@yume-chan/scrcpy-decoder-webcodecs'
 import { Float32PcmPlayer } from '@yume-chan/pcm-player'
+import { getUint32BigEndian } from '@yume-chan/no-data-view'
 import Readiness from 'licia/Readiness'
 import { OpusStream } from './AudioStream'
-import { socketToReadableStream, socketToReadableWritablePair } from './util'
+import sleep from 'licia/sleep'
+import { socketToReadableStream, socketToWritableStream } from './util'
 import clamp from 'licia/clamp'
 
 const logger = log('ScrcpyClient')
@@ -79,28 +88,70 @@ export default class ScrcpyClient extends Emitter {
     )
 
     const server = node.createServer(async (socket) => {
+      // video socket is the first connection
       if (!this.video) {
-        logger.info('video stream connected')
         this.video = {}
-        await this.createVideo(socket)
-      } else if (!this.audio) {
-        logger.info('audio stream connected')
-        this.audio = {}
-        await this.createAudio(socket)
-      } else if (!this.control) {
-        logger.info('control stream connected')
-        this.control = {}
-        await this.createControl(socket)
+        this.createVideo(socketToReadableStream(socket))
+        socket.on('close', () => this.emit('close'))
+        return
       }
+
+      // audio socket and control socket orders are not guaranteed, need to detect
+      let isAudio = false
+      this.detectAudioStream(socketToReadableStream(socket)).then((value) => {
+        // never resolve if it's control socket
+        if (value.audio) {
+          isAudio = true
+          this.createAudio(value.stream)
+        }
+      })
+      sleep(1000).then(() => {
+        if (!isAudio) {
+          this.createControl(socketToWritableStream(socket))
+        }
+      })
     })
     server.listen(port)
     this.server = server
 
     main.startScrcpy(deviceId, options.serialize())
   }
-  private async createVideo(socket: net.Socket) {
+  private async detectAudioStream(stream: ReadableStream<Uint8Array>) {
+    const buffered = new BufferedReadableStream(stream)
+    const buffer = await buffered.readExactly(4)
+    const codecMetadataValue = getUint32BigEndian(buffer, 0)
+
+    const readableStream = new PushReadableStream<Uint8Array>(
+      async (controller) => {
+        await controller.enqueue(buffer)
+
+        const stream = buffered.release()
+        const reader = stream.getReader()
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) {
+            break
+          }
+          await controller.enqueue(value)
+        }
+      }
+    )
+    if (codecMetadataValue === ScrcpyAudioCodec.Opus.metadataValue) {
+      return {
+        audio: true,
+        stream: readableStream,
+      }
+    }
+
+    return {
+      audio: false,
+      stream: readableStream,
+    }
+  }
+  private async createVideo(videoStream: ReadableStream<Uint8Array>) {
+    logger.info('video stream connected')
+
     const { options } = this
-    const videoStream = socketToReadableStream(socket)
 
     const { stream, metadata } = await options.parseVideoStreamMetadata(
       videoStream
@@ -138,8 +189,6 @@ export default class ScrcpyClient extends Emitter {
 
     logger.info('video ready')
     this.readiness.signal('video')
-
-    socket.on('close', () => this.emit('close'))
   }
   private bindVideoEvent(el: HTMLVideoElement) {
     logger.info('bind video event')
@@ -278,9 +327,10 @@ export default class ScrcpyClient extends Emitter {
       })
     }
   }
-  private async createAudio(socket: net.Socket) {
+  private async createAudio(audioStream: ReadableStream<Uint8Array>) {
+    logger.info('audio stream connected')
+
     const { options } = this
-    const audioStream = socketToReadableStream(socket)
 
     const metadata = await options.parseAudioStreamMetadata(audioStream)
 
@@ -328,12 +378,15 @@ export default class ScrcpyClient extends Emitter {
     logger.info('audio ready')
     this.readiness.signal('audio')
   }
-  private async createControl(socket: net.Socket) {
+  private async createControl(
+    controlStream: WritableStream<Consumable<Uint8Array>>
+  ) {
+    logger.info('control stream connected')
+
     const { options } = this
-    const controlStream = socketToReadableWritablePair(socket)
 
     const controller = new ScrcpyControlMessageWriter(
-      controlStream.writable.getWriter(),
+      controlStream.getWriter(),
       options
     )
 

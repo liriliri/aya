@@ -1,5 +1,9 @@
 import type net from 'node:net'
-import { Consumable, ReadableStream } from '@yume-chan/stream-extra'
+import {
+  Consumable,
+  ReadableStream,
+  WritableStream,
+} from '@yume-chan/stream-extra'
 
 export function socketToReadableStream(socket: net.Socket) {
   return new ReadableStream<Uint8Array>({
@@ -36,15 +40,8 @@ export function socketToWritableStream(socket: net.Socket) {
     close() {
       socket.end()
     },
-    abort(reason) {
-      socket.destroy(reason)
+    abort() {
+      socket.destroy()
     },
   })
-}
-
-export function socketToReadableWritablePair(socket: net.Socket) {
-  return {
-    readable: socketToReadableStream(socket),
-    writable: socketToWritableStream(socket),
-  }
 }

@@ -143,6 +143,7 @@ export default class ScrcpyClient extends Emitter {
 
     this.bindVideoEvent(renderer.element)
 
+    logger.info('video ready')
     this.readiness.signal('video')
 
     socket.on('close', () => this.emit('close'))
@@ -331,6 +332,7 @@ export default class ScrcpyClient extends Emitter {
       }
     }
 
+    logger.info('audio ready')
     this.readiness.signal('audio')
   }
   private async createControl(socket: net.Socket) {
@@ -346,6 +348,7 @@ export default class ScrcpyClient extends Emitter {
       controller,
     }
 
+    logger.info('control ready')
     this.readiness.signal('control')
   }
 }

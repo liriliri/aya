@@ -55,6 +55,7 @@ function renderApp() {
 
 if (isDev()) {
   hotKey.on('f5', () => location.reload())
+  hotKey.on('f12', () => main.toggleDevTools())
 }
 
 ;(async function () {

@@ -3,6 +3,7 @@ import contextMenu from './contextMenu'
 import { handleEvent } from './util'
 import log from '../../common/log'
 import * as screencast from '../window/screencast'
+import * as window from './window'
 
 const logger = log('ipc')
 
@@ -20,5 +21,11 @@ export function init() {
   )
   handleEvent('openExternal', (url: string) => {
     shell.openExternal(url)
+  })
+  handleEvent('toggleDevTools', () => {
+    const win = window.getFocusedWin()
+    if (win) {
+      win.webContents.toggleDevTools()
+    }
   })
 }

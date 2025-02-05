@@ -133,6 +133,7 @@ export default {
       template
     )
   },
+  toggleDevTools: () => ipcRenderer.invoke('toggleDevTools'),
   showOpenDialog: (options: OpenDialogOptions = {}) => {
     return ipcRenderer.invoke('showOpenDialog', options)
   },

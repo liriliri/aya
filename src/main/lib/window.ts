@@ -160,6 +160,10 @@ export function getWin(name: string) {
   return wins[name]
 }
 
+export function getFocusedWin() {
+  return focusedWin
+}
+
 export function savePos(
   win: BrowserWindow | null,
   store: any,

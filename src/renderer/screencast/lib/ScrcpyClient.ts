@@ -4,7 +4,6 @@ import type net from 'node:net'
 import lpad from 'licia/lpad'
 import Emitter from 'licia/Emitter'
 import log from '../../../common/log'
-import singleton from 'licia/singleton'
 import {
   ScrcpyOptions3_1,
   ScrcpyVideoCodecId,
@@ -35,7 +34,6 @@ export default class ScrcpyClient extends Emitter {
   private video: any
   private audio: any
   private control: any
-  private started = false
   private options: ScrcpyOptions3_1
   private readiness = new Readiness()
   constructor(deviceId: string, options: ScrcpyOptions3_1) {
@@ -44,9 +42,11 @@ export default class ScrcpyClient extends Emitter {
     this.options = options
     options.value.scid = toStr(strHash(deviceId) % 999999)
     this.deviceId = deviceId
+
+    this.start()
   }
   async getVideo() {
-    await this.start()
+    await this.readiness.ready('video')
     return this.video
   }
   destroy() {
@@ -57,23 +57,20 @@ export default class ScrcpyClient extends Emitter {
     }
   }
   async turnOffScreen() {
-    await this.start()
+    await this.readiness.ready('control')
     if (this.control) {
       const controller: ScrcpyControlMessageWriter = this.control.controller
       controller.setScreenPowerMode(AndroidScreenPowerMode.Off)
     }
   }
   async turnOnScreen() {
-    await this.start()
+    await this.readiness.ready('control')
     if (this.control) {
       const controller: ScrcpyControlMessageWriter = this.control.controller
       controller.setScreenPowerMode(AndroidScreenPowerMode.Normal)
     }
   }
-  private start = singleton(async () => {
-    if (this.started) {
-      return
-    }
+  private start = async () => {
     const { deviceId, options } = this
 
     const port = await main.reverseTcp(
@@ -100,11 +97,7 @@ export default class ScrcpyClient extends Emitter {
     this.server = server
 
     main.startScrcpy(deviceId, options.serialize())
-
-    return this.readiness
-      .ready(['video', 'audio', 'control'])
-      .then(() => (this.started = true))
-  })
+  }
   private async createVideo(socket: net.Socket) {
     const { options } = this
     const videoStream = socketToReadableStream(socket)

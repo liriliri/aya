@@ -1,3 +1,7 @@
+## v0.6.1 (6 Feb 2025)
+
+* fix: screencast not working on windows [#37](https://github.com/liriliri/aya/issues/37)
+
 ## v0.6.0 (2 Feb 2025)
 
 * feat: screencast capture screenshot

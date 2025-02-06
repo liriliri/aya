@@ -117,6 +117,8 @@ export default class ScrcpyClient extends Emitter {
     main.startScrcpy(deviceId, options.serialize())
   }
   private async detectAudioStream(stream: ReadableStream<Uint8Array>) {
+    let isAudio = false
+
     const buffered = new BufferedReadableStream(stream)
     const buffer = await buffered.readExactly(4)
     const codecMetadataValue = getUint32BigEndian(buffer, 0)
@@ -136,7 +138,14 @@ export default class ScrcpyClient extends Emitter {
         }
       }
     )
-    if (codecMetadataValue === ScrcpyAudioCodec.Opus.metadataValue) {
+    switch (codecMetadataValue) {
+      case 0x00_00_00_00:
+      case ScrcpyAudioCodec.Opus.metadataValue:
+        isAudio = true
+        break
+    }
+
+    if (isAudio) {
       return {
         audio: true,
         stream: readableStream,

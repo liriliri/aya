@@ -317,8 +317,10 @@ export async function init() {
   client.trackDevices().then((tracker) => {
     tracker.on('add', onDeviceChange)
     tracker.on('remove', onDeviceChange)
+    tracker.on('end', () => logger.info('tracker end'))
   })
   function onDeviceChange() {
+    logger.info('device change')
     setTimeout(() => window.sendTo('main', 'changeDevice'), 2000)
   }
 

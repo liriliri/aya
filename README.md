@@ -12,7 +12,7 @@ Android adb desktop app.
 
 </div>
 
-<img src="https://aya.liriliri.io/screenshot.png" style="width:100%">
+<img src="https://aya.liriliri.io/screencast.png" style="width:100%">
 
 [AYA](https://aya.liriliri.io/) is a desktop application for easily controlling android devices, which can be considered as a GUI wrapper for ADB.
 
@@ -21,6 +21,8 @@ Android adb desktop app.
 Click [here](https://github.com/liriliri/aya/releases/) to download and install AYA. Windows x64, Mac arm64 and Linux x86_64 are supported.
 
 ## Features
+
+<img src="https://aya.liriliri.io/screenshot.png" style="width:100%">
 
 * Screen mirror
 * File explorer

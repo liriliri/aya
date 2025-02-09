@@ -67,6 +67,7 @@ async function readDir(deviceId: string, path: string) {
       name: file.name,
       directory: !file.isFile(),
       mtime: new Date(file.mtimeMs),
+      mode: file.mode,
     }
 
     if (!item.directory) {

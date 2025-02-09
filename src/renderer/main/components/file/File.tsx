@@ -358,6 +358,7 @@ export default observer(function File() {
           className={Style.fileList}
           files={fileList}
           filter={filter}
+          columns={['name', 'mode', 'mtime', 'type', 'size']}
           listView={store.file.listView}
           onDoubleClick={(e: MouseEvent, file: IFile) => open(file)}
           onContextMenu={onContextMenu}

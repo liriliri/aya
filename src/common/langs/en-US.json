@@ -163,5 +163,6 @@
   "appSwitch": "App Switch",
   "fullscreen": "Fullscreen",
   "screenOff": "Turn off device screen",
-  "screenOn": "Turn on device screen"
+  "screenOn": "Turn on device screen",
+  "permissions": "Permissions"
 }

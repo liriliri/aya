@@ -164,5 +164,6 @@
   "appSwitch": "应用切换",
   "fullscreen": "全屏",
   "screenOff": "关闭设备屏幕",
-  "screenOn": "开启设备屏幕"
+  "screenOn": "开启设备屏幕",
+  "permissions": "权限"
 }

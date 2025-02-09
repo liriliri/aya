@@ -75,6 +75,7 @@ if (isDev()) {
     dateModified: t('dateModified'),
     directory: t('directory'),
     file: t('file'),
+    permissions: t('permissions'),
   })
 
   document.body.classList.add(`platform-${isMac ? 'mac' : 'windows'}`)

@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from 'react'
 import store from '../../store'
 import { PannelLoading } from '../../../components/loading'
 import ToolbarIcon from '../../../components/ToolbarIcon'
-import { notify, isFileDrop } from '../../../lib/util'
+import { notify, isFileDrop, installPackages } from '../../../lib/util'
 import { t } from '../../../../common/util'
 import className from 'licia/className'
 import endWith from 'licia/endWith'
@@ -99,35 +99,12 @@ export default observer(function Application() {
       }
       apkPaths.push(path)
     }
-    await installPackages(apkPaths)
+    await install(apkPaths)
   }
 
-  async function installPackages(apkPaths?: string[]) {
-    if (!apkPaths) {
-      const { filePaths } = await main.showOpenDialog({
-        properties: ['openFile', 'multiSelections'],
-        filters: [{ name: 'apk file', extensions: ['apk'] }],
-      })
-      if (isEmpty(filePaths)) {
-        return
-      }
-      apkPaths = filePaths
-    }
-
-    let hasSuccess = false
-    for (let i = 0, len = apkPaths!.length; i < len; i++) {
-      const apkPath = apkPaths![i]
-      notify(t('packageInstalling', { path: apkPath }), { icon: 'info' })
-      try {
-        await main.installPackage(device!.id, apkPath!)
-        hasSuccess = true
-        // eslint-disable-next-line
-      } catch (e) {
-        notify(t('installPackageErr'), { icon: 'error' })
-      }
-    }
-
-    if (hasSuccess) {
+  async function install(apkPaths?: string[]) {
+    const result = await installPackages(device!.id, apkPaths)
+    if (result) {
       await refresh()
     }
   }
@@ -344,7 +321,7 @@ export default observer(function Application() {
         <ToolbarIcon
           icon="add"
           title={t('install')}
-          onClick={() => installPackages()}
+          onClick={() => install()}
           disabled={!device}
         />
         <LunaToolbarSeparator />

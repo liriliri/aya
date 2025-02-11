@@ -1,3 +1,9 @@
+## v0.7.0 (11 Feb 2025)
+
+* feat: file show permissions
+* feat: screencast drop apk to install
+* feat: application show app, data and cache size
+
 ## v0.6.1 (6 Feb 2025)
 
 * fix: screencast not working on windows [#37](https://github.com/liriliri/aya/issues/37)

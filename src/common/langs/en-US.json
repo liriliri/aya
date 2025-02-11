@@ -164,5 +164,8 @@
   "fullscreen": "Fullscreen",
   "screenOff": "Turn off device screen",
   "screenOn": "Turn on device screen",
-  "permissions": "Permissions"
+  "permissions": "Permissions",
+  "dataSize": "Data Size",
+  "cacheSize": "Cache Size",
+  "appSize": "App Size"
 }

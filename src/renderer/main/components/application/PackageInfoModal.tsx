@@ -25,6 +25,9 @@ interface IPackageInfo {
   lastUpdateTime: number
   minSdkVersion?: number
   targetSdkVersion?: number
+  dataSize: number
+  cacheSize: number
+  appSize: number
   signatures: string[]
 }
 
@@ -67,6 +70,9 @@ export default function PackageInfoModal(props: IProps) {
         dateFormat(new Date(packageInfo.lastUpdateTime), 'yyyy-mm-dd HH:MM:ss')
       )}
       {item(t('apkSize'), fileSize(packageInfo.apkSize))}
+      {item(t('appSize'), fileSize(packageInfo.appSize))}
+      {item(t('dataSize'), fileSize(packageInfo.dataSize))}
+      {item(t('cacheSize'), fileSize(packageInfo.cacheSize))}
       {signature &&
         item(t('signature') + ' MD5', md5(convertBin(signature, 'Unit8Array')))}
     </LunaModal>,

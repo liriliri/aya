@@ -10,6 +10,10 @@ object ServiceManager {
     val packageManager: PackageManager by lazy {
         PackageManager(getService("package", "android.content.pm.IPackageManager"))
     }
+    val storageStatsManager: StorageStatsManager by lazy {
+        StorageStatsManager(getService("storagestats", "android.app.usage.IStorageStatsManager"))
+    }
+
     private var GET_SERVICE_METHOD: Method? = null
 
     init {

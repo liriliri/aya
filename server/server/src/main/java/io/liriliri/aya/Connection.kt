@@ -123,6 +123,9 @@ class Connection(private val client: LocalSocket) : Thread() {
 
         var label = packageName
         var icon = ""
+        var appSize = 0L
+        var dataSize = 0L
+        var cacheSize = 0L
 
         val cacheKey = "$packageName.$apkSize"
 
@@ -177,6 +180,18 @@ class Connection(private val client: LocalSocket) : Thread() {
             info.put("minSdkVersion", applicationInfo.minSdkVersion)
             info.put("targetSdkVersion", applicationInfo.targetSdkVersion)
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val stats = ServiceManager.storageStatsManager.queryStatsForPackage(
+                packageName
+            )
+            appSize = stats.appBytes
+            dataSize = stats.dataBytes
+            cacheSize = stats.cacheBytes
+        }
+        info.put("appSize", appSize)
+        info.put("dataSize", dataSize)
+        info.put("cacheSize", cacheSize)
 
         return info
     }

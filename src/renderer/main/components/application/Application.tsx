@@ -21,7 +21,9 @@ import find from 'licia/find'
 import chunk from 'licia/chunk'
 import map from 'licia/map'
 import concat from 'licia/concat'
+import clone from 'licia/clone'
 import LunaModal from 'luna-modal'
+import findIdx from 'licia/findIdx'
 import PackageInfoModal from './PackageInfoModal'
 import defaultIcon from '../../../assets/img/default-icon.png'
 import contextMenu from '../../../lib/contextMenu'
@@ -49,42 +51,68 @@ export default observer(function Application() {
     refresh()
   }, [])
 
-  async function refresh() {
+  async function refresh(packageName?: string) {
     if (!device || isLoading) {
       return
     }
-    setPackageInfos([])
-    setIsLoading(true)
-    const packages = await main.getPackages(
-      device.id,
-      store.application.sysPackage
-    )
-    const chunks = chunk(packages, 50)
-    let packageInfos: any[] = []
-    for (let i = 0, len = chunks.length; i < len; i++) {
-      const chunk = chunks[i]
-      packageInfos = concat(
-        packageInfos,
-        await main.getPackageInfos(device.id, chunk)
+    if (!packageName) {
+      setPackageInfos([])
+      setIsLoading(true)
+      const packages = await main.getPackages(
+        device.id,
+        store.application.sysPackage
       )
-      icons.current = map(packageInfos, (info) => {
+      const chunks = chunk(packages, 50)
+      let packageInfos: any[] = []
+      for (let i = 0, len = chunks.length; i < len; i++) {
+        const chunk = chunks[i]
+        packageInfos = concat(
+          packageInfos,
+          await main.getPackageInfos(device.id, chunk)
+        )
+        icons.current = map(packageInfos, (info) => {
+          const style: any = {
+            borderRadius: '20%',
+          }
+          if (!info.enabled) {
+            style.filter = 'grayscale(100%)'
+          }
+
+          return {
+            info: info,
+            src: info.icon || defaultIcon,
+            name: info.label,
+            style,
+          }
+        })
+        setPackageInfos(packageInfos)
+      }
+      setIsLoading(false)
+    } else {
+      const idx = findIdx(
+        packageInfos,
+        (info) => info.packageName === packageName
+      )
+      if (idx !== -1) {
+        const infos = await main.getPackageInfos(device.id, [packageName])
+        const info = infos[0]
+        packageInfos[idx] = info
         const style: any = {
           borderRadius: '20%',
         }
         if (!info.enabled) {
           style.filter = 'grayscale(100%)'
         }
-
-        return {
+        icons.current[idx] = {
           info: info,
           src: info.icon || defaultIcon,
           name: info.label,
           style,
         }
-      })
-      setPackageInfos(packageInfos)
+        icons.current = clone(icons.current)
+        setPackageInfos(clone(packageInfos))
+      }
     }
-    setIsLoading(false)
   }
 
   async function onDrop(e: React.DragEvent) {
@@ -105,7 +133,7 @@ export default observer(function Application() {
   async function install(apkPaths?: string[]) {
     const result = await installPackages(device!.id, apkPaths)
     if (result) {
-      await refresh()
+      refresh()
     }
   }
 
@@ -194,7 +222,7 @@ export default observer(function Application() {
           )
           if (result) {
             await main.disablePackage(device.id, info.packageName)
-            refresh()
+            refresh(info.packageName)
           }
         },
       },
@@ -202,7 +230,7 @@ export default observer(function Application() {
         label: t('enablePackage'),
         click: async () => {
           await main.enablePackage(device.id, info.packageName)
-          refresh()
+          refresh(info.packageName)
         },
       },
       {
@@ -217,6 +245,7 @@ export default observer(function Application() {
           if (result) {
             await main.clearPackage(device.id, info.packageName)
             notify(t('dataCleared'), { icon: 'success' })
+            setTimeout(() => refresh(info.packageName), 1000)
           }
         },
       },
@@ -348,7 +377,7 @@ export default observer(function Application() {
           icon="refresh"
           title={t('refresh')}
           disabled={isLoading || !device}
-          onClick={refresh}
+          onClick={() => refresh()}
         />
       </LunaToolbar>
       <div

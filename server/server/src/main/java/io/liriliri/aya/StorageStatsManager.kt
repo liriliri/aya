@@ -6,8 +6,6 @@ import android.os.Build
 import android.os.IInterface
 import android.util.Log
 import java.lang.reflect.Method
-import java.util.UUID
-
 
 class StorageStatsManager(private val manager: IInterface) {
     companion object {

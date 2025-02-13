@@ -51,7 +51,7 @@ For more detailed usage instructions, please read the documentation at [aya.liri
 
 * [licia](https://github.com/liriliri/licia): Utility library used by aya.
 * [luna](https://github.com/liriliri/luna): UI components used by aya.
-* [vivy](https://github.com/liriliri/vivy-docs): Icon image generation.
+* [vivy](https://github.com/liriliri/vivy): Icon image generation.
 
 ## Contribution
 

@@ -123,9 +123,6 @@ class Connection(private val client: LocalSocket) : Thread() {
 
         var label = packageName
         var icon = ""
-        var appSize = 0L
-        var dataSize = 0L
-        var cacheSize = 0L
 
         val cacheKey = "$packageName.$apkSize"
 
@@ -182,16 +179,17 @@ class Connection(private val client: LocalSocket) : Thread() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val stats = ServiceManager.storageStatsManager.queryStatsForPackage(
-                packageName
-            )
-            appSize = stats.appBytes
-            dataSize = stats.dataBytes
-            cacheSize = stats.cacheBytes
+            try {
+                val stats = ServiceManager.storageStatsManager.queryStatsForPackage(
+                    packageName
+                )
+                info.put("appSize", stats.appBytes)
+                info.put("dataSize", stats.dataBytes)
+                info.put("cacheSize", stats.cacheBytes)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get storage stats for $packageName")
+            }
         }
-        info.put("appSize", appSize)
-        info.put("dataSize", dataSize)
-        info.put("cacheSize", cacheSize)
 
         return info
     }

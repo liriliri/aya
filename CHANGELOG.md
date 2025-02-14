@@ -1,3 +1,8 @@
+## v0.7.1 (14 Feb 2025)
+
+* fix: application empty list if storage stats not available
+* perf: logcat improve performance
+
 ## v0.7.0 (11 Feb 2025)
 
 * feat: file show permissions

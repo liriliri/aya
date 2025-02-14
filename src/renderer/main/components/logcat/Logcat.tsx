@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from 'react'
 import store from '../../store'
 import copy from 'licia/copy'
 import download from 'licia/download'
+import toStr from 'licia/toStr'
 import { t } from '../../../../common/util'
 import ToolbarIcon from '../../../components/ToolbarIcon'
 import contextMenu from '../../../lib/contextMenu'
@@ -165,7 +166,7 @@ export default observer(function Logcat() {
         <LunaToolbarSelect
           keyName="priority"
           disabled={!device}
-          value="2"
+          value={toStr(filter.priority || 2)}
           options={{
             VERBOSE: '2',
             DEBUG: '3',

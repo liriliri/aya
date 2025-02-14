@@ -244,7 +244,7 @@ export default observer(function Logcat() {
       </LunaToolbar>
       <LunaLogcat
         className="panel-body"
-        maxNum={2000}
+        maxNum={10000}
         filter={filter}
         wrapLongLines={softWrap}
         onContextMenu={onContextMenu}

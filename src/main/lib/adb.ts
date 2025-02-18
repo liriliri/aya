@@ -5,8 +5,6 @@ import map from 'licia/map'
 import types from 'licia/types'
 import filter from 'licia/filter'
 import isStrBlank from 'licia/isStrBlank'
-import each from 'licia/each'
-import singleton from 'licia/singleton'
 import trim from 'licia/trim'
 import startWith from 'licia/startWith'
 import toNum from 'licia/toNum'
@@ -16,7 +14,6 @@ import fs from 'fs-extra'
 import { getSettingsStore } from './store'
 import isWindows from 'licia/isWindows'
 import isEmpty from 'licia/isEmpty'
-import axios from 'axios'
 import * as base from './adb/base'
 import { shell, getProcesses } from './adb/base'
 import * as logcat from './adb/logcat'
@@ -26,6 +23,7 @@ import * as scrcpy from './adb/scrcpy'
 import * as packageAdb from './adb/package'
 import * as file from './adb/file'
 import * as fps from './adb/fps'
+import * as webview from './adb/webview'
 import { getCpuLoads, getCpus } from './adb/cpu'
 import log from '../../common/log'
 
@@ -246,38 +244,6 @@ async function getStorage(deviceId: string) {
   }
 }
 
-const getWebviews = singleton(async (deviceId: string, pid: number) => {
-  const webviews: any[] = []
-
-  const result: string = await shell(deviceId, `cat /proc/net/unix`)
-
-  const lines = result.split('\n')
-  let line = ''
-  for (let i = 0, len = lines.length; i < len; i++) {
-    line = trim(lines[i])
-    if (contain(line, `webview_devtools_remote_${pid}`)) {
-      break
-    }
-  }
-
-  if (!line) {
-    return webviews
-  }
-
-  const socketNameMatch = line.match(/[^@]+@(.*?webview_devtools_remote_?.*)/)
-  if (!socketNameMatch) {
-    return webviews
-  }
-
-  const socketName = socketNameMatch[1]
-  const remote = `localabstract:${socketName}`
-  const port = await base.forwardTcp(deviceId, remote)
-  const { data } = await axios.get(`http://127.0.0.1:${port}/json`)
-  each(data, (item: any) => webviews.push(item))
-
-  return webviews
-})
-
 function getPropValue(key: string, str: string) {
   const lines = str.split('\n')
   for (let i = 0, len = lines.length; i < len; i++) {
@@ -332,6 +298,7 @@ export async function init() {
   packageAdb.init(client)
   file.init(client)
   fps.init()
+  webview.init()
 
   handleEvent('getDevices', getDevices)
   handleEvent('getOverview', getOverview)
@@ -339,7 +306,6 @@ export async function init() {
   handleEvent('screencap', screencap)
   handleEvent('getMemory', getMemory)
   handleEvent('getProcesses', getProcesses)
-  handleEvent('getWebviews', getWebviews)
   handleEvent('getPerformance', getPerformance)
   handleEvent('getUptime', getUptime)
   handleEvent('connectDevice', connectDevice)

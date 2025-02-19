@@ -14,11 +14,12 @@ interface IProps {
   onClose: () => void
 }
 
-interface IPackageInfo {
+export interface IPackageInfo {
   icon: string
   label: string
   packageName: string
   versionName: string
+  apkPath: string
   apkSize: number
   system: boolean
   firstInstallTime: number

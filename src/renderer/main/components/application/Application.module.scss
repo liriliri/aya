@@ -1,3 +1,23 @@
+.applications {
+  height: 100%;
+  :global(.luna-icon-list) {
+    height: 100%;
+  }
+  :global(.luna-data-grid) {
+    border: none !important;
+    img {
+      height: 14px;
+      width: 14px;
+      margin: 0;
+      padding: 0;
+      margin-right: 2px;
+      margin-top: 1px;
+      flex-shrink: 0;
+      vertical-align: top;
+    }
+  }
+}
+
 .highlight {
   background: var(--aya-color-primary-bg);
 }

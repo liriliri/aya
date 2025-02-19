@@ -140,6 +140,15 @@ export default observer(function Term(props: ITermProps) {
         },
       },
       {
+        label: t('paste'),
+        click: async () => {
+          const text = await navigator.clipboard.readText()
+          if (text) {
+            main.writeShell(sessionIdRef.current, text)
+          }
+        },
+      },
+      {
         label: t('selectAll'),
         click() {
           term.selectAll()

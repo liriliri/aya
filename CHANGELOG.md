@@ -1,3 +1,11 @@
+## v1.0.0 (20 Feb 2025)
+
+* feat: screencast video bit rate and max size settings [#44](https://github.com/liriliri/aya/issues/44)
+* feat: screencast window always on top
+* feat: application list view
+* feat: shell paste [#43](https://github.com/liriliri/aya/issues/43)
+* fix: webview inspect not working
+
 ## v0.7.1 (14 Feb 2025)
 
 * fix: application empty list if storage stats not available

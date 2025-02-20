@@ -30,8 +30,8 @@ export const getTerminalStore = memoize(function () {
 export const getScreencastStore = memoize(function () {
   return new FileStore(getUserDataPath('data/screencast.json'), {
     bounds: {
-      width: 360,
-      height: 800,
+      width: 430,
+      height: 640,
     },
   })
 })

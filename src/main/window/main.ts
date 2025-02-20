@@ -3,6 +3,7 @@ import { getMainStore, getSettingsStore } from '../lib/store'
 import { handleEvent } from '../lib/util'
 import * as window from '../lib/window'
 import log from '../../common/log'
+import once from 'licia/once'
 
 const logger = log('mainWin')
 
@@ -10,8 +11,6 @@ const store = getMainStore()
 const settingsStore = getSettingsStore()
 
 let win: BrowserWindow | null = null
-
-let isIpcInit = false
 
 export function showWin() {
   logger.info('show')
@@ -21,10 +20,7 @@ export function showWin() {
     return
   }
 
-  if (!isIpcInit) {
-    isIpcInit = true
-    initIpc()
-  }
+  initIpc()
 
   win = window.create({
     name: 'main',
@@ -53,7 +49,7 @@ export function init() {
   )
 }
 
-function initIpc() {
+const initIpc = once(() => {
   handleEvent('setMainStore', (name, val) => store.set(name, val))
   handleEvent('getMainStore', (name) => store.get(name))
   store.on('change', (name, val) => {
@@ -67,4 +63,4 @@ function initIpc() {
     app.relaunch()
     app.exit()
   })
-}
+})

@@ -2,11 +2,11 @@ import { BrowserWindow, ipcMain } from 'electron'
 import { getTerminalStore } from '../lib/store'
 import * as window from '../lib/window'
 import isBuffer from 'licia/isBuffer'
+import once from 'licia/once'
 
 const store = getTerminalStore()
 
 let win: BrowserWindow | null = null
-let isIpcInit = false
 
 export function showWin() {
   if (win) {
@@ -14,10 +14,7 @@ export function showWin() {
     return
   }
 
-  if (!isIpcInit) {
-    isIpcInit = true
-    initIpc()
-  }
+  initIpc()
 
   win = window.create({
     name: 'terminal',
@@ -69,7 +66,7 @@ export function init() {
   process.on('unhandledRejection', logError)
 }
 
-function initIpc() {
+const initIpc = once(() => {
   ipcMain.handle('getLogs', () => logs)
   ipcMain.handle('clearLogs', () => (logs.length = 0))
-}
+})

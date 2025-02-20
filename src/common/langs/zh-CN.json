@@ -168,5 +168,8 @@
   "permissions": "权限",
   "dataSize": "数据大小",
   "cacheSize": "缓存大小",
-  "appSize": "应用大小"
+  "appSize": "应用大小",
+  "videoBitRate": "视频比特率",
+  "maxSize": "最大尺寸",
+  "alwaysOnTop": "置顶"
 }

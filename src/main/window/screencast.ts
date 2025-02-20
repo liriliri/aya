@@ -1,6 +1,8 @@
 import { BrowserWindow } from 'electron'
 import * as window from '../lib/window'
 import { getScreencastStore } from '../lib/store'
+import once from 'licia/once'
+import { handleEvent } from '../lib/util'
 
 const store = getScreencastStore()
 
@@ -12,9 +14,11 @@ export function showWin() {
     return
   }
 
+  initIpc()
+
   win = window.create({
     name: 'screencast',
-    minWidth: 360,
+    minWidth: 430,
     minHeight: 640,
     ...store.get('bounds'),
     onSavePos: () => window.savePos(win, store),
@@ -33,3 +37,13 @@ export function closeWin() {
     win.close()
   }
 }
+
+const initIpc = once(() => {
+  handleEvent('setScreencastStore', (name, val) => store.set(name, val))
+  handleEvent('getScreencastStore', (name) => store.get(name))
+  handleEvent('setScreencastAlwaysOnTop', (alwaysOnTop) => {
+    if (win) {
+      win.setAlwaysOnTop(alwaysOnTop)
+    }
+  })
+})

@@ -7,12 +7,19 @@ export default {
   getDevices: () => ipcRenderer.invoke('getDevices'),
   getMainStore: (name) => ipcRenderer.invoke('getMainStore', name),
   setMainStore: (name, val) => ipcRenderer.invoke('setMainStore', name, val),
+  getScreencastStore: (name) => ipcRenderer.invoke('getScreencastStore', name),
+  setScreencastStore: (name, val) => {
+    return ipcRenderer.invoke('setScreencastStore', name, val)
+  },
+  setScreencastAlwaysOnTop: (alwaysOnTop) =>
+    ipcRenderer.invoke('setScreencastAlwaysOnTop', alwaysOnTop),
   getSettingsStore: (name) => ipcRenderer.invoke('getSettingsStore', name),
   setSettingsStore: (name, val) => {
     return ipcRenderer.invoke('setSettingsStore', name, val)
   },
   showScreencast: () => ipcRenderer.invoke('showScreencast'),
   closeScreencast: () => ipcRenderer.invoke('closeScreencast'),
+  restartScreencast: () => ipcRenderer.invoke('restartScreencast'),
   getOverview: (deviceId: string) => {
     return ipcRenderer.invoke('getOverview', deviceId)
   },

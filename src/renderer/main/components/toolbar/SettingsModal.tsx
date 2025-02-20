@@ -24,7 +24,7 @@ const notifyRequireReload = debounce(() => {
 }, 1000)
 
 export default observer(function SettingsModal(props: IProps) {
-  const onChange = (key, val) => {
+  function onChange(key, val) {
     if (contain(['language'], key)) {
       notifyRequireReload()
     }
@@ -34,6 +34,7 @@ export default observer(function SettingsModal(props: IProps) {
   return createPortal(
     <LunaModal
       title={t('settings')}
+      width={400}
       visible={props.visible}
       onClose={props.onClose}
     >

@@ -167,5 +167,8 @@
   "permissions": "Permissions",
   "dataSize": "Data Size",
   "cacheSize": "Cache Size",
-  "appSize": "App Size"
+  "appSize": "App Size",
+  "videoBitRate": "Video Bit Rate",
+  "maxSize": "Max Size",
+  "alwaysOnTop": "Always on Top"
 }

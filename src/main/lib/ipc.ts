@@ -12,6 +12,10 @@ export function init() {
 
   handleEvent('showScreencast', () => screencast.showWin())
   handleEvent('closeScreencast', () => screencast.closeWin())
+  handleEvent('restartScreencast', () => {
+    screencast.closeWin()
+    screencast.showWin()
+  })
   handleEvent('showContextMenu', contextMenu)
   handleEvent('showOpenDialog', (options: OpenDialogOptions = {}) =>
     dialog.showOpenDialog(options)

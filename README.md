@@ -10,6 +10,8 @@
 
 Android adb desktop app.
 
+<a href="https://www.producthunt.com/posts/aya-1?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-aya&#0045;1" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=899538&theme=light&t=1740125747753" alt="AYA - Open&#0032;source&#0032;desktop&#0032;app&#0032;for&#0032;controlling&#0032;android&#0032;devices | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
 [![Windows][windows-image]][release-url]
 [![macOS][mac-image]][release-url]
 [![Linux][linux-image]][release-url]

@@ -6,6 +6,7 @@ import { t } from '../../common/util'
 import upperCase from 'licia/upperCase'
 import isWindows from 'licia/isWindows'
 import { handleEvent } from './util'
+import * as language from './language'
 
 function getTemplate(): MenuItemConstructorOptions[] {
   const hideMenu = isMac
@@ -92,6 +93,26 @@ function getTemplate(): MenuItemConstructorOptions[] {
     role: 'help',
     label: t('help'),
     submenu: [
+      {
+        label: t('documentation'),
+        click() {
+          shell.openExternal(
+            `https://aya.liriliri.io/${
+              language.get() === 'zh-CN' ? 'zh/' : ''
+            }guide/`
+          )
+        },
+      },
+      {
+        label: t('donate'),
+        click() {
+          const link =
+            language.get() === 'zh-CN'
+              ? 'http://surunzi.com/wechatpay.html'
+              : 'https://ko-fi.com/surunzi'
+          shell.openExternal(link)
+        },
+      },
       {
         label: t('reportIssue'),
         click() {

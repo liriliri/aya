@@ -171,5 +171,7 @@
   "appSize": "应用大小",
   "videoBitRate": "视频比特率",
   "maxSize": "最大尺寸",
-  "alwaysOnTop": "置顶"
+  "alwaysOnTop": "置顶",
+  "documentation": "文档",
+  "donate": "捐赠"
 }

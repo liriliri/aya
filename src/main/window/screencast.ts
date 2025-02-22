@@ -27,6 +27,10 @@ export function showWin() {
   win.on('close', () => {
     win?.destroy()
     win = null
+    const mainWin = window.getWin('main')
+    if (mainWin) {
+      mainWin.show()
+    }
   })
 
   window.loadPage(win, { page: 'screencast' })

@@ -2,6 +2,14 @@
 @use 'sass:meta';
 @use 'sass:map';
 
+:root, .-theme-with-dark-background {
+  --luna-color-text: var(--aya-color-text);
+  --luna-color-bg-container: var(--aya-color-bg-container);
+  --luna-color-border: var(--aya-color-border);
+  --luna-color-primary: var(--aya-color-primary);
+  --luna-color-fill-secondary: var(--aya-color-fill-secondary);
+}
+
 .luna-setting {
   font-family: theme.$font-family;
   color: var(--aya-color-text);
@@ -323,47 +331,24 @@ $variables: meta.module-variables(theme);
   line-height: 16px;
 }
 
-.luna-icon-list-item {
-  color: var(--aya-color-text);
-  &.luna-icon-list-selected {
-    .luna-icon-list-icon {
-      background-color: var(--aya-color-border);
-    }
-    .luna-icon-list-name {
-      background-color: var(--aya-color-primary);
-    }
-  }
-}
-
 .luna-command-palette {
   top: 28px;
   z-index: theme.$z-index-popup-base;
-  color: var(--aya-color-text);
 }
 
 .luna-command-palette-body {
-  background: var(--aya-color-bg-container);
-  border: 1px solid var(--aya-color-border);
   padding: #{theme.$padding-x-x-s}px;
   border-radius: #{theme.$border-radius-x-s}px;
 }
 
 .luna-command-palette-input {
   border-radius: #{theme.$border-radius-x-s}px;
-  border: 1px solid var(--aya-color-border);
   padding: #{theme.$padding-x-x-s}px;
   margin-bottom: #{theme.$margin-x-x-s}px;
-  color: var(--aya-color-text);
 }
 
 .luna-command-palette-list {
   li {
     border-radius: #{theme.$border-radius-x-s}px;
-    &:hover {
-      background: var(--aya-color-fill-secondary);
-    }
-    &.luna-command-palette-active {
-      background: var(--aya-color-primary);
-    }
   }
 }

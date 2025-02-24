@@ -170,5 +170,7 @@
   "appSize": "App Size",
   "videoBitRate": "Video Bit Rate",
   "maxSize": "Max Size",
-  "alwaysOnTop": "Always on Top"
+  "alwaysOnTop": "Always on Top",
+  "documentation": "Documentation",
+  "donate": "Donate"
 }

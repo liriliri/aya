@@ -67,7 +67,7 @@
     "luna-notification": "^0.3.2",
     "luna-performance-monitor": "^1.2.1",
     "luna-setting": "^2.0.1",
-    "luna-tab": "^0.3.2",
+    "luna-tab": "^0.3.3",
     "luna-toolbar": "^0.9.1",
     "luna-virtual-list": "^0.1.1",
     "mobx": "^6.13.5",

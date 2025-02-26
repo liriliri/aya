@@ -155,33 +155,8 @@
   z-index: theme.$z-index-popup-base;
 }
 
-.luna-modal-body,
-.luna-modal-input {
-  color: var(--aya-color-text);
-  background: var(--aya-color-bg-container);
-}
-
 .luna-modal-input {
   user-select: text !important;
-  border-color: var(--aya-color-border);
-}
-
-.luna-modal-button-group {
-  .luna-modal-secondary {
-    border-color: var(--aya-color-border);
-    color: var(--aya-color-text);
-    background: var(--aya-color-bg-container);
-  }
-  .luna-modal-primary {
-    background: var(--aya-color-primary);
-  }
-  .luna-modal-button {
-    &:active {
-      &::before {
-        background: var(--aya-color-primary);
-      }
-    }
-  }
 }
 
 .luna-notification {

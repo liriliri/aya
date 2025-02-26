@@ -264,6 +264,18 @@ $variables: meta.module-variables(theme);
   }
 }
 
+.luna-data-grid.luna-data-grid-theme-light {
+  .luna-data-grid-data-container {
+    .luna-data-grid-node.luna-data-grid-selected,
+    .luna-data-grid-node.luna-data-grid-selectable:hover {
+      background: var(--aya-color-primary);
+    }
+    tr:nth-child(even) {
+      background: var(--aya-color-fill-alter);
+    }
+  }
+}
+
 .luna-performance-monitor {
   background: var(--aya-color-bg-container) !important;
   border: none;

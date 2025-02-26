@@ -8,6 +8,7 @@
   --luna-color-bg-container: var(--aya-color-bg-container);
   --luna-color-border: var(--aya-color-border);
   --luna-color-primary: var(--aya-color-primary);
+  --luna-color-fill: var(--aya-color-fill);
   --luna-color-fill-secondary: var(--aya-color-fill-secondary);
 }
 
@@ -259,43 +260,6 @@ $variables: meta.module-variables(theme);
         $variable-name: #{$color}-#{$i}-dark;
         color: map.get($variables, $variable-name);
       }
-    }
-  }
-}
-
-.luna-data-grid {
-  color: var(--aya-color-text);
-  background: var(--aya-color-bg-container);
-  border-color: var(--aya-color-border);
-  &:focus {
-    .luna-data-grid-data-container {
-      .luna-data-grid-node.luna-data-grid-selected {
-        background: var(--aya-color-primary);
-      }
-    }
-  }
-  th,
-  td {
-    border-color: var(--aya-color-border);
-  }
-  th {
-    background: var(--darker-background);
-    &.luna-data-grid-sortable {
-      &:hover,
-      &:active {
-        color: var(--select-foreground);
-        background: var(--highlight);
-      }
-    }
-  }
-  .luna-data-grid-data-container {
-    .luna-data-grid-node.luna-data-grid-selected,
-    .luna-data-grid-node.luna-data-grid-selectable:hover {
-      color: #fff;
-      background: var(--aya-color-primary);
-    }
-    tr:nth-child(even) {
-      background: var(--aya-color-fill-alter);
     }
   }
 }

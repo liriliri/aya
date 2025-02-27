@@ -1,5 +1,6 @@
 @use 'sass:color';
-@use './theme' as theme;
+@use './theme' as *;
+@use './mixin' as *;
 
 @font-face {
   font-family: 'MiSans';
@@ -35,7 +36,7 @@ body {
   overflow: hidden;
   font-size: 14px;
   background-color: var(--aya-color-bg-container);
-  font-family: theme.$font-family;
+  font-family: $font-family;
   user-select: none;
   color: var(--aya-color-text);
   cursor: default;
@@ -46,76 +47,52 @@ body {
   height: 100%;
 }
 
-@mixin prefix($declarations) {
-  @each $property, $value in $declarations {
-    #{'--aya-' + $property}: $value;
+@each $class in (':root', '.-theme-with-dark-background') {
+  #{$class} {
+    @include theme-vars(
+      (
+        color-text,
+        color-error-text,
+        color-success-text,
+        color-warning-text,
+        color-info-text,
+        color-primary,
+        color-primary-hover,
+        color-primary-active,
+        color-bg-container,
+        color-fill,
+        color-fill-secondary,
+        color-white,
+        color-success,
+        color-error,
+        color-error-bg,
+        color-fill-alter,
+        box-shadow,
+        color-bg-text-hover,
+        color-fill-tertiary,
+        color-success-hover,
+        color-success-active,
+        if(
+          $class == ':root',
+          (
+            color-primary-bg: color.adjust($color-primary, $lightness: 40%),
+            color-border: color.adjust($color-border, $lightness: 2%),
+            color-bg-container-darker:
+              color.adjust($color-bg-container, $lightness: -2%),
+            border-radius-x-s: #{$border-radius-x-s}px,
+            border-radius-s-m: #{$border-radius-s-m}px,
+          ),
+          (
+            color-primary-bg: color.adjust($color-primary, $lightness: -25%),
+            color-border: color.adjust($color-border-dark, $lightness: -8%),
+            color-bg-container-darker:
+              color.adjust($color-bg-container-dark, $lightness: -2%),
+          )
+        )
+      ),
+      if($class == ':root', 'light', 'dark')
+    );
   }
-}
-
-:root {
-  @include prefix(
-    (
-      color-text: theme.$color-text,
-      color-error-text: theme.$color-error-text,
-      color-success-text: theme.$color-success-text,
-      color-warning-text: theme.$color-warning-text,
-      color-info-text: theme.$color-info-text,
-      color-primary: theme.$color-primary,
-      color-primary-bg: color.adjust(theme.$color-primary, $lightness: 40%),
-      color-primary-hover: theme.$color-primary-hover,
-      color-primary-active: theme.$color-primary-active,
-      color-border: color.adjust(theme.$color-border, $lightness: 2%),
-      color-bg-container: theme.$color-bg-container,
-      color-bg-container-darker:
-        color.adjust(theme.$color-bg-container, $lightness: -2%),
-      color-fill: theme.$color-fill,
-      color-fill-secondary: theme.$color-fill-secondary,
-      color-white: theme.$color-white,
-      color-success: theme.$color-success,
-      color-error: theme.$color-error,
-      color-error-bg: theme.$color-error-bg,
-      color-fill-alter: theme.$color-fill-alter,
-      box-shadow: theme.$box-shadow,
-      color-bg-text-hover: theme.$color-bg-text-hover,
-      color-fill-tertiary: theme.$color-fill-tertiary,
-      color-success-hover: theme.$color-success-hover,
-      color-success-active: theme.$color-success-active,
-      border-radius-x-s: #{theme.$border-radius-x-s}px,
-      border-radius-s-m: #{theme.$border-radius-s-m}px,
-    )
-  );
-}
-
-.-theme-with-dark-background {
-  color-scheme: dark;
-  @include prefix(
-    (
-      color-text: theme.$color-text-dark,
-      color-error-text: theme.$color-error-text-dark,
-      color-success-text: theme.$color-success-text-dark,
-      color-warning-text: theme.$color-warning-text-dark,
-      color-info-text: theme.$color-info-text-dark,
-      color-primary: theme.$color-primary-dark,
-      color-primary-bg: color.adjust(theme.$color-primary, $lightness: -25%),
-      color-primary-hover: theme.$color-primary-hover-dark,
-      color-primary-active: theme.$color-primary-active-dark,
-      color-border: color.adjust(theme.$color-border-dark, $lightness: -8%),
-      color-bg-container: theme.$color-bg-container-dark,
-      color-bg-container-darker:
-        color.adjust(theme.$color-bg-container-dark, $lightness: -2%),
-      color-fill: theme.$color-fill-dark,
-      color-fill-secondary: theme.$color-fill-secondary-dark,
-      color-success: theme.$color-success-dark,
-      color-error: theme.$color-error-dark,
-      color-error-bg: theme.$color-error-bg-dark,
-      color-fill-alter: theme.$color-fill-alter-dark,
-      box-shadow: theme.$box-shadow-dark,
-      color-bg-text-hover: theme.$color-bg-text-hover-dark,
-      color-fill-tertiary: theme.$color-fill-tertiary-dark,
-      color-success-hover: theme.$color-success-hover-dark,
-      color-success-active: theme.$color-success-active-dark,
-    )
-  );
 }
 
 ::-webkit-scrollbar {

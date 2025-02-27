@@ -2,17 +2,6 @@
 @use 'sass:meta';
 @use 'sass:map';
 
-:root,
-.-theme-with-dark-background {
-  --luna-color-text: var(--aya-color-text);
-  --luna-color-bg-container: var(--aya-color-bg-container);
-  --luna-color-border: var(--aya-color-border);
-  --luna-color-primary: var(--aya-color-primary);
-  --luna-color-fill: var(--aya-color-fill);
-  --luna-color-fill-secondary: var(--aya-color-fill-secondary);
-  --luna-box-shadow: var(--aya-box-shadow);
-}
-
 .luna-setting {
   .luna-setting-item {
     &:hover,

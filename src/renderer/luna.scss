@@ -40,49 +40,17 @@
 
 .luna-logcat {
   border: none;
-  color: var(--aya-color-text);
-  background: var(--aya-color-bg-container);
-}
-
-.luna-logcat-W {
-  .luna-logcat-priority {
-    background: var(--aya-color-warning-text);
-  }
-  .luna-logcat-message {
-    color: var(--aya-color-warning-text);
-  }
-}
-
-.luna-logcat-E {
-  .luna-logcat-priority {
-    background: var(--aya-color-error-text);
-  }
-  .luna-logcat-message {
-    color: var(--aya-color-error-text);
-  }
-}
-
-.luna-logcat-D {
-  .luna-logcat-priority {
-    background: var(--aya-color-success-text);
-  }
-}
-
-.I {
-  .luna-logcat-priority {
-    background: var(--aya-color-info-text);
-  }
 }
 
 $colors: 'blue', 'purple', 'cyan', 'green', 'magenta', 'pink', 'red', 'orange',
   'yellow', 'volcano', 'geekblue', 'gold', 'lime';
 
-$variables: meta.module-variables(theme);
+$theme-variables: meta.module-variables(theme);
 @each $color in $colors {
   @for $i from 6 through 10 {
     .luna-logcat-color-#{$color}-#{$i} {
       $variable-name: #{$color}-#{$i};
-      color: map.get($variables, $variable-name);
+      color: map.get($theme-variables, $variable-name);
     }
   }
 }
@@ -92,7 +60,7 @@ $variables: meta.module-variables(theme);
     @for $i from 6 through 10 {
       .luna-logcat-color-#{$color}-#{$i} {
         $variable-name: #{$color}-#{$i}-dark;
-        color: map.get($variables, $variable-name);
+        color: map.get($theme-variables, $variable-name);
       }
     }
   }

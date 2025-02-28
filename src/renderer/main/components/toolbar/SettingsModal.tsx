@@ -61,6 +61,7 @@ export default observer(function SettingsModal(props: IProps) {
             ['Русский']: 'ru-RU',
             ['Türkçe']: 'tr-TR',
             ['中文']: 'zh-CN',
+            ['繁體中文']: 'zh-TW',
           }}
         />
         <LunaSettingTitle title="ADB" />

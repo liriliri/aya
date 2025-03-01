@@ -12,18 +12,12 @@
 }
 
 .platform-windows {
+  --luna-font-family: 'MiSans' !important;
   button,
   select,
   input,
   .cet-titlebar,
-  .luna-setting,
-  .luna-modal,
-  .luna-tab,
-  .luna-notification-item,
-  .luna-toolbar,
-  .luna-data-grid,
-  .luna-icon-list,
-  .luna-command-palette {
+  .luna-data-grid {
     font-family: 'MiSans' !important;
   }
 }

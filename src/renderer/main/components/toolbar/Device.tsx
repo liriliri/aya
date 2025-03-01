@@ -10,13 +10,8 @@ import store from '../../store'
 import { t } from '../../../../common/util'
 import each from 'licia/each'
 import ToolbarIcon from '../../../components/ToolbarIcon'
-import { useState } from 'react'
-import DeviceMangerModal from './DeviceManagerModal'
 
 export default observer(function Device() {
-  const [deviceManagerModalVisible, setDeviceManagerModalVisible] =
-    useState(false)
-
   let deviceOptions: types.PlainObj<string> = {}
   let deviceDisabled = false
   if (!isEmpty(store.devices)) {
@@ -48,7 +43,7 @@ export default observer(function Device() {
         <ToolbarIcon
           icon="manage"
           title={t('deviceManager')}
-          onClick={() => setDeviceManagerModalVisible(true)}
+          onClick={() => main.showDevices()}
         />
         <LunaToolbarSeparator />
         <ToolbarIcon
@@ -58,10 +53,6 @@ export default observer(function Device() {
           onClick={() => main.showScreencast()}
         />
       </LunaToolbar>
-      <DeviceMangerModal
-        visible={deviceManagerModalVisible}
-        onClose={() => setDeviceManagerModalVisible(false)}
-      />
     </>
   )
 })

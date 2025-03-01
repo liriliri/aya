@@ -7,6 +7,8 @@ export default {
   getDevices: () => ipcRenderer.invoke('getDevices'),
   getMainStore: (name) => ipcRenderer.invoke('getMainStore', name),
   setMainStore: (name, val) => ipcRenderer.invoke('setMainStore', name, val),
+  getMemStore: (name) => ipcRenderer.invoke('getMemStore', name),
+  setMemStore: (name, val) => ipcRenderer.invoke('setMemStore', name, val),
   getScreencastStore: (name) => ipcRenderer.invoke('getScreencastStore', name),
   setScreencastStore: (name, val) => {
     return ipcRenderer.invoke('setScreencastStore', name, val)
@@ -20,6 +22,7 @@ export default {
   showScreencast: () => ipcRenderer.invoke('showScreencast'),
   closeScreencast: () => ipcRenderer.invoke('closeScreencast'),
   restartScreencast: () => ipcRenderer.invoke('restartScreencast'),
+  showDevices: () => ipcRenderer.invoke('showDevices'),
   getOverview: (deviceId: string) => {
     return ipcRenderer.invoke('getOverview', deviceId)
   },
@@ -150,6 +153,9 @@ export default {
   getLogs: () => ipcRenderer.invoke('getLogs'),
   clearLogs: () => ipcRenderer.invoke('clearLogs'),
   relaunch: () => ipcRenderer.invoke('relaunch'),
+  sendToWindow: (name: string, channel: string, ...args: any[]) => {
+    ipcRenderer.invoke('sendToWindow', name, channel, ...args)
+  },
   on: (event: string, cb: types.AnyFn) => {
     const listener = (e, ...args) => cb(...args)
     ipcRenderer.on(event, listener)

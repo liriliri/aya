@@ -6,7 +6,7 @@ import { Settings } from './settings'
 import { Application } from './application'
 import { Process } from './process'
 import { File } from './file'
-import { setMainStore } from '../../lib/util'
+import { setMainStore, setMemStore } from '../../lib/util'
 import isEmpty from 'licia/isEmpty'
 import { IDevice } from '../../../common/types'
 
@@ -63,7 +63,10 @@ class Store extends BaseStore {
   }
   refreshDevices = async () => {
     const devices = await main.getDevices()
-    runInAction(() => (this.devices = devices))
+    runInAction(() => {
+      this.devices = devices
+      setMemStore('devices', devices)
+    })
     if (!isEmpty(devices)) {
       if (!this.device) {
         this.selectDevice(devices[0])
@@ -81,6 +84,7 @@ class Store extends BaseStore {
   }
   private bindEvent() {
     main.on('changeDevice', this.refreshDevices)
+    main.on('refreshDevices', this.refreshDevices)
   }
 }
 

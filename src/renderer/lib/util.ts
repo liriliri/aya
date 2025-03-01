@@ -26,6 +26,10 @@ export async function setMainStore(name: string, val: any) {
   await main.setMainStore(name, isObservable(val) ? toJS(val) : val)
 }
 
+export async function setMemStore(name: string, val: any) {
+  await main.setMemStore(name, isObservable(val) ? toJS(val) : val)
+}
+
 export function isFileDrop(e: React.DragEvent) {
   return contain(e.dataTransfer.types, 'Files')
 }

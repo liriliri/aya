@@ -66,6 +66,25 @@ $theme-variables: meta.module-variables(theme);
   }
 }
 
+@each $class in (':root', '.-theme-with-dark-background') {
+  #{$class} {
+    .luna-data-grid-data-container {
+      .luna-data-grid-node.luna-data-grid-selected,
+      .luna-data-grid-node.luna-data-grid-selectable:hover {
+        background-color: if($class == ':root', #ddd, #393939);
+      }
+      tr:nth-child(even) {
+        background-color: if($class == ':root', #f2f7fd, #0b2544);
+      }
+    }
+    .luna-data-grid:focus {
+      .luna-data-grid-node.luna-data-grid-selectable.luna-data-grid-selected {
+        background-color: var(--aya-color-primary);
+      }
+    }
+  }
+}
+
 .luna-performance-monitor {
   border: none;
 }

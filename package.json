@@ -1,5 +1,6 @@
 {
   "name": "aya",
+  "productName": "AYA",
   "version": "1.1.0",
   "description": "Android adb desktop app",
   "main": "dist/main/index.js",

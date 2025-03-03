@@ -4,3 +4,5 @@ export interface IDevice {
   androidVersion: string
   sdkVersion: string
 }
+
+export type IpcGetFps = (deviceId: string, pkg: string) => Promise<number>

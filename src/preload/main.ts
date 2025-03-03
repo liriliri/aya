@@ -1,49 +1,29 @@
-import { ipcRenderer, OpenDialogOptions, SaveDialogOptions } from 'electron'
-import types from 'licia/types'
+import { IpcGetFps } from '../common/types'
+import { ipcRenderer } from 'electron'
+import mainObj from 'share/preload/main'
+import { invoke } from 'share/preload/util'
 
-export default {
-  getLanguage: () => ipcRenderer.invoke('getLanguage'),
-  getTheme: () => ipcRenderer.invoke('getTheme'),
-  getDevices: () => ipcRenderer.invoke('getDevices'),
-  getMainStore: (name) => ipcRenderer.invoke('getMainStore', name),
-  setMainStore: (name, val) => ipcRenderer.invoke('setMainStore', name, val),
-  getMemStore: (name) => ipcRenderer.invoke('getMemStore', name),
-  setMemStore: (name, val) => ipcRenderer.invoke('setMemStore', name, val),
-  getScreencastStore: (name) => ipcRenderer.invoke('getScreencastStore', name),
-  setScreencastStore: (name, val) => {
-    return ipcRenderer.invoke('setScreencastStore', name, val)
-  },
-  setScreencastAlwaysOnTop: (alwaysOnTop) =>
-    ipcRenderer.invoke('setScreencastAlwaysOnTop', alwaysOnTop),
-  getSettingsStore: (name) => ipcRenderer.invoke('getSettingsStore', name),
-  setSettingsStore: (name, val) => {
-    return ipcRenderer.invoke('setSettingsStore', name, val)
-  },
-  showScreencast: () => ipcRenderer.invoke('showScreencast'),
-  closeScreencast: () => ipcRenderer.invoke('closeScreencast'),
-  restartScreencast: () => ipcRenderer.invoke('restartScreencast'),
-  showDevices: () => ipcRenderer.invoke('showDevices'),
-  getOverview: (deviceId: string) => {
-    return ipcRenderer.invoke('getOverview', deviceId)
-  },
-  setFontScale: (deviceId: string, scale: number) => {
-    return ipcRenderer.invoke('setFontScale', deviceId, scale)
-  },
-  getPerformance: (deviceId: string) => {
-    return ipcRenderer.invoke('getPerformance', deviceId)
-  },
-  getUptime: (deviceId: string) => ipcRenderer.invoke('getUptime', deviceId),
-  getFps: (deviceId: string, pkg: string) =>
-    ipcRenderer.invoke('getFps', deviceId, pkg),
-  createShell: (deviceId: string) => {
-    return ipcRenderer.invoke('createShell', deviceId)
-  },
-  writeShell: (sessionId: string, data: string) => {
-    return ipcRenderer.invoke('writeShell', sessionId, data)
-  },
-  resizeShell: (sessionId: string, cols: number, rows: number) => {
-    return ipcRenderer.invoke('resizeShell', sessionId, cols, rows)
-  },
+export default Object.assign(mainObj, {
+  getDevices: invoke('getDevices'),
+  getMainStore: invoke('getMainStore'),
+  setMainStore: invoke('setMainStore'),
+  getScreencastStore: invoke('getScreencastStore'),
+  setScreencastStore: invoke('setScreencastStore'),
+  setScreencastAlwaysOnTop: invoke('setScreencastAlwaysOnTop'),
+  getSettingsStore: invoke('getSettingsStore'),
+  setSettingsStore: invoke('setSettingsStore'),
+  showScreencast: invoke('showScreencast'),
+  closeScreencast: invoke('closeScreencast'),
+  restartScreencast: invoke('restartScreencast'),
+  showDevices: invoke('showDevices'),
+  getOverview: invoke('getOverview'),
+  setFontScale: invoke('setFontScale'),
+  getPerformance: invoke('getPerformance'),
+  getUptime: invoke('getUptime'),
+  getFps: invoke<IpcGetFps>('getFps'),
+  createShell: invoke('createShell'),
+  writeShell: invoke('writeShell'),
+  resizeShell: invoke('resizeShell'),
   killShell: (sessionId: string) => ipcRenderer.invoke('killShell', sessionId),
   screencap: (deviceId: string) => ipcRenderer.invoke('screencap', deviceId),
   openLogcat: (deviceId: string) => ipcRenderer.invoke('openLogcat', deviceId),
@@ -134,31 +114,7 @@ export default {
   inputKey: (deviceId: string, keyCode: number) => {
     return ipcRenderer.invoke('inputKey', deviceId, keyCode)
   },
-  openExternal: (url: string) => ipcRenderer.invoke('openExternal', url),
-  showContextMenu: (x: number, y: number, template: any) => {
-    ipcRenderer.invoke(
-      'showContextMenu',
-      Math.round(x),
-      Math.round(y),
-      template
-    )
-  },
-  toggleDevTools: () => ipcRenderer.invoke('toggleDevTools'),
-  showOpenDialog: (options: OpenDialogOptions = {}) => {
-    return ipcRenderer.invoke('showOpenDialog', options)
-  },
-  showSaveDialog: (options: SaveDialogOptions = {}) => {
-    return ipcRenderer.invoke('showSaveDialog', options)
-  },
   getLogs: () => ipcRenderer.invoke('getLogs'),
   clearLogs: () => ipcRenderer.invoke('clearLogs'),
   relaunch: () => ipcRenderer.invoke('relaunch'),
-  sendToWindow: (name: string, channel: string, ...args: any[]) => {
-    ipcRenderer.invoke('sendToWindow', name, channel, ...args)
-  },
-  on: (event: string, cb: types.AnyFn) => {
-    const listener = (e, ...args) => cb(...args)
-    ipcRenderer.on(event, listener)
-    return () => ipcRenderer.off(event, listener)
-  },
-}
+})

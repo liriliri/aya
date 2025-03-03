@@ -1,10 +1,10 @@
 import { dialog, OpenDialogOptions, SaveDialogOptions, shell } from 'electron'
 import contextMenu from './contextMenu'
-import { handleEvent } from './util'
-import log from '../../common/log'
+import { handleEvent } from 'share/main/lib/util'
+import log from 'share/common/log'
 import * as screencast from '../window/screencast'
 import * as devices from '../window/devices'
-import * as window from './window'
+import * as window from 'share/main/lib/window'
 import { getMemStore } from './store'
 
 const memStore = getMemStore()

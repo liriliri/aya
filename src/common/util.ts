@@ -26,8 +26,3 @@ export function hasLocale(locale: string) {
 export function t(path: string | string[], data?: types.PlainObj<any>) {
   return i18n.t(path, data)
 }
-
-export function isDev() {
-  // @ts-ignore
-  return import.meta.env.MODE === 'development'
-}

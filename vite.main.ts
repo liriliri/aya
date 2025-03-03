@@ -20,5 +20,8 @@ export default defineConfig({
   },
   resolve: {
     mainFields: ['main', 'module'],
+    alias: {
+      share: resolve(__dirname, 'src/share'),
+    },
   },
 })

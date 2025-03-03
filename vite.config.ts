@@ -38,9 +38,10 @@ export default defineConfig(async (): Promise<UserConfig> => {
     optimizeDeps: {
       exclude: ['@yume-chan/pcm-player'],
     },
-    // @ts-ignore
-    test: {
-      environment: 'jsdom',
+    resolve: {
+      alias: {
+        share: path.resolve(__dirname, 'src/share'),
+      },
     },
   }
 })

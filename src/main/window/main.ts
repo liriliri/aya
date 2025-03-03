@@ -1,8 +1,8 @@
 import { app, BrowserWindow, session } from 'electron'
 import { getMainStore, getSettingsStore } from '../lib/store'
-import { handleEvent } from '../lib/util'
-import * as window from '../lib/window'
-import log from '../../common/log'
+import { handleEvent } from 'share/main/lib/util'
+import * as window from 'share/main/lib/window'
+import log from 'share/common/log'
 import once from 'licia/once'
 
 const logger = log('mainWin')

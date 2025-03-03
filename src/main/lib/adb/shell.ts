@@ -1,9 +1,9 @@
 import types from 'licia/types'
 import Emitter from 'licia/Emitter'
 import uniqId from 'licia/uniqId'
-import * as window from '../window'
+import * as window from 'share/main/lib/window'
 import { Client } from '@devicefarmer/adbkit'
-import { handleEvent } from '../util'
+import { handleEvent } from 'share/main/lib/util'
 
 let client: Client
 

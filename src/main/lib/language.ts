@@ -1,8 +1,8 @@
 import { getSettingsStore } from './store'
 import { i18n, hasLocale } from '../../common/util'
 import { app } from 'electron'
-import { handleEvent } from './util'
-import log from '../../common/log'
+import { handleEvent } from 'share/main/lib/util'
+import log from 'share/common/log'
 
 const logger = log('language')
 

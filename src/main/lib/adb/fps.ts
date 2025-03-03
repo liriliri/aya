@@ -9,7 +9,7 @@ import contain from 'licia/contain'
 import max from 'licia/max'
 import last from 'licia/last'
 import trim from 'licia/trim'
-import { handleEvent } from '../util'
+import { handleEvent } from 'share/main/lib/util'
 
 async function getFps(deviceId: string, pkg: string) {
   let fps = 0

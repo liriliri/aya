@@ -7,8 +7,8 @@ import * as theme from './lib/theme'
 import * as adb from './lib/adb'
 import * as terminal from './window/terminal'
 import { setupTitlebar } from 'custom-electron-titlebar/main'
-import log from '../common/log'
-import { isDev } from '../common/util'
+import log from 'share/common/log'
+import { isDev } from 'share/common/util'
 
 if (!isDev()) {
   log.setLevel('info')

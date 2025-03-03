@@ -4,7 +4,7 @@ import contain from 'licia/contain'
 import singleton from 'licia/singleton'
 import axios from 'axios'
 import { shell, forwardTcp } from './base'
-import { handleEvent } from '../util'
+import { handleEvent } from 'share/main/lib/util'
 
 const getWebviews = singleton(async (deviceId: string, pid: number) => {
   const webviews: any[] = []

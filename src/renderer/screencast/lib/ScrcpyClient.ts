@@ -3,7 +3,7 @@ import toStr from 'licia/toStr'
 import type net from 'node:net'
 import lpad from 'licia/lpad'
 import Emitter from 'licia/Emitter'
-import log from '../../../common/log'
+import log from 'share/common/log'
 import {
   ScrcpyOptions3_1,
   ScrcpyVideoCodecId,

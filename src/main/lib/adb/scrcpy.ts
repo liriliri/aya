@@ -1,7 +1,7 @@
 import { Client } from '@devicefarmer/adbkit'
-import { handleEvent, resolveUnpack } from '../util'
+import { handleEvent, resolveUnpack } from 'share/main/lib/util'
 import { getDeviceStore, setDeviceStore } from './base'
-import log from '../../../common/log'
+import log from 'share/common/log'
 
 const logger = log('scrcpy')
 

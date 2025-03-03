@@ -1,6 +1,6 @@
 import { TransformStream } from '@yume-chan/stream-extra'
 import { ScrcpyMediaStreamPacket } from '@yume-chan/scrcpy'
-import log from '../../../common/log'
+import log from 'share/common/log'
 
 const logger = log('AudioStream')
 

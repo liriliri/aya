@@ -1,11 +1,11 @@
 import { Menu, MenuItemConstructorOptions, app, shell } from 'electron'
-import * as window from '../lib/window'
+import * as window from 'share/main/lib/window'
 import * as terminal from '../window/terminal'
 import isMac from 'licia/isMac'
 import { t } from '../../common/util'
 import upperCase from 'licia/upperCase'
 import isWindows from 'licia/isWindows'
-import { handleEvent } from './util'
+import { handleEvent } from 'share/main/lib/util'
 import * as language from './language'
 
 function getTemplate(): MenuItemConstructorOptions[] {

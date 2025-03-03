@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import memoize from 'licia/memoize'
 import FileStore from 'licia/FileStore'
 import Store from 'licia/Store'
-import { getUserDataPath } from './util'
+import { getUserDataPath } from 'share/main/lib/util'
 
 fs.exists(getUserDataPath('data'), function (exists) {
   if (!exists) {

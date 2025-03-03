@@ -1,7 +1,8 @@
 import isMac from 'licia/isMac'
 import { lazy } from 'react'
 import { createRoot } from 'react-dom/client'
-import { isDev, t, i18n } from '../common/util'
+import { t, i18n } from '../common/util'
+import { isDev } from 'share/common/util'
 import hotKey from 'licia/hotkey'
 import getUrlParam from 'licia/getUrlParam'
 import './main.scss'
@@ -22,7 +23,7 @@ import 'luna-virtual-list/css'
 import './luna.scss'
 import LunaModal from 'luna-modal'
 import LunaFileList from 'luna-file-list'
-import log from '../common/log'
+import log from 'share/common/log'
 
 if (!isDev()) {
   log.setLevel('info')

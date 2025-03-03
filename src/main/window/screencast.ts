@@ -1,8 +1,8 @@
 import { BrowserWindow } from 'electron'
-import * as window from '../lib/window'
+import * as window from 'share/main/lib/window'
 import { getScreencastStore } from '../lib/store'
 import once from 'licia/once'
-import { handleEvent } from '../lib/util'
+import { handleEvent } from 'share/main/lib/util'
 
 const store = getScreencastStore()
 

@@ -4,7 +4,7 @@ import singleton from 'licia/singleton'
 import map from 'licia/map'
 import trim from 'licia/trim'
 import contain from 'licia/contain'
-import { handleEvent } from '../util'
+import { handleEvent } from 'share/main/lib/util'
 
 let client: Client
 

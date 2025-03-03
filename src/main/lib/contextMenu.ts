@@ -1,6 +1,6 @@
 import { Menu } from 'electron'
 import each from 'licia/each'
-import * as window from './window'
+import * as window from 'share/main/lib/window'
 
 export default function contextMenu(x: number, y: number, template: any) {
   transTpl(template)

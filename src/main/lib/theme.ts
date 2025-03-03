@@ -1,8 +1,8 @@
 import { nativeTheme } from 'electron'
 import { getSettingsStore } from './store'
-import { getTheme, handleEvent } from './util'
-import * as window from './window'
-import log from '../../common/log'
+import { getTheme, handleEvent } from 'share/main/lib/util'
+import * as window from 'share/main/lib/window'
+import log from 'share/common/log'
 
 const logger = log('theme')
 

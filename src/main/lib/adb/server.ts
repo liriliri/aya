@@ -1,13 +1,13 @@
 import types from 'licia/types'
 import uuid from 'licia/uuid'
 import { Client } from '@devicefarmer/adbkit'
-import { handleEvent, resolveUnpack } from '../util'
+import { handleEvent, resolveUnpack } from 'share/main/lib/util'
 import singleton from 'licia/singleton'
 import wire from '../wire'
 import waitUntil from 'licia/waitUntil'
 import { getDeviceStore, setDeviceStore, shell } from './base'
 import contain from 'licia/contain'
-import log from '../../../common/log'
+import log from 'share/common/log'
 
 const logger = log('server')
 

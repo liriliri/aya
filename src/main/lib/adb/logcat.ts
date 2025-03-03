@@ -3,8 +3,8 @@ import types from 'licia/types'
 import { Client } from '@devicefarmer/adbkit'
 import { getDeviceStore, getPidNames, setDeviceStore } from './base'
 import uniqId from 'licia/uniqId'
-import * as window from '../window'
-import { handleEvent } from '../util'
+import * as window from 'share/main/lib/window'
+import { handleEvent } from 'share/main/lib/util'
 
 let client: Client
 

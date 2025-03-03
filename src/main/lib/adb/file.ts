@@ -2,7 +2,7 @@ import { Client } from '@devicefarmer/adbkit'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { handleEvent } from '../util'
+import { handleEvent } from 'share/main/lib/util'
 import { shell as electronShell } from 'electron'
 import { shell } from './base'
 

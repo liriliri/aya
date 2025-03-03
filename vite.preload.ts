@@ -18,4 +18,9 @@ export default defineConfig({
       external: builtins,
     },
   },
+  resolve: {
+    alias: {
+      share: resolve(__dirname, 'src/share'),
+    },
+  },
 })

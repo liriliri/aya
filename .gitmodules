@@ -1,0 +1,3 @@
+[submodule "src/share"]
+	path = src/share
+	url = https://github.com/liriliri/electron-share.git

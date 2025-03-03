@@ -9,8 +9,8 @@ import getPort from 'licia/getPort'
 import toNum from 'licia/toNum'
 import types from 'licia/types'
 import isStr from 'licia/isStr'
-import log from '../../../common/log'
-import { handleEvent } from '../util'
+import log from 'share/common/log'
+import { handleEvent } from 'share/main/lib/util'
 
 const logger = log('adbBase')
 

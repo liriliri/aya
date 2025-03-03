@@ -6,7 +6,7 @@ import { t } from '../../common/util'
 import upperCase from 'licia/upperCase'
 import isWindows from 'licia/isWindows'
 import { handleEvent } from 'share/main/lib/util'
-import * as language from './language'
+import * as language from 'share/main/lib/language'
 
 function getTemplate(): MenuItemConstructorOptions[] {
   const hideMenu = isMac

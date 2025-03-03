@@ -33,7 +33,7 @@ class Store extends BaseStore {
     this.bindEvent()
     this.init()
   }
-  selectDevice(device: string | IDevice | null) {
+  selectDevice = (device: string | IDevice | null) => {
     if (isStr(device)) {
       const d = find(this.devices, ({ id }) => id === device)
       if (d) {
@@ -85,6 +85,7 @@ class Store extends BaseStore {
   private bindEvent() {
     main.on('changeDevice', this.refreshDevices)
     main.on('refreshDevices', this.refreshDevices)
+    main.on('selectDevice', this.selectDevice)
   }
 }
 

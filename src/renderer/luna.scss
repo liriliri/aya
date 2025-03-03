@@ -74,7 +74,7 @@ $theme-variables: meta.module-variables(theme);
         background-color: if($class == ':root', #ddd, #393939);
       }
       tr:nth-child(even) {
-        background-color: if($class == ':root', #f2f7fd, #0b2544);
+        background-color: if($class == ':root', #f6fbf6, #071108);
       }
     }
     .luna-data-grid:focus {

@@ -1,12 +1,12 @@
 import I18n from 'licia/I18n'
 import defaults from 'licia/defaults'
 import types from 'licia/types'
-import enUS from '../common/langs/en-US.json'
-import arIQ from '../common/langs/ar-IQ.json'
-import ruRU from '../common/langs/ru-RU.json'
-import zhCN from '../common/langs/zh-CN.json'
-import trTR from '../common/langs/tr-TR.json'
-import zhTW from '../common/langs/zh-TW.json'
+import enUS from './langs/en-US.json'
+import arIQ from './langs/ar-IQ.json'
+import ruRU from './langs/ru-RU.json'
+import zhCN from './langs/zh-CN.json'
+import trTR from './langs/tr-TR.json'
+import zhTW from './langs/zh-TW.json'
 
 const langs = {
   'en-US': enUS,

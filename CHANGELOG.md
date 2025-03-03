@@ -1,7 +1,7 @@
 ## v1.1.0 (3 Mar 2025)
 
 * feat: standalone window for device manager
-* feat: suppport zh-TW [#64](https://github.com/liriliri/aya/issues/46)
+* feat: suppport zh-TW [#46](https://github.com/liriliri/aya/issues/46)
 * feat: some style modifications
 
 ## v1.0.0 (20 Feb 2025)

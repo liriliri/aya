@@ -1,12 +1,13 @@
-import { IpcGetFps } from '../common/types'
+import { IpcGetDevices, IpcGetFps } from '../common/types'
 import { ipcRenderer } from 'electron'
+import { IpcGetStore, IpcSetStore } from 'share/common/types'
 import mainObj from 'share/preload/main'
 import { invoke } from 'share/preload/util'
 
 export default Object.assign(mainObj, {
-  getDevices: invoke('getDevices'),
-  getMainStore: invoke('getMainStore'),
-  setMainStore: invoke('setMainStore'),
+  getDevices: invoke<IpcGetDevices>('getDevices'),
+  getMainStore: invoke<IpcGetStore>('getMainStore'),
+  setMainStore: invoke<IpcSetStore>('setMainStore'),
   getScreencastStore: invoke('getScreencastStore'),
   setScreencastStore: invoke('setScreencastStore'),
   setScreencastAlwaysOnTop: invoke('setScreencastAlwaysOnTop'),

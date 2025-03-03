@@ -6,6 +6,7 @@ import * as screencast from './screencast'
 import * as devices from './devices'
 import log from 'share/common/log'
 import once from 'licia/once'
+import { IpcGetStore, IpcSetStore } from 'share/common/types'
 
 const logger = log('mainWin')
 
@@ -60,8 +61,10 @@ export function init() {
 }
 
 const initIpc = once(() => {
-  handleEvent('setMainStore', (name, val) => store.set(name, val))
-  handleEvent('getMainStore', (name) => store.get(name))
+  handleEvent('setMainStore', <IpcSetStore>(
+    ((name, val) => store.set(name, val))
+  ))
+  handleEvent('getMainStore', <IpcGetStore>((name) => store.get(name)))
   store.on('change', (name, val) => {
     window.sendAll('changeMainStore', name, val)
   })

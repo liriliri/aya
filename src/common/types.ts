@@ -6,3 +6,4 @@ export interface IDevice {
 }
 
 export type IpcGetFps = (deviceId: string, pkg: string) => Promise<number>
+export type IpcGetDevices = () => Promise<IDevice[]>

@@ -26,6 +26,7 @@ import * as fps from './adb/fps'
 import * as webview from './adb/webview'
 import { getCpuLoads, getCpus } from './adb/cpu'
 import log from 'share/common/log'
+import { IpcGetDevices } from '../../common/types'
 
 const logger = log('adb')
 
@@ -33,7 +34,7 @@ const settingsStore = getSettingsStore()
 
 let client: Client
 
-async function getDevices() {
+const getDevices: IpcGetDevices = async function () {
   let devices = await client.listDevices()
   devices = filter(devices, (device: Device) => device.type !== 'offline')
 

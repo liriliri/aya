@@ -1,6 +1,6 @@
 import { app } from 'electron'
 import * as menu from './lib/menu'
-import * as ipc from './lib/ipc'
+import * as ipc from 'share/main/lib/ipc'
 import * as main from './window/main'
 import * as language from './lib/language'
 import * as theme from './lib/theme'

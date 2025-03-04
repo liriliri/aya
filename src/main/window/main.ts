@@ -72,10 +72,6 @@ const initIpc = once(() => {
     settingsStore.set(name, val)
   })
   handleEvent('getSettingsStore', (name) => settingsStore.get(name))
-  handleEvent('relaunch', () => {
-    app.relaunch()
-    app.exit()
-  })
   handleEvent('showScreencast', () => screencast.showWin())
   handleEvent('closeScreencast', () => screencast.closeWin())
   handleEvent('restartScreencast', () => {

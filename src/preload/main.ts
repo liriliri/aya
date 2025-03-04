@@ -117,5 +117,4 @@ export default Object.assign(mainObj, {
   },
   getLogs: () => ipcRenderer.invoke('getLogs'),
   clearLogs: () => ipcRenderer.invoke('clearLogs'),
-  relaunch: () => ipcRenderer.invoke('relaunch'),
 })

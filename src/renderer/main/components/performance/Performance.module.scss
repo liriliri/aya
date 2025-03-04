@@ -27,7 +27,7 @@
   width: 23px;
   height: 10px;
   padding: 1px;
-  border: 1px solid var(--aya-color-text);
+  border: 1px solid var(--color-text);
   border-radius: 2px;
   vertical-align: middle;
   font-size: 0;
@@ -42,13 +42,13 @@
   width: 2px;
   height: 4px;
   border-radius: 0 2px 2px 0;
-  background: var(--aya-color-text);
+  background: var(--color-text);
 }
 
 .battery-inside {
   width: 50%;
   height: 100%;
-  background: var(--aya-color-text);
+  background: var(--color-text);
   border-radius: 1px;
   display: inline-block;
 }

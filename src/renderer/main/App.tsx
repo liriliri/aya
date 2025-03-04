@@ -15,7 +15,7 @@ import { useState, useEffect, PropsWithChildren, FC } from 'react'
 import { createPortal } from 'react-dom'
 import store from './store'
 import { observer } from 'mobx-react-lite'
-import icon from '../assets/img/icon.png'
+import icon from '../assets/icon.png'
 
 export default observer(function App() {
   const [aboutVisible, setAboutVisible] = useState(false)

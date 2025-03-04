@@ -1,14 +1,14 @@
 @mixin input() {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  color: var(--aya-color-text);
+  color: var(--color-text);
   appearance: none;
-  border: 1px solid var(--aya-color-border);
+  border: 1px solid var(--color-border);
   outline: none;
   padding: 2px 8px;
   border-radius: 0;
   font-size: 14px;
-  font-family: var(--aya-font-family);
-  background: var(--aya-color-bg-container);
+  font-family: var(--font-family);
+  background: var(--color-bg-container);
 }
 
 .row {
@@ -47,13 +47,13 @@
     select {
       margin: 0;
       font-size: 14px;
-      background: var(--aya-color-bg-container);
+      background: var(--color-bg-container);
       appearance: none;
-      border: 1px solid var(--aya-color-border);
+      border: 1px solid var(--color-border);
       padding: 2px 8px;
       padding-right: 18px;
       outline: none;
-      color: var(--aya-color-text);
+      color: var(--color-text);
       border-radius: 0;
       -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
       width: 100%;
@@ -64,7 +64,7 @@
       height: 0;
       border-left: 5px solid transparent;
       border-right: 5px solid transparent;
-      border-top: 5px solid var(--aya-color-text);
+      border-top: 5px solid var(--color-text);
       position: absolute;
       top: 0;
       bottom: 0;
@@ -102,14 +102,14 @@
       left: 0;
       top: 4px;
       .range-track-bar {
-        background: var(--aya-color-border);
+        background: var(--color-border);
         border-radius: 2px;
         overflow: hidden;
         width: 100%;
         height: 4px;
         .range-track-progress {
           height: 100%;
-          background: var(--aya-color-primary);
+          background: var(--color-primary);
           width: 50%;
         }
       }
@@ -133,8 +133,8 @@
       border: none;
       height: 12px;
       border-radius: 10px;
-      border: 1px solid var(--aya-color-border);
-      background: var(--aya-color-white);
+      border: 1px solid var(--color-border);
+      background: var(--color-white);
     }
   }
 }

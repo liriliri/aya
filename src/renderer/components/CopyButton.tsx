@@ -18,7 +18,7 @@ export default function CopyButton(props: IProps) {
 
   const style: React.CSSProperties = {}
   if (showSuccess) {
-    style.color = 'var(--aya-color-success)'
+    style.color = 'var(--color-success)'
   }
 
   return (

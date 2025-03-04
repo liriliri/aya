@@ -11,7 +11,7 @@ import toNum from 'licia/toNum'
 import isIp from 'licia/isIp'
 import isStrBlank from 'licia/isStrBlank'
 import { t } from '../../../common/util'
-import { notify } from '../../lib/util'
+import { notify } from 'share/renderer/lib/util'
 import ToolbarIcon from '../../components/ToolbarIcon'
 import store from '../store'
 

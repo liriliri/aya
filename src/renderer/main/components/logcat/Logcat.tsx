@@ -19,7 +19,7 @@ import download from 'licia/download'
 import toStr from 'licia/toStr'
 import { t } from '../../../../common/util'
 import ToolbarIcon from '../../../components/ToolbarIcon'
-import contextMenu from '../../../lib/contextMenu'
+import contextMenu from 'share/renderer/lib/contextMenu'
 
 export default observer(function Logcat() {
   const [view, setView] = useState<'compact' | 'standard'>('standard')

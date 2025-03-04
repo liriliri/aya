@@ -1,4 +1,4 @@
-import BaseStore from '../store/BaseStore'
+import BaseStore from 'share/renderer/store/BaseStore'
 import { IDevice } from '../../common/types'
 import { makeObservable, observable, runInAction, toJS } from 'mobx'
 import ScrcpyClient from './lib/ScrcpyClient'

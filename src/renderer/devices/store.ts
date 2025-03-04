@@ -1,5 +1,5 @@
 import { action, makeObservable, observable, runInAction } from 'mobx'
-import BaseStore from '../store/BaseStore'
+import BaseStore from 'share/renderer/store/BaseStore'
 import { IDevice } from '../../common/types'
 
 class Store extends BaseStore {

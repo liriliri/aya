@@ -19,7 +19,7 @@ import { t } from '../../../../common/util'
 import LunaModal from 'luna-modal'
 import singleton from 'licia/singleton'
 import map from 'licia/map'
-import defaultIcon from '../../../assets/img/default-icon.png'
+import defaultIcon from '../../../assets/default-icon.png'
 import toEl from 'licia/toEl'
 import find from 'licia/find'
 

@@ -4,7 +4,7 @@ import LunaSetting, {
   LunaSettingSelect,
   LunaSettingTitle,
 } from 'luna-setting/react'
-import { notify } from '../../../lib/util'
+import { notify } from 'share/renderer/lib/util'
 import { t } from '../../../../common/util'
 import Style from './Settings.module.scss'
 import { createPortal } from 'react-dom'

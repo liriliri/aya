@@ -35,7 +35,7 @@
 
 .luna-image-viewer {
   border: none;
-  background: var(--aya-color-bg-container);
+  background: var(--color-bg-container);
 }
 
 .luna-logcat {
@@ -79,7 +79,7 @@ $theme-variables: meta.module-variables(theme);
     }
     .luna-data-grid:focus {
       .luna-data-grid-node.luna-data-grid-selectable.luna-data-grid-selected {
-        background-color: var(--aya-color-primary);
+        background-color: var(--color-primary);
       }
     }
   }

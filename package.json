@@ -50,7 +50,7 @@
     "axios": "^1.7.8",
     "concurrently": "^9.0.1",
     "custom-electron-titlebar": "^4.2.8",
-    "electron": "33.2.1",
+    "electron": "^30.5.1",
     "electron-builder": "^25.1.8",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",

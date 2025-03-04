@@ -1,8 +1,7 @@
-import isMac from 'licia/isMac'
 import { lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import { t, i18n } from '../common/util'
-import { isDev } from 'share/common/util'
+import { isDev, getPlatform } from 'share/common/util'
 import hotKey from 'licia/hotkey'
 import getUrlParam from 'licia/getUrlParam'
 import './main.scss'
@@ -84,7 +83,7 @@ if (isDev()) {
     permissions: t('permissions'),
   })
 
-  document.body.classList.add(`platform-${isMac ? 'mac' : 'windows'}`)
+  document.body.classList.add(`platform-${getPlatform()}`)
 
   renderApp()
 })()

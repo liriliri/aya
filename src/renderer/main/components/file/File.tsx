@@ -5,7 +5,7 @@ import LunaToolbar, {
   LunaToolbarSeparator,
 } from 'luna-toolbar/react'
 import LunaFileList from 'luna-file-list/react'
-import ToolbarIcon from '../../../components/ToolbarIcon'
+import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import { useEffect, useRef, useState } from 'react'
 import Style from './File.module.scss'
 import store from '../../store'

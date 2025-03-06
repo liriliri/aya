@@ -3,7 +3,7 @@ import LunaToolbar, {
   LunaToolbarSeparator,
   LunaToolbarSpace,
 } from 'luna-toolbar/react'
-import ToolbarIcon from '../../components/ToolbarIcon'
+import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import { t } from '../../../common/util'
 import Style from './Toolbar.module.scss'
 import store from '../store'

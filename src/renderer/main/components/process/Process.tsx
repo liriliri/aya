@@ -10,7 +10,7 @@ import LunaToolbar, {
   LunaToolbarSpace,
   LunaToolbarText,
 } from 'luna-toolbar/react'
-import ToolbarIcon from '../../../components/ToolbarIcon'
+import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import fileSize from 'licia/fileSize'
 import className from 'licia/className'
 import has from 'licia/has'

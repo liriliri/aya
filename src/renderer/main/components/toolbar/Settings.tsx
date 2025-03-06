@@ -1,6 +1,6 @@
 import LunaToolbar from 'luna-toolbar/react'
 import { t } from '../../../../common/util'
-import ToolbarIcon from '../../../components/ToolbarIcon'
+import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import { useState } from 'react'
 import SettingsModal from './SettingsModal'
 

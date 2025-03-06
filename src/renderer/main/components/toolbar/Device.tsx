@@ -9,7 +9,7 @@ import isEmpty from 'licia/isEmpty'
 import store from '../../store'
 import { t } from '../../../../common/util'
 import each from 'licia/each'
-import ToolbarIcon from '../../../components/ToolbarIcon'
+import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 
 export default observer(function Device() {
   let deviceOptions: types.PlainObj<string> = {}

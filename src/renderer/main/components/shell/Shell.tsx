@@ -6,7 +6,7 @@ import LunaToolbar, {
 import Term from './Term'
 import LunaTab, { LunaTabItem } from 'luna-tab/react'
 import { t } from '../../../../common/util'
-import ToolbarIcon from '../../../components/ToolbarIcon'
+import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import store from '../../store'
 import Style from './Shell.module.scss'
 import className from 'licia/className'

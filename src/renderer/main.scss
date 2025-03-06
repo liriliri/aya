@@ -4,6 +4,9 @@
 
 @each $class in (':root', '.-theme-with-dark-background') {
   #{$class} {
+    @if ($class == '.-theme-with-dark-background') {
+      color-scheme: dark;
+    }
     @include theme-vars(
       (
         color-text,

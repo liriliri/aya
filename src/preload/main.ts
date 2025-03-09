@@ -1,4 +1,9 @@
-import { IpcGetDevices, IpcGetFps } from '../common/types'
+import {
+  IpcGetDevices,
+  IpcGetFps,
+  IpcGetLogs,
+  IpcSetScreencastAlwaysOnTop,
+} from '../common/types'
 import { ipcRenderer } from 'electron'
 import { IpcGetStore, IpcSetStore } from 'share/common/types'
 import mainObj from 'share/preload/main'
@@ -8,11 +13,13 @@ export default Object.assign(mainObj, {
   getDevices: invoke<IpcGetDevices>('getDevices'),
   getMainStore: invoke<IpcGetStore>('getMainStore'),
   setMainStore: invoke<IpcSetStore>('setMainStore'),
-  getScreencastStore: invoke('getScreencastStore'),
-  setScreencastStore: invoke('setScreencastStore'),
-  setScreencastAlwaysOnTop: invoke('setScreencastAlwaysOnTop'),
-  getSettingsStore: invoke('getSettingsStore'),
-  setSettingsStore: invoke('setSettingsStore'),
+  getScreencastStore: invoke<IpcGetStore>('getScreencastStore'),
+  setScreencastStore: invoke<IpcSetStore>('setScreencastStore'),
+  setScreencastAlwaysOnTop: invoke<IpcSetScreencastAlwaysOnTop>(
+    'setScreencastAlwaysOnTop'
+  ),
+  getSettingsStore: invoke<IpcGetStore>('getSettingsStore'),
+  setSettingsStore: invoke<IpcSetStore>('setSettingsStore'),
   showScreencast: invoke('showScreencast'),
   closeScreencast: invoke('closeScreencast'),
   restartScreencast: invoke('restartScreencast'),
@@ -115,6 +122,6 @@ export default Object.assign(mainObj, {
   inputKey: (deviceId: string, keyCode: number) => {
     return ipcRenderer.invoke('inputKey', deviceId, keyCode)
   },
-  getLogs: () => ipcRenderer.invoke('getLogs'),
-  clearLogs: () => ipcRenderer.invoke('clearLogs'),
+  getLogs: invoke<IpcGetLogs>('getLogs'),
+  clearLogs: invoke('clearLogs'),
 })

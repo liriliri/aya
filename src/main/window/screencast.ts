@@ -3,6 +3,8 @@ import * as window from 'share/main/lib/window'
 import { getScreencastStore } from '../lib/store'
 import once from 'licia/once'
 import { handleEvent } from 'share/main/lib/util'
+import { IpcGetStore, IpcSetStore } from 'share/common/types'
+import { IpcSetScreencastAlwaysOnTop } from '../../common/types'
 
 const store = getScreencastStore()
 
@@ -43,11 +45,15 @@ export function closeWin() {
 }
 
 const initIpc = once(() => {
-  handleEvent('setScreencastStore', (name, val) => store.set(name, val))
-  handleEvent('getScreencastStore', (name) => store.get(name))
-  handleEvent('setScreencastAlwaysOnTop', (alwaysOnTop) => {
+  handleEvent('setScreencastStore', <IpcSetStore>(
+    ((name, val) => store.set(name, val))
+  ))
+  handleEvent('getScreencastStore', <IpcGetStore>((name) => store.get(name)))
+  handleEvent('setScreencastAlwaysOnTop', <IpcSetScreencastAlwaysOnTop>((
+    alwaysOnTop
+  ) => {
     if (win) {
       win.setAlwaysOnTop(alwaysOnTop)
     }
-  })
+  }))
 })

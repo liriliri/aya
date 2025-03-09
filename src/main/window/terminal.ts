@@ -3,6 +3,7 @@ import { getTerminalStore } from '../lib/store'
 import * as window from 'share/main/lib/window'
 import isBuffer from 'licia/isBuffer'
 import once from 'licia/once'
+import { IpcGetLogs } from '../../common/types'
 
 const store = getTerminalStore()
 
@@ -67,6 +68,6 @@ export function init() {
 }
 
 const initIpc = once(() => {
-  ipcMain.handle('getLogs', () => logs)
+  ipcMain.handle('getLogs', <IpcGetLogs>(() => logs))
   ipcMain.handle('clearLogs', () => (logs.length = 0))
 })

@@ -20,7 +20,7 @@ import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import { useEffect, useRef, useState } from 'react'
 import store from '../../store'
 import { t } from '../../../../common/util'
-import CopyButton from '../../../components/CopyButton'
+import CopyButton from 'share/renderer/components/CopyButton'
 import { copyData } from '../../lib/util'
 
 export default observer(function Screenshot() {

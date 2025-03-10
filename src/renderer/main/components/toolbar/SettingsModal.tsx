@@ -12,7 +12,7 @@ import { createPortal } from 'react-dom'
 import { observer } from 'mobx-react-lite'
 import contain from 'licia/contain'
 import debounce from 'licia/debounce'
-import SettingPath from '../../../components/SettingPath'
+import SettingPath from 'share/renderer/components/SettingPath'
 import store from '../../store'
 
 interface IProps {

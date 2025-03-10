@@ -1,7 +1,7 @@
 import { createPortal } from 'react-dom'
 import LunaModal from 'luna-modal/react'
 import { t } from '../../../../common/util'
-import { Row, Number } from '../../../components/setting'
+import { Row, Number } from 'share/renderer/components/setting'
 import { useState } from 'react'
 import store from '../../store'
 

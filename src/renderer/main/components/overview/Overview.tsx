@@ -8,7 +8,7 @@ import { notify } from 'share/renderer/lib/util'
 import { t } from '../../../../common/util'
 import store from '../../store'
 import copy from 'licia/copy'
-import { PannelLoading } from '../../../components/loading'
+import { PannelLoading } from '../common/loading'
 import className from 'licia/className'
 import FontAdjustModal from './FontAdjustModal'
 

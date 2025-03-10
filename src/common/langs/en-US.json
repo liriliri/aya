@@ -172,5 +172,6 @@
   "maxSize": "Max Size",
   "alwaysOnTop": "Always on Top",
   "documentation": "Documentation",
-  "donate": "Donate"
+  "donate": "Donate",
+  "killAdbWhenExit": "Kill ADB when exit"
 }

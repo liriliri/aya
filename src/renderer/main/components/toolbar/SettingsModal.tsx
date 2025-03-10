@@ -1,6 +1,7 @@
 import LunaModal from 'luna-modal/react'
 import LunaSetting, {
   LunaSettingButton,
+  LunaSettingCheckbox,
   LunaSettingSelect,
   LunaSettingTitle,
 } from 'luna-setting/react'
@@ -75,6 +76,11 @@ export default observer(function SettingsModal(props: IProps) {
           options={{
             properties: ['openFile'],
           }}
+        />
+        <LunaSettingCheckbox
+          keyName="killAdbWhenExit"
+          value={store.settings.killAdbWhenExit}
+          description={t('killAdbWhenExit')}
         />
         <LunaSettingButton
           description={t('restartAya')}

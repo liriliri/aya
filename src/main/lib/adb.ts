@@ -1,3 +1,4 @@
+import { app } from 'electron'
 import Adb, { Client, Device } from '@devicefarmer/adbkit'
 import androidDeviceList from 'android-device-list'
 import { resolveUnpack, handleEvent } from 'share/main/lib/util'
@@ -277,6 +278,13 @@ export async function init() {
   if (adbPath === 'adb' || (!isStrBlank(adbPath) && fs.existsSync(adbPath))) {
     bin = adbPath
   }
+
+  app.on('will-quit', async () => {
+    if (settingsStore.get('killAdbWhenExit')) {
+      logger.info('kill adb')
+      await client.kill()
+    }
+  })
 
   client = Adb.createClient({
     bin,

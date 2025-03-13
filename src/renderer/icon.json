@@ -47,5 +47,6 @@
   "../share/renderer/icon/volume.svg",
   "../share/renderer/icon/wifi.svg",
   "../share/renderer/icon/zoom-in.svg",
-  "../share/renderer/icon/zoom-out.svg"
+  "../share/renderer/icon/zoom-out.svg",
+  "../share/renderer/icon/bidirection.svg"
 ]

@@ -1,7 +1,11 @@
 import {
+  IpcForward,
   IpcGetDevices,
   IpcGetFps,
   IpcGetLogs,
+  IpcListForwards,
+  IpcListReverses,
+  IpcReverse,
   IpcSetScreencastAlwaysOnTop,
 } from '../common/types'
 import { ipcRenderer } from 'electron'
@@ -124,4 +128,8 @@ export default Object.assign(mainObj, {
   },
   getLogs: invoke<IpcGetLogs>('getLogs'),
   clearLogs: invoke('clearLogs'),
+  listForwards: invoke<IpcListForwards>('listForwards'),
+  listReverses: invoke<IpcListReverses>('listReverses'),
+  forward: invoke<IpcForward>('forward'),
+  reverse: invoke<IpcReverse>('reverse'),
 })

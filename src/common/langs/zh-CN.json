@@ -174,5 +174,10 @@
   "alwaysOnTop": "置顶",
   "documentation": "文档",
   "donate": "捐赠",
-  "killAdbWhenExit": "退出时关闭 ADB"
+  "killAdbWhenExit": "退出时关闭 ADB",
+  "portMapping": "端口映射",
+  "portForwarding": "端口转发",
+  "portReversing": "反向代理",
+  "local": "本地",
+  "remote": "远程"
 }

@@ -1,0 +1,26 @@
+.container {
+  position: relative;
+  width: 100%;
+  padding-top: 30px;
+  border: 1px solid var(--color-border);
+}
+
+.toolbar {
+  background: var(--color-bg-container);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+}
+
+.local,
+.remote {
+  input {
+    width: 100px;
+  }
+}
+
+.grid {
+  border: none !important;
+}

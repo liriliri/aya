@@ -173,5 +173,10 @@
   "alwaysOnTop": "Always on Top",
   "documentation": "Documentation",
   "donate": "Donate",
-  "killAdbWhenExit": "Kill ADB when exit"
+  "killAdbWhenExit": "Kill ADB when exit",
+  "portMapping": "Port Mapping",
+  "portForwarding": "Port Forwarding",
+  "portReversing": "Port Reversing",
+  "local": "Local",
+  "remote": "Remote"
 }

@@ -2,6 +2,7 @@ import { observer } from 'mobx-react-lite'
 import Style from './Webview.module.scss'
 import LunaToolbar, {
   LunaToolbarInput,
+  LunaToolbarSeparator,
   LunaToolbarSpace,
   LunaToolbarText,
 } from 'luna-toolbar/react'
@@ -13,8 +14,10 @@ import map from 'licia/map'
 import className from 'licia/className'
 import store from '../../store'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
+import PortMappingModal from './PortMappingModal'
 
 export default observer(function Webview() {
+  const [portModalVisible, setPortModalVisible] = useState(false)
   const [webviews, setWebviews] = useState<any[]>([])
   const [selected, setSelected] = useState<any>(null)
   const [topPackage, setTopPackage] = useState({
@@ -110,6 +113,12 @@ export default observer(function Webview() {
           title={t('openWithBrowser')}
           onClick={() => main.openExternal(selected.url)}
         />
+        <LunaToolbarSeparator />
+        <ToolbarIcon
+          icon="bidirection"
+          title={t('portMapping')}
+          onClick={() => setPortModalVisible(true)}
+        />
       </LunaToolbar>
       <LunaDataGrid
         onSelect={async (node) => setSelected(node.data)}
@@ -122,6 +131,10 @@ export default observer(function Webview() {
         minHeight={listHeight}
         maxHeight={listHeight}
         uniqueId="id"
+      />
+      <PortMappingModal
+        visible={portModalVisible}
+        onClose={() => setPortModalVisible(false)}
       />
     </div>
   )

@@ -25,6 +25,7 @@ import * as packageAdb from './adb/package'
 import * as file from './adb/file'
 import * as fps from './adb/fps'
 import * as webview from './adb/webview'
+import * as port from './adb/port'
 import { getCpuLoads, getCpus } from './adb/cpu'
 import log from 'share/common/log'
 import { IpcGetDevices } from '../../common/types'
@@ -308,6 +309,7 @@ export async function init() {
   file.init(client)
   fps.init()
   webview.init()
+  port.init(client)
 
   handleEvent('getDevices', getDevices)
   handleEvent('getOverview', getOverview)

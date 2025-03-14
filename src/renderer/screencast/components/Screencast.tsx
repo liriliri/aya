@@ -3,7 +3,7 @@ import store from '../store'
 import { useEffect, useRef, useState } from 'react'
 import Style from './Screencast.module.scss'
 import endWith from 'licia/endWith'
-import { LoadingBar } from '../../components/loading'
+import { LoadingBar } from 'share/renderer/components/loading'
 import { installPackages } from '../../lib/util'
 
 export default observer(function Screencast() {

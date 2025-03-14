@@ -29,6 +29,9 @@ import * as port from './adb/port'
 import { getCpuLoads, getCpus } from './adb/cpu'
 import log from 'share/common/log'
 import { IpcGetDevices } from '../../common/types'
+import path from 'node:path'
+import childProcess from 'node:child_process'
+import isMac from 'licia/isMac'
 
 const logger = log('adb')
 
@@ -271,6 +274,26 @@ async function inputKey(deviceId: string, keyCode: number) {
   await base.shell(deviceId, `input keyevent ${keyCode}`)
 }
 
+async function openAdbCli() {
+  let cwd = resolveUnpack('adb')
+  const adbPath = settingsStore.get('adbPath')
+  if (!isStrBlank(adbPath) && fs.existsSync(adbPath)) {
+    cwd = path.dirname(adbPath)
+  }
+
+  let cmd = ''
+  const args: string[] = []
+  if (isMac) {
+    cmd = 'open'
+    args.push('-a', 'Terminal', cwd)
+  }
+
+  childProcess.spawn(cmd, args, {
+    detached: true,
+    stdio: 'ignore',
+  })
+}
+
 export async function init() {
   logger.info('init')
 
@@ -322,4 +345,5 @@ export async function init() {
   handleEvent('connectDevice', connectDevice)
   handleEvent('disconnectDevice', disconnectDevice)
   handleEvent('inputKey', inputKey)
+  handleEvent('openAdbCli', openAdbCli)
 }

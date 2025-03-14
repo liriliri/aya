@@ -179,5 +179,7 @@
   "portForwarding": "端口转发",
   "portReversing": "反向代理",
   "local": "本地",
-  "remote": "远程"
+  "remote": "远程",
+  "commonErr": "出错了",
+  "adbCli": "ADB 命令行接口"
 }

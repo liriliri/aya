@@ -17,7 +17,7 @@ import {
 } from '../../../common/theme'
 import store from '../store'
 import '@xterm/xterm/css/xterm.css'
-import contextMenu from '../../lib/contextMenu'
+import contextMenu from 'share/renderer/lib/contextMenu'
 import { t } from '../../../common/util'
 import copy from 'licia/copy'
 

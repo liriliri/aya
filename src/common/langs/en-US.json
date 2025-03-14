@@ -178,5 +178,7 @@
   "portForwarding": "Port Forwarding",
   "portReversing": "Port Reversing",
   "local": "Local",
-  "remote": "Remote"
+  "remote": "Remote",
+  "commonErr": "Something went wrong",
+  "adbCli": "ADB Command Line Interface"
 }

@@ -132,4 +132,5 @@ export default Object.assign(mainObj, {
   listReverses: invoke<IpcListReverses>('listReverses'),
   forward: invoke<IpcForward>('forward'),
   reverse: invoke<IpcReverse>('reverse'),
+  openAdbCli: invoke('openAdbCli'),
 })

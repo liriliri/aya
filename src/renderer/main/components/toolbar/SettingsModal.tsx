@@ -3,6 +3,7 @@ import LunaSetting, {
   LunaSettingButton,
   LunaSettingCheckbox,
   LunaSettingSelect,
+  LunaSettingSeparator,
   LunaSettingTitle,
 } from 'luna-setting/react'
 import { notify } from 'share/renderer/lib/util'
@@ -65,6 +66,7 @@ export default observer(function SettingsModal(props: IProps) {
             ['繁體中文']: 'zh-TW',
           }}
         />
+        <LunaSettingSeparator />
         <LunaSettingTitle title="ADB" />
         <SettingPath
           title={t('adbPath')}

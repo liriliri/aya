@@ -11,6 +11,7 @@ import download from 'licia/download'
 import fullscreen from 'licia/fullscreen'
 import SettingsModal from './SettingsModal'
 import { useState } from 'react'
+import { AndroidKeyCode } from '@yume-chan/scrcpy'
 
 export default observer(function Toolbar() {
   const [settingsModalVisiable, setSettingsModalVisiable] = useState(false)
@@ -29,39 +30,43 @@ export default observer(function Toolbar() {
     fullscreen.toggle(video.decoder.renderer.element.parentElement)
   }
 
+  function inputKey(keyCode: AndroidKeyCode) {
+    return () => main.inputKey(device.id, keyCode)
+  }
+
   return (
     <>
       <LunaToolbar className={Style.container}>
         <ToolbarIcon
           icon="power"
           title={t('power')}
-          onClick={() => main.inputKey(device.id, 26)}
+          onClick={inputKey(AndroidKeyCode.Power)}
         />
         <ToolbarIcon
           icon="volume"
           title={t('volumeUp')}
-          onClick={() => main.inputKey(device.id, 24)}
+          onClick={inputKey(AndroidKeyCode.VolumeUp)}
         />
         <ToolbarIcon
           icon="volume-down"
           title={t('volumeDown')}
-          onClick={() => main.inputKey(device.id, 25)}
+          onClick={inputKey(AndroidKeyCode.VolumeDown)}
         />
         <LunaToolbarSeparator />
         <ToolbarIcon
           icon="back"
           title={t('back')}
-          onClick={() => main.inputKey(device.id, 4)}
+          onClick={inputKey(AndroidKeyCode.AndroidBack)}
         />
         <ToolbarIcon
           icon="circle"
           title={t('home')}
-          onClick={() => main.inputKey(device.id, 3)}
+          onClick={inputKey(AndroidKeyCode.AndroidHome)}
         />
         <ToolbarIcon
           icon="square"
           title={t('appSwitch')}
-          onClick={() => main.inputKey(device.id, 187)}
+          onClick={() => inputKey(AndroidKeyCode.AndroidAppSwitch)}
         />
         <LunaToolbarSeparator />
         <ToolbarIcon

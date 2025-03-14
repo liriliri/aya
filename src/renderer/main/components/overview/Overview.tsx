@@ -14,9 +14,12 @@ import FontAdjustModal from './FontAdjustModal'
 import LunaToolbar, { LunaToolbarSpace } from 'luna-toolbar/react'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import PortMappingModal from './PortMappingModal'
+import RemoteControllerModal from './RemoteControllerModal'
 
 export default observer(function Overview() {
   const [portModalVisible, setPortModalVisible] = useState(false)
+  const [remoteControllerModalVisible, setRemoteControllerModalVisible] =
+    useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [overview, setOverview] = useState<types.PlainObj<string | number>>({})
   const [fontAdjustModalVisible, setFontAdjustModalVisible] = useState(false)
@@ -52,9 +55,9 @@ export default observer(function Overview() {
         {t('deviceNotConnected')}
       </div>
     )
-  } else if (isEmpty(overview) || isLoading) {
+  } else if (isLoading) {
     content = <PannelLoading />
-  } else {
+  } else if (!isEmpty(overview)) {
     content = (
       <div className={Style.info}>
         <div className={Style.row}>
@@ -129,14 +132,21 @@ export default observer(function Overview() {
     <div className={className('panel-with-toolbar', Style.container)}>
       <LunaToolbar className="panel-toolbar">
         <ToolbarIcon
+          icon="terminal"
+          title={t('adbCli')}
+          onClick={() => main.openAdbCli()}
+        />
+        <ToolbarIcon
           icon="bidirection"
+          disabled={!device}
           title={t('portMapping')}
           onClick={() => setPortModalVisible(true)}
         />
         <ToolbarIcon
-          icon="terminal"
-          title={t('adbCli')}
-          onClick={() => main.openAdbCli()}
+          icon="remote-controller"
+          disabled={!device}
+          title={t('remoteController')}
+          onClick={() => setRemoteControllerModalVisible(true)}
         />
         <LunaToolbarSpace />
         <ToolbarIcon
@@ -150,6 +160,10 @@ export default observer(function Overview() {
       <PortMappingModal
         visible={portModalVisible}
         onClose={() => setPortModalVisible(false)}
+      />
+      <RemoteControllerModal
+        visible={remoteControllerModalVisible}
+        onClose={() => setRemoteControllerModalVisible(false)}
       />
     </div>
   )

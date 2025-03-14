@@ -1,4 +1,4 @@
-@use '../../../theme' as theme;
+@use '../../../theme' as *;
 
 .container {
   display: flex;
@@ -9,21 +9,21 @@
 
 .info {
   background: var(--color-bg-container);
-  font-size: #{theme.$font-size-l-g}px;
+  font-size: #{$font-size-l-g}px;
   display: flex;
   width: 80%;
-  padding: #{theme.$padding-l-g}px;
+  padding: #{$padding-l-g}px;
   border: 1px solid var(--color-border);
-  border-radius: #{theme.$border-radius-s-m}px;
+  border-radius: #{$border-radius-s-m}px;
   flex-direction: column;
-  row-gap: #{theme.$margin-m-d}px;
+  row-gap: #{$margin-m-d}px;
 }
 
 .row {
   display: flex;
   width: 100%;
   flex-direction: row;
-  column-gap: #{theme.$margin-x-l}px;
+  column-gap: #{$margin-x-l}px;
 }
 
 .item {
@@ -52,5 +52,5 @@
 }
 
 .title {
-  margin-bottom: #{theme.$margin-x-x-s}px;
+  margin-bottom: #{$margin-x-x-s}px;
 }

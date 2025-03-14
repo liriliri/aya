@@ -49,5 +49,6 @@
   "../share/renderer/icon/zoom-in.svg",
   "../share/renderer/icon/zoom-out.svg",
   "../share/renderer/icon/bidirection.svg",
-  "../share/renderer/icon/terminal.svg"
+  "../share/renderer/icon/terminal.svg",
+  "../share/renderer/icon/remote-controller.svg"
 ]

@@ -15,17 +15,13 @@ import contain from 'licia/contain'
 import debounce from 'licia/debounce'
 import SettingPath from 'share/renderer/components/SettingPath'
 import store from '../../store'
-
-interface IProps {
-  visible: boolean
-  onClose: () => void
-}
+import { IModalProps } from 'share/common/types'
 
 const notifyRequireReload = debounce(() => {
   notify(t('requireReload'), { icon: 'info' })
 }, 1000)
 
-export default observer(function SettingsModal(props: IProps) {
+export default observer(function SettingsModal(props: IModalProps) {
   function onChange(key, val) {
     if (contain(['language'], key)) {
       notifyRequireReload()

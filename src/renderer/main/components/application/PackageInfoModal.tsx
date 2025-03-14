@@ -7,11 +7,10 @@ import fileSize from 'licia/fileSize'
 import md5 from 'licia/md5'
 import convertBin from 'licia/convertBin'
 import dateFormat from 'licia/dateFormat'
+import { IModalProps } from 'share/common/types'
 
-interface IProps {
-  visible: boolean
+interface IProps extends IModalProps {
   packageInfo: IPackageInfo
-  onClose: () => void
 }
 
 export interface IPackageInfo {

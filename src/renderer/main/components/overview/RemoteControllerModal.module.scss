@@ -1,0 +1,115 @@
+@use '../../../theme' as *;
+
+.remote-controller {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: #{$border-radius-s-m}px;
+  background: var(--color-bg-container-darker);
+}
+
+.top,
+.bottom {
+  display: flex;
+  width: 100%;
+  padding: #{$padding}px;
+}
+
+.button {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  span {
+    display: block;
+    width: 50px;
+    height: 50px;
+    background: var(--color-fill-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    &:active {
+      background: var(--color-fill-tertiary);
+    }
+  }
+  .back {
+    width: 100px;
+    border-radius: 50px;
+  }
+}
+
+.direction-pad {
+  width: 200px;
+  height: 200px;
+  background: var(--color-fill-secondary);
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+}
+
+.up,
+.right,
+.down,
+.left {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  &:active {
+    background: var(--color-fill-tertiary);
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--color-text);
+  }
+}
+
+.ok {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--color-bg-container);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:active {
+    background: var(--color-bg-container-darker);
+  }
+}
+
+.up {
+  bottom: 50%;
+  left: 50%;
+  transform: translate(-50%, -20%) rotate(45deg);
+}
+
+.right {
+  top: 50%;
+  left: 50%;
+  transform: translate(20%, -50%) rotate(45deg);
+}
+
+.down {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 20%) rotate(45deg);
+}
+
+.left {
+  top: 50%;
+  right: 50%;
+  transform: translate(-20%, -50%) rotate(45deg);
+}

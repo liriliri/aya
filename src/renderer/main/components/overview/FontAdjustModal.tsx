@@ -4,11 +4,10 @@ import { t } from '../../../../common/util'
 import { Row, Number } from 'share/renderer/components/setting'
 import { useState } from 'react'
 import store from '../../store'
+import { IModalProps } from 'share/common/types'
 
-interface IProps {
-  visible: boolean
+interface IProps extends IModalProps {
   initialScale: number
-  onClose: () => void
 }
 
 export default function FontAdjustModal(props: IProps) {

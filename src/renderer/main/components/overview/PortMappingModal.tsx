@@ -14,13 +14,9 @@ import { useEffect, useRef, useState } from 'react'
 import isStrBlank from 'licia/isStrBlank'
 import store from '../../store'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
+import { IModalProps } from 'share/common/types'
 
-interface IProps {
-  visible: boolean
-  onClose: () => void
-}
-
-export default observer(function PortMappingModal(props: IProps) {
+export default observer(function PortMappingModal(props: IModalProps) {
   const portForwarding = useRef(true)
   const [local, setLocal] = useState('')
   const [remote, setRemote] = useState('')

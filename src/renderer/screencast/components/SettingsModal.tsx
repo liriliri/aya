@@ -11,13 +11,9 @@ import Style from './SettingsModal.module.scss'
 import toStr from 'licia/toStr'
 import toNum from 'licia/toNum'
 import store from '../store'
+import { IModalProps } from 'share/common/types'
 
-interface IProps {
-  visible: boolean
-  onClose: () => void
-}
-
-export default observer(function SettingsModal(props: IProps) {
+export default observer(function SettingsModal(props: IModalProps) {
   function onChange(key, val) {
     if (key === 'videoBitRate') {
       val *= 1000000

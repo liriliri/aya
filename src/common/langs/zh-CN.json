@@ -181,5 +181,6 @@
   "local": "本地",
   "remote": "远程",
   "commonErr": "出错了",
-  "adbCli": "ADB 命令行接口"
+  "adbCli": "ADB 命令行接口",
+  "remoteController": "遥控器"
 }

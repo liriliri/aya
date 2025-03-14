@@ -281,17 +281,17 @@ async function openAdbCli() {
     cwd = path.dirname(adbPath)
   }
 
-  let cmd = ''
-  const args: string[] = []
   if (isMac) {
-    cmd = 'open'
-    args.push('-a', 'Terminal', cwd)
+    const cmd = 'open'
+    const args = ['-a', 'Terminal', cwd]
+    childProcess.spawn(cmd, args, {
+      stdio: 'ignore',
+    })
+  } else if (isWindows) {
+    childProcess.exec('start cmd', {
+      cwd,
+    })
   }
-
-  childProcess.spawn(cmd, args, {
-    detached: true,
-    stdio: 'ignore',
-  })
 }
 
 export async function init() {

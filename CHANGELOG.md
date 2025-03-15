@@ -1,3 +1,10 @@
+## v1.2.0 (15 Mar 2025)
+
+* feat: kill adb when exit [#49](https://github.com/liriliri/aya/issues/49)
+* feat: remote controller [#50](https://github.com/liriliri/aya/issues/50)
+* feat: port forwarding and reversing manager
+* feat: open adb cli
+
 ## v1.1.0 (3 Mar 2025)
 
 * feat: standalone window for device manager

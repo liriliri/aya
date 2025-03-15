@@ -282,15 +282,20 @@ async function openAdbCli() {
   }
 
   if (isMac) {
-    const cmd = 'open'
-    const args = ['-a', 'Terminal', cwd]
-    childProcess.spawn(cmd, args, {
+    const child = childProcess.spawn('open', ['-a', 'Terminal', cwd], {
       stdio: 'ignore',
     })
+    child.unref()
   } else if (isWindows) {
-    childProcess.exec('start cmd', {
+    const child = childProcess.exec('start cmd', {
       cwd,
     })
+    child.unref()
+  } else {
+    const child = childProcess.spawn('x-terminal-emulator', ['-w', cwd], {
+      stdio: 'ignore',
+    })
+    child.unref()
   }
 }
 

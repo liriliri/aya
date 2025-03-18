@@ -8,6 +8,7 @@ import Performance from './components/performance/Performance'
 import Webview from './components/webview/Webview'
 import Application from './components/application/Application'
 import File from './components/file/File'
+import Layout from './components/layout/Layout'
 import Style from './App.module.scss'
 import LunaModal from 'luna-modal/react'
 import { t } from '../../common/util'
@@ -59,6 +60,9 @@ export default observer(function App() {
           </Panel>
           <Panel panel="file">
             <File />
+          </Panel>
+          <Panel panel="layout">
+            <Layout />
           </Panel>
         </div>
       </div>

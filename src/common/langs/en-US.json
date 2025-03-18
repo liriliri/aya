@@ -181,5 +181,6 @@
   "remote": "Remote",
   "commonErr": "Something went wrong",
   "adbCli": "ADB Command Line Interface",
-  "remoteController": "Remote Controller"
+  "remoteController": "Remote Controller",
+  "layout": "Layout"
 }

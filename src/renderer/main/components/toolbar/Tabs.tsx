@@ -16,6 +16,7 @@ export default observer(function Panels() {
       'shell',
       'screenshot',
       'logcat',
+      'layout',
       'webview',
     ],
     (panel) => {

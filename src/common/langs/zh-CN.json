@@ -143,7 +143,6 @@
   "folderNotExistErr": "文件夹不存在",
   "add": "添加",
   "typeCmd": "输入命令",
-  "cmdPalette": "命令面板",
   "shortcut": "快捷命令",
   "start": "启动",
   "memInfo": "内存信息",
@@ -182,5 +181,6 @@
   "remote": "远程",
   "commonErr": "出错了",
   "adbCli": "ADB 命令行接口",
-  "remoteController": "遥控器"
+  "remoteController": "遥控器",
+  "layout": "布局"
 }

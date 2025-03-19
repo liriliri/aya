@@ -23,3 +23,4 @@ export type IpcReverse = (
   remote: string,
   local: string
 ) => void
+export type IpcDumpWindowHierarchy = (deviceId: string) => Promise<string>

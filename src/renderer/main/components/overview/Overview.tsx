@@ -51,7 +51,7 @@ export default observer(function Overview() {
 
   if (!device) {
     content = (
-      <div className={className('panel', Style.container)}>
+      <div className={className('panel-body', Style.container)}>
         {t('deviceNotConnected')}
       </div>
     )

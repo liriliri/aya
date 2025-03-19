@@ -28,7 +28,7 @@ import * as webview from './adb/webview'
 import * as port from './adb/port'
 import { getCpuLoads, getCpus } from './adb/cpu'
 import log from 'share/common/log'
-import { IpcGetDevices } from '../../common/types'
+import { IpcDumpWindowHierarchy, IpcGetDevices } from '../../common/types'
 import path from 'node:path'
 import childProcess from 'node:child_process'
 import isMac from 'licia/isMac'
@@ -187,6 +187,13 @@ async function screencap(deviceId: string) {
   const buf = await Adb.util.readAll(data)
 
   return buf.toString('base64')
+}
+
+const dumpWindowHierarchy: IpcDumpWindowHierarchy = async function (deviceId) {
+  const path = '/data/local/tmp/aya_uidump.xml'
+  await shell(deviceId, `uiautomator dump ${path}`)
+  const data = await file.pullFileData(deviceId, path)
+  return data.toString('utf8')
 }
 
 async function getScreen(deviceId: string) {
@@ -351,4 +358,5 @@ export async function init() {
   handleEvent('disconnectDevice', disconnectDevice)
   handleEvent('inputKey', inputKey)
   handleEvent('openAdbCli', openAdbCli)
+  handleEvent('dumpWindowHierarchy', dumpWindowHierarchy)
 }

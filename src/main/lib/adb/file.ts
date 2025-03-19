@@ -24,6 +24,25 @@ async function pullFile(deviceId: string, path: string, dest: string) {
   })
 }
 
+export async function pullFileData(
+  deviceId: string,
+  path: string
+): Promise<Buffer> {
+  const device = await client.getDevice(deviceId)
+  const transfer = await device.pull(path)
+
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = []
+    transfer.on('data', (chunk) => {
+      chunks.push(chunk)
+    })
+    transfer.on('end', () => {
+      resolve(Buffer.concat(chunks))
+    })
+    transfer.on('error', reject)
+  })
+}
+
 async function openFile(deviceId: string, p: string) {
   const dest = path.join(os.tmpdir(), path.basename(p))
   await pullFile(deviceId, p, dest)

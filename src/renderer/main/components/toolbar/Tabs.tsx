@@ -14,9 +14,9 @@ export default observer(function Panels() {
       'process',
       'performance',
       'shell',
+      'layout',
       'screenshot',
       'logcat',
-      'layout',
       'webview',
     ],
     (panel) => {

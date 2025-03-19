@@ -1,4 +1,5 @@
 import {
+  IpcDumpWindowHierarchy,
   IpcForward,
   IpcGetDevices,
   IpcGetFps,
@@ -133,4 +134,5 @@ export default Object.assign(mainObj, {
   forward: invoke<IpcForward>('forward'),
   reverse: invoke<IpcReverse>('reverse'),
   openAdbCli: invoke('openAdbCli'),
+  dumpWindowHierarchy: invoke<IpcDumpWindowHierarchy>('dumpWindowHierarchy'),
 })

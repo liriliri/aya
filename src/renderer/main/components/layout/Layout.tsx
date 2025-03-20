@@ -11,8 +11,10 @@ import { useEffect, useRef, useState } from 'react'
 import store from '../../store'
 import copy from 'licia/copy'
 import dataUrl from 'licia/dataUrl'
+import each from 'licia/each'
 import CopyButton from 'share/renderer/components/CopyButton'
 import { xmlToDom } from '../../lib/util'
+import { Document, Element } from '@xmldom/xmldom'
 
 export default observer(function Layout() {
   const [image, setImage] = useState('')
@@ -31,8 +33,9 @@ export default observer(function Layout() {
     const data = await main.screencap(store.device.id)
     setImage(dataUrl.stringify(data, 'image/png'))
     windowHierarchy.current = await main.dumpWindowHierarchy(store.device.id)
-    console.log(xmlToDom(windowHierarchy.current))
-    setHierarchy(xmlToDom(windowHierarchy.current))
+    const doc = xmlToDom(windowHierarchy.current)
+    transfromHierarchy(doc)
+    setHierarchy(doc)
   }
 
   return (
@@ -62,3 +65,41 @@ export default observer(function Layout() {
     </div>
   )
 })
+
+function changeElType(doc: Document, oldEl: Element, newType: string): Element {
+  const newEl = doc.createElement(newType)
+
+  for (const attr of oldEl.attributes) {
+    newEl.setAttribute(attr.name, attr.value)
+  }
+
+  while (oldEl.firstChild) {
+    newEl.appendChild(oldEl.firstChild)
+  }
+
+  if (oldEl.parentNode) {
+    oldEl.parentNode.replaceChild(newEl, oldEl)
+  }
+
+  return newEl
+}
+
+function transfromHierarchy(hierarchy: Document) {
+  const transformRecursively = (el: Element) => {
+    const className = el.getAttribute('class')
+    if (className) {
+      el = changeElType(hierarchy, el, className.split('.').pop()!)
+    }
+    const text = el.getAttribute('text')
+    if (text) {
+      el.removeAttribute('text')
+      el.appendChild(hierarchy.createTextNode(text))
+    } else {
+      each(el.childNodes, (child) => transformRecursively(child as Element))
+    }
+  }
+
+  if (hierarchy.documentElement) {
+    transformRecursively(hierarchy.documentElement)
+  }
+}

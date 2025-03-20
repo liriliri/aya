@@ -12,6 +12,7 @@ import store from '../../store'
 import copy from 'licia/copy'
 import dataUrl from 'licia/dataUrl'
 import CopyButton from 'share/renderer/components/CopyButton'
+import { xmlToDom } from '../../lib/util'
 
 export default observer(function Layout() {
   const [image, setImage] = useState('')
@@ -30,7 +31,8 @@ export default observer(function Layout() {
     const data = await main.screencap(store.device.id)
     setImage(dataUrl.stringify(data, 'image/png'))
     windowHierarchy.current = await main.dumpWindowHierarchy(store.device.id)
-    setHierarchy({})
+    console.log(xmlToDom(windowHierarchy.current))
+    setHierarchy(xmlToDom(windowHierarchy.current))
   }
 
   return (
@@ -53,7 +55,7 @@ export default observer(function Layout() {
         </LunaToolbarButton>
       </LunaToolbar>
       <div className={className('panel-body', Style.container)}>
-        <Tree />
+        <Tree hierarchy={hierarchy} />
         <Screenshot image={image} />
         <Attributes />
       </div>

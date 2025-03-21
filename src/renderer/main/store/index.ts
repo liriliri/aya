@@ -6,6 +6,7 @@ import { Settings } from './settings'
 import { Application } from './application'
 import { Process } from './process'
 import { File } from './file'
+import { Layout } from './layout'
 import { setMainStore } from '../../lib/util'
 import { setMemStore } from 'share/renderer/lib/util'
 import isEmpty from 'licia/isEmpty'
@@ -19,6 +20,7 @@ class Store extends BaseStore {
   application = new Application()
   process = new Process()
   file = new File()
+  layout = new Layout()
   constructor() {
     super()
 

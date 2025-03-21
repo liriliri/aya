@@ -1,5 +1,18 @@
 .container {
   border-right: 1px solid var(--color-border);
-  min-width: 400px;
+  min-width: 300px;
+  width: 400px;
   overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  max-width: calc(100vw - 400px);
+}
+
+.resizer {
+  position: absolute;
+  height: 100%;
+  right: -8px;
+  top: 0;
+  cursor: col-resize;
+  z-index: 80;
 }

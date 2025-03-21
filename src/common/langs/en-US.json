@@ -140,7 +140,7 @@
   "newFileName": "New File Name",
   "rename": "Rename",
   "fileExistErr": "File already exists",
-  "folderNotExistErr": "Folder does not exist",
+  "folderNotExistErr": "img.onload = () => Folder does not exist",
   "add": "Add",
   "typeCmd": "Type a command",
   "shortcut": "Shortcut",
@@ -182,5 +182,6 @@
   "commonErr": "Something went wrong",
   "adbCli": "ADB Command Line Interface",
   "remoteController": "Remote Controller",
-  "layout": "Layout"
+  "layout": "Layout",
+  "showBorder": "Show Border"
 }

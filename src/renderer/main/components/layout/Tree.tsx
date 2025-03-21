@@ -1,18 +1,22 @@
 import { observer } from 'mobx-react-lite'
 import Style from './Tree.module.scss'
 import LunaDomViewer from 'luna-dom-viewer/react'
+import DomViewer from 'luna-dom-viewer'
 import store from '../../store'
 import contain from 'licia/contain'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import uuid from 'licia/uuid'
-import { Document } from '@xmldom/xmldom'
+import { Document, Element } from '@xmldom/xmldom'
 
 interface IProps {
   hierarchy?: Document
+  selected: Element | null
+  onSelect?: (el: Element) => void
 }
 
 export default observer(function Tree(props: IProps) {
   const treeRef = useRef<HTMLDivElement>(null)
+  const domViewerRef = useRef<DomViewer>()
   const [key, setKey] = useState(uuid())
   const [resizerStyle, setResizerStyle] = useState<any>({
     width: '10px',
@@ -21,6 +25,12 @@ export default observer(function Tree(props: IProps) {
   useEffect(() => {
     setKey(uuid())
   }, [props.hierarchy])
+
+  useEffect(() => {
+    if (props.selected && domViewerRef.current) {
+      domViewerRef.current.select(props.selected as any)
+    }
+  }, [props.selected])
 
   const onMouseDown = useCallback((e: React.MouseEvent) => {
     const startX = e.clientX
@@ -60,20 +70,27 @@ export default observer(function Tree(props: IProps) {
         style={resizerStyle}
         onMouseDown={onMouseDown}
       />
-      {props.hierarchy && (
-        <LunaDomViewer
-          key={key}
-          theme={store.theme}
-          node={props.hierarchy.documentElement as any}
-          ignoreAttr={(el, name, value) => {
-            return contain(IGNORE_ATTRS, name) || value === ''
-          }}
-          observe={false}
-          onCreate={(domViewer) => {
-            domViewer.expand()
-          }}
-        />
-      )}
+      <div className={Style.tree} key={key}>
+        {props.hierarchy && (
+          <LunaDomViewer
+            theme={store.theme}
+            node={props.hierarchy.documentElement as any}
+            ignoreAttr={(el, name, value) => {
+              return contain(IGNORE_ATTRS, name) || value === ''
+            }}
+            observe={false}
+            onSelect={(node) => {
+              if (node.nodeType === 1) {
+                props.onSelect?.(node as any)
+              }
+            }}
+            onCreate={(domViewer) => {
+              domViewer.expand()
+              domViewerRef.current = domViewer
+            }}
+          />
+        )}
+      </div>
     </div>
   )
 })

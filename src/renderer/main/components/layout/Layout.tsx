@@ -33,6 +33,7 @@ export default observer(function Layout() {
   })
   const windowHierarchy = useRef('')
   const [hierarchy, setHierarchy] = useState<any>(null)
+  const [selected, setSelected] = useState<Element | null>(null)
 
   useEffect(() => {
     refresh()
@@ -46,6 +47,7 @@ export default observer(function Layout() {
     const data = await main.screencap(store.device.id)
     const url = dataUrl.stringify(data, 'image/png')
     setHierarchy(null)
+    setSelected(null)
     loadImg(url, (err, img) => {
       setImage({
         url,
@@ -90,8 +92,12 @@ export default observer(function Layout() {
         />
       </LunaToolbar>
       <div className={className('panel-body', Style.container)}>
-        <Tree hierarchy={hierarchy} />
-        <Screenshot image={image} hierarchy={hierarchy} />
+        <Tree
+          hierarchy={hierarchy}
+          onSelect={(el) => setSelected(el)}
+          selected={selected}
+        />
+        <Screenshot image={image} hierarchy={hierarchy} selected={selected} />
         <Attributes />
       </div>
     </div>

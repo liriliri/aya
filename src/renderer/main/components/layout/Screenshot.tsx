@@ -10,6 +10,7 @@ import { colorPrimary } from '../../../../common/theme'
 interface IProps {
   image: IImage
   hierarchy?: Document
+  selected: Element | null
 }
 
 export interface IImage {
@@ -23,7 +24,7 @@ export default observer(function Screenshot(props: IProps) {
 
   useEffect(() => {
     draw()
-  }, [props.image, props.hierarchy])
+  }, [props.image, props.hierarchy, props.selected])
 
   function draw() {
     if (!canvasRef.current || !props.image.url) {
@@ -41,6 +42,10 @@ export default observer(function Screenshot(props: IProps) {
 
     if (store.layout.border && props.hierarchy) {
       drawBorder(ctx, props.hierarchy)
+    }
+
+    if (props.selected) {
+      drawSelected(ctx, props.selected)
     }
   }
   draw()
@@ -61,7 +66,7 @@ function drawBorder(ctx: CanvasRenderingContext2D, hierarchy: Document) {
   ctx.strokeStyle = colorPrimary
   ctx.lineWidth = 2
 
-  const transformRecursively = (el: Element) => {
+  const drawRecursively = (el: Element) => {
     const x = el.getAttribute('x')
     const y = el.getAttribute('y')
     const width = el.getAttribute('width')
@@ -74,11 +79,23 @@ function drawBorder(ctx: CanvasRenderingContext2D, hierarchy: Document) {
       if (child.nodeType !== 1) {
         return
       }
-      transformRecursively(child as Element)
+      drawRecursively(child as Element)
     })
   }
 
   if (hierarchy.documentElement) {
-    transformRecursively(hierarchy.documentElement)
+    drawRecursively(hierarchy.documentElement)
+  }
+}
+
+function drawSelected(ctx: CanvasRenderingContext2D, selected: Element) {
+  ctx.fillStyle = 'rgba(111, 168, 220, .66)'
+
+  const x = selected.getAttribute('x')
+  const y = selected.getAttribute('y')
+  const width = selected.getAttribute('width')
+  const height = selected.getAttribute('height')
+  if (x && y && width && height) {
+    ctx.fillRect(toNum(x), toNum(y), toNum(width), toNum(height))
   }
 }

@@ -97,7 +97,12 @@ export default observer(function Layout() {
           onSelect={(el) => setSelected(el)}
           selected={selected}
         />
-        <Screenshot image={image} hierarchy={hierarchy} selected={selected} />
+        <Screenshot
+          image={image}
+          hierarchy={hierarchy}
+          selected={selected}
+          onSelect={(el) => setSelected(el)}
+        />
         <Attributes />
       </div>
     </div>

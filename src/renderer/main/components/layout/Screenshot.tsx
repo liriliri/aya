@@ -11,6 +11,7 @@ interface IProps {
   image: IImage
   hierarchy?: Document
   selected: Element | null
+  onSelect?: (el: Element) => void
 }
 
 export interface IImage {
@@ -21,10 +22,18 @@ export interface IImage {
 
 export default observer(function Screenshot(props: IProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const image = useRef(new Image())
+
+  useEffect(() => {
+    image.current.src = props.image.url
+    image.current.onload = () => {
+      draw()
+    }
+  }, [props.image])
 
   useEffect(() => {
     draw()
-  }, [props.image, props.hierarchy, props.selected])
+  }, [props.hierarchy, props.selected])
 
   function draw() {
     if (!canvasRef.current || !props.image.url) {
@@ -36,9 +45,8 @@ export default observer(function Screenshot(props: IProps) {
       return
     }
 
-    const img = new Image()
-    img.src = props.image.url
-    ctx.drawImage(img, 0, 0)
+    ctx.clearRect(0, 0, props.image.width, props.image.height)
+    ctx.drawImage(image.current, 0, 0)
 
     if (store.layout.border && props.hierarchy) {
       drawBorder(ctx, props.hierarchy)
@@ -50,9 +58,24 @@ export default observer(function Screenshot(props: IProps) {
   }
   draw()
 
+  function onClick(e: React.MouseEvent<HTMLCanvasElement>) {
+    if (!props.hierarchy) {
+      return
+    }
+
+    const ratio = props.image.width / canvasRef.current!.clientWidth
+    const x = Math.round(e.nativeEvent.offsetX * ratio)
+    const y = Math.round(e.nativeEvent.offsetY * ratio)
+    const el = findEl(props.hierarchy, x, y)
+    if (el) {
+      props.onSelect?.(el)
+    }
+  }
+
   return (
     <div className={Style.container}>
       <canvas
+        onClick={onClick}
         className={Style.canvas}
         width={props.image.width}
         height={props.image.height}
@@ -61,6 +84,52 @@ export default observer(function Screenshot(props: IProps) {
     </div>
   )
 })
+
+function findEl(hierarchy: Document, pointerX: number, pointerY: number) {
+  let result = hierarchy.documentElement
+  let resultWidth = 1000000
+  let resultHeight = 1000000
+
+  const findRecursively = (el: Element) => {
+    const x = el.getAttribute('x')
+    const y = el.getAttribute('y')
+    const width = el.getAttribute('width')
+    const height = el.getAttribute('height')
+    if (x && y && width && height) {
+      const x1 = toNum(x)
+      const y1 = toNum(y)
+      const w = toNum(width)
+      const h = toNum(height)
+      const x2 = x1 + w
+      const y2 = y1 + h
+      if (
+        x1 <= pointerX &&
+        pointerX <= x2 &&
+        y1 <= pointerY &&
+        pointerY <= y2
+      ) {
+        if (w * h < resultWidth * resultHeight) {
+          result = el
+          resultWidth = w
+          resultHeight = h
+        }
+      }
+    }
+
+    each(el.childNodes, (child) => {
+      if (child.nodeType !== 1) {
+        return
+      }
+      findRecursively(child as Element)
+    })
+  }
+
+  if (hierarchy.documentElement) {
+    findRecursively(hierarchy.documentElement)
+  }
+
+  return result
+}
 
 function drawBorder(ctx: CanvasRenderingContext2D, hierarchy: Document) {
   ctx.strokeStyle = colorPrimary

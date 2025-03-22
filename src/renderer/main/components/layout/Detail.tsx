@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite'
-import Style from './Attributes.module.scss'
+import Style from './Detail.module.scss'
 
-export default observer(function Attributes() {
+export default observer(function Detail() {
   return <div className={Style.container}></div>
 })

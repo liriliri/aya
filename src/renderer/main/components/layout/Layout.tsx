@@ -10,7 +10,7 @@ import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import { t } from '../../../../common/util'
 import Style from './Layout.module.scss'
 import Tree from './Tree'
-import Attributes from './Attributes'
+import Detail from './Detail'
 import Screenshot, { IImage } from './Screenshot'
 import className from 'licia/className'
 import { useEffect, useRef, useState } from 'react'
@@ -103,7 +103,7 @@ export default observer(function Layout() {
           selected={selected}
           onSelect={(el) => setSelected(el)}
         />
-        <Attributes />
+        <Detail />
       </div>
     </div>
   )

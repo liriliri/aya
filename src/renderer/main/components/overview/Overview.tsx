@@ -15,13 +15,16 @@ import LunaToolbar, { LunaToolbarSpace } from 'luna-toolbar/react'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import PortMappingModal from './PortMappingModal'
 import RemoteControllerModal from './RemoteControllerModal'
+import toBool from 'licia/toBool'
 
 export default observer(function Overview() {
   const [portModalVisible, setPortModalVisible] = useState(false)
   const [remoteControllerModalVisible, setRemoteControllerModalVisible] =
     useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [overview, setOverview] = useState<types.PlainObj<string | number>>({})
+  const [overview, setOverview] = useState<
+    types.PlainObj<string | number | boolean>
+  >({})
   const [fontAdjustModalVisible, setFontAdjustModalVisible] = useState(false)
 
   const { device } = store
@@ -128,6 +131,19 @@ export default observer(function Overview() {
     )
   }
 
+  async function root() {
+    if (!device || overview.root) {
+      return
+    }
+    try {
+      await main.root(device.id)
+      setTimeout(() => refresh(), 2000)
+      // eslint-disable-next-line
+    } catch (e) {
+      notify(t('rootModeErr'), { icon: 'error' })
+    }
+  }
+
   return (
     <div className={className('panel-with-toolbar', Style.container)}>
       <LunaToolbar className="panel-toolbar">
@@ -135,6 +151,13 @@ export default observer(function Overview() {
           icon="terminal"
           title={t('adbCli')}
           onClick={() => main.openAdbCli()}
+        />
+        <ToolbarIcon
+          icon="unlock"
+          disabled={!device || toBool(overview.root)}
+          state={toBool(overview.root) ? 'active' : ''}
+          title={t('rootMode')}
+          onClick={root}
         />
         <ToolbarIcon
           icon="bidirection"

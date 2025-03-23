@@ -67,10 +67,11 @@ async function getOverview(deviceId: string) {
   const device = await client.getDevice(deviceId)
   const properties = await device.getProperties()
   const cpus = await getCpus(deviceId)
-  const [kernelVersion, fontScale, wifi] = await shell(deviceId, [
+  const [kernelVersion, fontScale, wifi, id] = await shell(deviceId, [
     'uname -r',
     'settings get system font_scale',
     'dumpsys wifi',
+    'id',
   ])
 
   let ssidMatch = wifi.match(/mWifiInfo\s+SSID: "?(.+?)"?,/)
@@ -91,6 +92,8 @@ async function getOverview(deviceId: string) {
     mac = macMatch[1]
   }
 
+  const root = contain(id, 'uid=0')
+
   return {
     name: getMarketName(properties) || properties['ro.product.name'],
     processor: properties['ro.product.board'] || '',
@@ -103,6 +106,7 @@ async function getOverview(deviceId: string) {
     fontScale: fontScale === 'null' ? 0 : toNum(fontScale),
     wifi: ssidMatch ? ssidMatch[1] : '',
     ip,
+    root,
     mac,
     ...(await getStorage(deviceId)),
     ...(await getMemory(deviceId)),
@@ -306,6 +310,15 @@ async function openAdbCli() {
   }
 }
 
+async function root(deviceId: string) {
+  const id = await shell(deviceId, 'id')
+  if (contain(id, 'uid=0')) {
+    return
+  }
+  const device = await client.getDevice(deviceId)
+  await device.root()
+}
+
 export async function init() {
   logger.info('init')
 
@@ -359,4 +372,5 @@ export async function init() {
   handleEvent('inputKey', inputKey)
   handleEvent('openAdbCli', openAdbCli)
   handleEvent('dumpWindowHierarchy', dumpWindowHierarchy)
+  handleEvent('root', root)
 }

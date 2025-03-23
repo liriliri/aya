@@ -135,4 +135,5 @@ export default Object.assign(mainObj, {
   reverse: invoke<IpcReverse>('reverse'),
   openAdbCli: invoke('openAdbCli'),
   dumpWindowHierarchy: invoke<IpcDumpWindowHierarchy>('dumpWindowHierarchy'),
+  root: invoke('root'),
 })

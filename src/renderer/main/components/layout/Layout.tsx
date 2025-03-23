@@ -103,7 +103,7 @@ export default observer(function Layout() {
           selected={selected}
           onSelect={(el) => setSelected(el)}
         />
-        <Detail />
+        <Detail selected={selected} />
       </div>
     </div>
   )

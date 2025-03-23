@@ -25,7 +25,7 @@
 
 .luna-notification {
   padding-top: 40px;
-  z-index: theme.$z-index-popup-base;
+  z-index: theme.$z-index-popup-base + 5;
 }
 
 .luna-notification-item {

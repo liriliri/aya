@@ -183,5 +183,6 @@
   "adbCli": "ADB 命令行接口",
   "remoteController": "遥控器",
   "layout": "布局",
-  "showBorder": "显示边框"
+  "showBorder": "显示边框",
+  "componentNotSelected": "未选择组件"
 }

@@ -158,7 +158,7 @@ function drawBorder(ctx: CanvasRenderingContext2D, hierarchy: Document) {
 }
 
 function drawSelected(ctx: CanvasRenderingContext2D, selected: Element) {
-  ctx.fillStyle = 'rgba(111, 168, 220, .66)'
+  ctx.fillStyle = 'rgba(147,196,125,.55)'
 
   const x = selected.getAttribute('x')
   const y = selected.getAttribute('y')

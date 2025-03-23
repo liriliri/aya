@@ -1,4 +1,61 @@
+@use '../../../theme' as *;
+
 .container {
   width: 250px;
   border-left: 1px solid var(--color-border);
+}
+
+.unselected {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.detail {
+  height: 100%;
+}
+
+.title {
+  padding: 0 #{$padding-x-s}px;
+  height: 31px;
+  line-height: 31px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.box-container {
+  padding: #{$padding-x-s}px;
+  text-align: center;
+}
+
+.size,
+.box-top,
+.box-left,
+.box-right,
+.box-bottom {
+  display: inline-block;
+  width: 50px;
+  text-align: center;
+  padding: #{$padding-x-x-s}px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.box-left,
+.box-right {
+  vertical-align: middle;
+}
+
+.box {
+  display: inline-flex;
+  align-items: center;
+  padding: #{$padding-s-m}px;
+  justify-content: center;
+  width: 120px;
+  vertical-align: middle;
+  color: #fff;
+  background-color: rgba(147, 196, 125, 0.55);
 }

@@ -1,0 +1,8 @@
+.container {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  &:hover {
+    color: var(--color-primary);
+  }
+}

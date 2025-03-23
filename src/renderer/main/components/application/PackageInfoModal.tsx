@@ -8,6 +8,7 @@ import md5 from 'licia/md5'
 import convertBin from 'licia/convertBin'
 import dateFormat from 'licia/dateFormat'
 import { IModalProps } from 'share/common/types'
+import { Copyable } from '../common/Copyable'
 
 interface IProps extends IModalProps {
   packageInfo: IPackageInfo
@@ -49,8 +50,12 @@ export default function PackageInfoModal(props: IProps) {
         </div>
         <div className={Style.basic}>
           <div className={Style.label}>{packageInfo.label}</div>
-          <div className={Style.packageName}>{packageInfo.packageName}</div>
-          <div className={Style.versionName}>{packageInfo.versionName}</div>
+          <Copyable className={Style.packageName}>
+            {packageInfo.packageName}
+          </Copyable>
+          <Copyable className={Style.versionName}>
+            {packageInfo.versionName}
+          </Copyable>
         </div>
       </div>
       {item(t('sysPackage'), packageInfo.system ? t('yes') : t('no'))}
@@ -86,7 +91,7 @@ function item(title: string, value: string | number) {
   return (
     <div className={Style.item}>
       <span>{title}</span>
-      <span className={Style.value}>{value}</span>
+      <Copyable className={Style.value}>{value}</Copyable>
     </div>
   )
 }

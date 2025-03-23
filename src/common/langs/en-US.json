@@ -183,5 +183,6 @@
   "adbCli": "ADB Command Line Interface",
   "remoteController": "Remote Controller",
   "layout": "Layout",
-  "showBorder": "Show Border"
+  "showBorder": "Show Border",
+  "componentNotSelected": "Component not selected"
 }

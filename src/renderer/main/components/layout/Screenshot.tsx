@@ -108,7 +108,7 @@ function findEl(hierarchy: Document, pointerX: number, pointerY: number) {
         y1 <= pointerY &&
         pointerY <= y2
       ) {
-        if (w * h < resultWidth * resultHeight) {
+        if (w * h <= resultWidth * resultHeight) {
           result = el
           resultWidth = w
           resultHeight = h

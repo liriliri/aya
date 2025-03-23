@@ -151,7 +151,6 @@ function transfromHierarchy(hierarchy: Document) {
 
     const text = el.getAttribute('text')
     if (text) {
-      el.removeAttribute('text')
       el.appendChild(hierarchy.createTextNode(text))
     } else {
       each(el.childNodes, (child) => transformRecursively(child as Element))

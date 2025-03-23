@@ -4,6 +4,10 @@ import { Element } from '@xmldom/xmldom'
 import { t } from '../../../../common/util'
 import { Copyable } from '../common/Copyable'
 import toNum from 'licia/toNum'
+import map from 'licia/map'
+import filter from 'licia/filter'
+import contain from 'licia/contain'
+import className from 'licia/className'
 
 interface IProps {
   selected: Element | null
@@ -15,6 +19,14 @@ export default observer(function Detail(props: IProps) {
   const { selected } = props
 
   if (selected) {
+    const attributes = filter(selected.attributes, (attr) => {
+      if (contain(IGNORE_ATTRS, attr.name) || !attr.value) {
+        return false
+      }
+
+      return true
+    })
+
     content = (
       <div className={Style.detail}>
         <Copyable className={Style.title}>
@@ -38,6 +50,32 @@ export default observer(function Detail(props: IProps) {
               toNum(selected.getAttribute('height'))}
           </div>
         </div>
+        <div className={Style.attributes}>
+          <table>
+            <tbody>
+              {map(attributes, (attr) => {
+                let value = <Copyable>{attr.value}</Copyable>
+
+                if (attr.value === 'true') {
+                  value = (
+                    <span className={className('icon-check', Style.true)} />
+                  )
+                } else if (attr.value === 'false') {
+                  value = (
+                    <span className={className('icon-delete', Style.false)} />
+                  )
+                }
+
+                return (
+                  <tr>
+                    <td className={Style.name}>{attr.name}</td>
+                    <td className={Style.value}>{value}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     )
   } else {
@@ -48,3 +86,5 @@ export default observer(function Detail(props: IProps) {
 
   return <div className={Style.container}>{content}</div>
 })
+
+const IGNORE_ATTRS = ['x', 'y', 'width', 'height', 'bounds']

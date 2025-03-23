@@ -1,8 +1,9 @@
 @use '../../../theme' as *;
 
 .container {
-  width: 250px;
+  width: 300px;
   border-left: 1px solid var(--color-border);
+  height: 100%;
 }
 
 .unselected {
@@ -13,6 +14,8 @@
 }
 
 .detail {
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
 
@@ -58,4 +61,40 @@
   vertical-align: middle;
   color: #fff;
   background-color: rgba(147, 196, 125, 0.55);
+}
+
+.attributes {
+  border-top: 1px solid var(--color-border);
+  padding: #{$padding-x-s}px;
+  flex: 1;
+  overflow: hidden;
+  font-size: #{$font-size-s-m}px;
+  overflow-y: auto;
+  table {
+    width: 100%;
+  }
+  .name {
+    width: 100px;
+    color: rgb(220, 54, 46);
+  }
+  .value {
+    max-width: 150px;
+  }
+  .true {
+    color: var(--color-success);
+  }
+  .false {
+    color: var(--color-error);
+  }
+  td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+:global(.-theme-with-dark-background) {
+  .name {
+    color: rgb(92, 213, 251);
+  }
 }

@@ -82,6 +82,8 @@ export default observer(function Tree(props: IProps) {
             onSelect={(node) => {
               if (node.nodeType === 1) {
                 props.onSelect?.(node as any)
+              } else if (node.nodeType === 3) {
+                props.onSelect?.(node.parentNode as any)
               }
             }}
             onCreate={(domViewer) => {

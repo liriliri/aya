@@ -1,3 +1,8 @@
+## v1.3.0 (24 Mar 2025)
+
+* feat: layout inspector [#22](https://github.com/liriliri/aya/issues/22)
+* feat: restart as root button
+
 ## v1.2.0 (15 Mar 2025)
 
 * feat: kill adb when exit [#49](https://github.com/liriliri/aya/issues/49)

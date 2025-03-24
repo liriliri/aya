@@ -24,6 +24,7 @@ import CopyButton from 'share/renderer/components/CopyButton'
 import { xmlToDom } from '../../lib/util'
 import { Document, Element } from '@xmldom/xmldom'
 import loadImg from 'licia/loadImg'
+import download from 'licia/download'
 
 export default observer(function Layout() {
   const [image, setImage] = useState<IImage>({
@@ -61,6 +62,10 @@ export default observer(function Layout() {
     setHierarchy(doc)
   }
 
+  function save() {
+    download(windowHierarchy.current, 'window_hierarchy.xml', 'text/xml')
+  }
+
   return (
     <div className="panel-with-toolbar">
       <LunaToolbar className="panel-toolbar">
@@ -69,6 +74,12 @@ export default observer(function Layout() {
           title={t('refresh')}
           onClick={refresh}
           disabled={!store.device}
+        />
+        <ToolbarIcon
+          icon="save"
+          title={t('save')}
+          onClick={save}
+          disabled={!windowHierarchy.current}
         />
         <LunaToolbarButton
           onClick={() => {}}

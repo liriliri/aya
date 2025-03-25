@@ -21,7 +21,7 @@ import { useEffect, useRef, useState } from 'react'
 import store from '../../store'
 import { t } from '../../../../common/util'
 import CopyButton from 'share/renderer/components/CopyButton'
-import { copyData } from '../../lib/util'
+import { copyData } from 'share/renderer/lib/util'
 
 export default observer(function Screenshot() {
   const [image, setImage] = useState<{

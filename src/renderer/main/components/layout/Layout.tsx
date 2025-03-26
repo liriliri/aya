@@ -27,6 +27,7 @@ import loadImg from 'licia/loadImg'
 import download from 'licia/download'
 import toBool from 'licia/toBool'
 import ImageViewer from 'luna-image-viewer'
+import DomViewer from 'luna-dom-viewer'
 
 export default observer(function Layout() {
   const [image, setImage] = useState<IImage>({
@@ -35,6 +36,7 @@ export default observer(function Layout() {
     height: 0,
   })
   const imageViewerRef = useRef<ImageViewer>()
+  const domViewerRef = useRef<DomViewer>()
   const windowHierarchy = useRef('')
   const [hierarchy, setHierarchy] = useState<any>(null)
   const [selected, setSelected] = useState<Element | null>(null)
@@ -67,6 +69,13 @@ export default observer(function Layout() {
 
   function save() {
     download(windowHierarchy.current, 'window_hierarchy.xml', 'text/xml')
+  }
+
+  function select(el: Element) {
+    if (domViewerRef.current) {
+      domViewerRef.current.select(el as any)
+    }
+    setSelected(el)
   }
 
   const hasImage = toBool(image.url)
@@ -146,8 +155,12 @@ export default observer(function Layout() {
       <div className={className('panel-body', Style.container)}>
         <Tree
           hierarchy={hierarchy}
-          onSelect={(el) => setSelected(el)}
+          onSelect={select}
           selected={selected}
+          onDomViewerCreate={(domViewer) => {
+            domViewer.expand()
+            domViewerRef.current = domViewer
+          }}
         />
         <Screenshot
           image={image}
@@ -156,7 +169,7 @@ export default observer(function Layout() {
           onImageViewerCreate={(imageViewer) =>
             (imageViewerRef.current = imageViewer)
           }
-          onSelect={(el) => setSelected(el)}
+          onSelect={select}
         />
         <Detail selected={selected} />
       </div>

@@ -12,11 +12,11 @@ interface IProps {
   hierarchy?: Document
   selected: Element | null
   onSelect?: (el: Element) => void
+  onDomViewerCreate?: (domViewer: DomViewer) => void
 }
 
 export default observer(function Tree(props: IProps) {
   const treeRef = useRef<HTMLDivElement>(null)
-  const domViewerRef = useRef<DomViewer>()
   const [key, setKey] = useState(uuid())
   const [resizerStyle, setResizerStyle] = useState<any>({
     width: '10px',
@@ -25,12 +25,6 @@ export default observer(function Tree(props: IProps) {
   useEffect(() => {
     setKey(uuid())
   }, [props.hierarchy])
-
-  useEffect(() => {
-    if (props.selected && domViewerRef.current) {
-      domViewerRef.current.select(props.selected as any)
-    }
-  }, [props.selected])
 
   const onMouseDown = useCallback((e: React.MouseEvent) => {
     const startX = e.clientX
@@ -79,6 +73,7 @@ export default observer(function Tree(props: IProps) {
               return contain(IGNORE_ATTRS, name) || value === ''
             }}
             observe={false}
+            lowerCaseTagName={false}
             onSelect={(node) => {
               if (node.nodeType === 1) {
                 props.onSelect?.(node as any)
@@ -86,10 +81,7 @@ export default observer(function Tree(props: IProps) {
                 props.onSelect?.(node.parentNode as any)
               }
             }}
-            onCreate={(domViewer) => {
-              domViewer.expand()
-              domViewerRef.current = domViewer
-            }}
+            onCreate={props.onDomViewerCreate}
           />
         )}
       </div>

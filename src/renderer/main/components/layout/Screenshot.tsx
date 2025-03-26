@@ -36,9 +36,12 @@ export default observer(function Screenshot(props: IProps) {
   useEffect(() => {
     const canvas = canvasRef.current
 
-    let isClick = true 
-    canvas.addEventListener(pointerEvent('down') as any, () => isClick = true)
-    canvas.addEventListener(pointerEvent('move') as any, () => isClick = false)
+    let isClick = true
+    canvas.addEventListener(pointerEvent('down') as any, () => (isClick = true))
+    canvas.addEventListener(
+      pointerEvent('move') as any,
+      () => (isClick = false)
+    )
     canvas.addEventListener(pointerEvent('up') as any, (e: MouseEvent) => {
       const props = propsRef.current
       if (!props.hierarchy || !isClick) {

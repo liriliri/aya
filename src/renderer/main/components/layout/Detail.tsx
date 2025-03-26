@@ -67,7 +67,7 @@ export default observer(function Detail(props: IProps) {
                 }
 
                 return (
-                  <tr>
+                  <tr key={attr.name}>
                     <td className={Style.name}>{attr.name}</td>
                     <td className={Style.value}>{value}</td>
                   </tr>

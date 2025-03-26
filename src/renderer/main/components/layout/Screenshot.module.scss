@@ -4,9 +4,10 @@
   justify-content: center;
   align-items: center;
   background-color: var(--color-bg-container-darker);
-}
-
-.canvas {
-  max-width: 100%;
-  max-height: 100%;
+  overflow: hidden;
+  :global(.luna-image-viewer) {
+    background-color: var(--color-bg-container-darker);
+    width: 100%;
+    height: 100%;
+  }
 }

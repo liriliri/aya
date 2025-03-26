@@ -6,12 +6,16 @@ import store from '../../store'
 import each from 'licia/each'
 import toNum from 'licia/toNum'
 import { colorPrimary } from '../../../../common/theme'
+import LunaImageViewer from 'luna-image-viewer/react'
+import ImageViewer from 'luna-image-viewer'
+import pointerEvent from 'licia/pointerEvent'
 
 interface IProps {
   image: IImage
   hierarchy?: Document
   selected: Element | null
   onSelect?: (el: Element) => void
+  onImageViewerCreate?: (imageViewer: ImageViewer) => void
 }
 
 export interface IImage {
@@ -21,12 +25,41 @@ export interface IImage {
 }
 
 export default observer(function Screenshot(props: IProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const image = useRef(new Image())
+  const canvasRef = useRef<HTMLCanvasElement>(document.createElement('canvas'))
+  const imageRef = useRef(new Image())
+  const propsRef = useRef(props)
 
   useEffect(() => {
-    image.current.src = props.image.url
-    image.current.onload = () => {
+    propsRef.current = props
+  }, [props])
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+
+    let isClick = true 
+    canvas.addEventListener(pointerEvent('down') as any, () => isClick = true)
+    canvas.addEventListener(pointerEvent('move') as any, () => isClick = false)
+    canvas.addEventListener(pointerEvent('up') as any, (e: MouseEvent) => {
+      const props = propsRef.current
+      if (!props.hierarchy || !isClick) {
+        return
+      }
+
+      const ratio = props.image.width / canvasRef.current!.clientWidth
+      const x = Math.round(e.offsetX * ratio)
+      const y = Math.round(e.offsetY * ratio)
+      const el = findEl(props.hierarchy, x, y)
+      if (el) {
+        props.onSelect?.(el)
+      }
+    })
+  }, [])
+
+  useEffect(() => {
+    canvasRef.current.width = props.image.width
+    canvasRef.current.height = props.image.height
+    imageRef.current.src = props.image.url
+    imageRef.current.onload = () => {
       draw()
     }
   }, [props.image])
@@ -46,7 +79,7 @@ export default observer(function Screenshot(props: IProps) {
     }
 
     ctx.clearRect(0, 0, props.image.width, props.image.height)
-    ctx.drawImage(image.current, 0, 0)
+    ctx.drawImage(imageRef.current, 0, 0)
 
     if (store.layout.border && props.hierarchy) {
       drawBorder(ctx, props.hierarchy)
@@ -58,29 +91,14 @@ export default observer(function Screenshot(props: IProps) {
   }
   draw()
 
-  function onClick(e: React.MouseEvent<HTMLCanvasElement>) {
-    if (!props.hierarchy) {
-      return
-    }
-
-    const ratio = props.image.width / canvasRef.current!.clientWidth
-    const x = Math.round(e.nativeEvent.offsetX * ratio)
-    const y = Math.round(e.nativeEvent.offsetY * ratio)
-    const el = findEl(props.hierarchy, x, y)
-    if (el) {
-      props.onSelect?.(el)
-    }
-  }
-
   return (
     <div className={Style.container}>
-      <canvas
-        onClick={onClick}
-        className={Style.canvas}
-        width={props.image.width}
-        height={props.image.height}
-        ref={canvasRef}
-      />
+      {props.image.url && (
+        <LunaImageViewer
+          image={canvasRef.current}
+          onCreate={props.onImageViewerCreate}
+        />
+      )}
     </div>
   )
 })

@@ -25,6 +25,8 @@ import { xmlToDom } from '../../lib/util'
 import { Document, Element } from '@xmldom/xmldom'
 import loadImg from 'licia/loadImg'
 import download from 'licia/download'
+import toBool from 'licia/toBool'
+import ImageViewer from 'luna-image-viewer'
 
 export default observer(function Layout() {
   const [image, setImage] = useState<IImage>({
@@ -32,6 +34,7 @@ export default observer(function Layout() {
     width: 0,
     height: 0,
   })
+  const imageViewerRef = useRef<ImageViewer>()
   const windowHierarchy = useRef('')
   const [hierarchy, setHierarchy] = useState<any>(null)
   const [selected, setSelected] = useState<Element | null>(null)
@@ -66,6 +69,8 @@ export default observer(function Layout() {
     download(windowHierarchy.current, 'window_hierarchy.xml', 'text/xml')
   }
 
+  const hasImage = toBool(image.url)
+
   return (
     <div className="panel-with-toolbar">
       <LunaToolbar className="panel-toolbar">
@@ -91,6 +96,42 @@ export default observer(function Layout() {
           />
         </LunaToolbarButton>
         <LunaToolbarSeparator />
+        <ToolbarIcon
+          icon="rotate-left"
+          title={t('rotateLeft')}
+          onClick={() => imageViewerRef.current?.rotate(-90)}
+          disabled={!hasImage}
+        />
+        <ToolbarIcon
+          icon="rotate-right"
+          title={t('rotateRight')}
+          onClick={() => imageViewerRef.current?.rotate(90)}
+          disabled={!hasImage}
+        />
+        <ToolbarIcon
+          icon="zoom-in"
+          title={t('zoomIn')}
+          onClick={() => imageViewerRef.current?.zoom(0.1)}
+          disabled={!hasImage}
+        />
+        <ToolbarIcon
+          icon="zoom-out"
+          title={t('zoomOut')}
+          onClick={() => imageViewerRef.current?.zoom(-0.1)}
+          disabled={!hasImage}
+        />
+        <ToolbarIcon
+          icon="original"
+          title={t('actualSize')}
+          onClick={() => imageViewerRef.current?.zoomTo(1)}
+          disabled={!hasImage}
+        />
+        <ToolbarIcon
+          icon="reset"
+          title={t('reset')}
+          onClick={() => imageViewerRef.current?.reset()}
+          disabled={!hasImage}
+        />
         <LunaToolbarCheckbox
           keyName="border"
           label={t('showBorder')}
@@ -112,6 +153,9 @@ export default observer(function Layout() {
           image={image}
           hierarchy={hierarchy}
           selected={selected}
+          onImageViewerCreate={(imageViewer) =>
+            (imageViewerRef.current = imageViewer)
+          }
           onSelect={(el) => setSelected(el)}
         />
         <Detail selected={selected} />

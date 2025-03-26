@@ -102,7 +102,7 @@ export default observer(function Webview() {
           disabled={selected === null}
           icon="debug"
           title={t('inspect')}
-          onClick={() => window.open(selected.devtoolsFrontendUrl)}
+          onClick={() => main.openWindow(selected.devtoolsFrontendUrl)}
         />
         <ToolbarIcon
           disabled={selected === null}

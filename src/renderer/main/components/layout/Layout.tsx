@@ -28,6 +28,7 @@ import download from 'licia/download'
 import toBool from 'licia/toBool'
 import ImageViewer from 'luna-image-viewer'
 import DomViewer from 'luna-dom-viewer'
+import isEmpty from 'licia/isEmpty'
 
 export default observer(function Layout() {
   const [image, setImage] = useState<IImage>({
@@ -104,6 +105,25 @@ export default observer(function Layout() {
             onClick={() => copy(windowHierarchy.current)}
           />
         </LunaToolbarButton>
+        <LunaToolbarSeparator />
+        <ToolbarIcon
+          icon="expand"
+          title={t('expandAll')}
+          onClick={() => domViewerRef.current?.expand(true)}
+          disabled={!windowHierarchy.current}
+        />
+        <ToolbarIcon
+          icon="collapse"
+          title={t('collapseAll')}
+          onClick={() => domViewerRef.current?.collapse(true)}
+          disabled={!windowHierarchy.current}
+        />
+        <LunaToolbarCheckbox
+          keyName="attribute"
+          label={t('showAttr')}
+          value={store.layout.attribute}
+          onChange={(value) => (store.layout.attribute = value)}
+        />
         <LunaToolbarSeparator />
         <ToolbarIcon
           icon="rotate-left"
@@ -218,7 +238,7 @@ function transfromHierarchy(hierarchy: Document) {
     }
 
     const text = el.getAttribute('text')
-    if (text) {
+    if (text && isEmpty(el.childNodes)) {
       el.appendChild(hierarchy.createTextNode(text))
     } else {
       each(el.childNodes, (child) => transformRecursively(child as Element))

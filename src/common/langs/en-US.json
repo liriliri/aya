@@ -186,5 +186,8 @@
   "showBorder": "Show Border",
   "componentNotSelected": "Component not selected",
   "rootMode": "Root Mode",
-  "rootModeErr": "Failed to switch root mode, please check if the device is rooted"
+  "rootModeErr": "Failed to switch root mode, please check if the device is rooted",
+  "expandAll": "Expand All",
+  "collapseAll": "Collapse All",
+  "showAttr": "Show Attribute"
 }

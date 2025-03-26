@@ -51,5 +51,7 @@
   "../share/renderer/icon/bidirection.svg",
   "../share/renderer/icon/terminal.svg",
   "../share/renderer/icon/remote-controller.svg",
-  "../share/renderer/icon/unlock.svg"
+  "../share/renderer/icon/unlock.svg",
+  "../share/renderer/icon/expand.svg",
+  "../share/renderer/icon/collapse.svg"
 ]

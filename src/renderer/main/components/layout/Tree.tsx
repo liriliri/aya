@@ -70,7 +70,11 @@ export default observer(function Tree(props: IProps) {
             theme={store.theme}
             node={props.hierarchy.documentElement as any}
             ignoreAttr={(el, name, value) => {
-              return contain(IGNORE_ATTRS, name) || value === ''
+              let ignore = contain(IGNORE_ATTRS, name) || value === ''
+              if (!ignore && !store.layout.attribute) {
+                ignore = contain(IGNORE_ATTRS_ALL, name)
+              }
+              return ignore
             }}
             observe={false}
             lowerCaseTagName={false}
@@ -89,11 +93,9 @@ export default observer(function Tree(props: IProps) {
   )
 })
 
-const IGNORE_ATTRS = [
+const IGNORE_ATTRS_ALL = [
   'rotation',
   'index',
-  'text',
-  'class',
   'package',
   'checkable',
   'checked',
@@ -106,8 +108,6 @@ const IGNORE_ATTRS = [
   'password',
   'selected',
   'bounds',
-  'x',
-  'y',
-  'width',
-  'height',
 ]
+
+const IGNORE_ATTRS = ['text', 'class', 'x', 'y', 'width', 'height']

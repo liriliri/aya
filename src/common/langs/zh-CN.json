@@ -186,5 +186,8 @@
   "showBorder": "显示边框",
   "componentNotSelected": "未选择组件",
   "rootMode": "Root 模式",
-  "rootModeErr": "切换 Root 模式失败，请检查设备是否已 Root"
+  "rootModeErr": "切换 Root 模式失败，请检查设备是否已 Root",
+  "expandAll": "展开全部",
+  "collapseAll": "折叠全部",
+  "showAttr": "显示属性"
 }

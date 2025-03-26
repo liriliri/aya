@@ -4,10 +4,12 @@ import extend from 'licia/extend'
 export class Layout {
   treeWidth = 400
   border = true
+  attribute = false
   constructor() {
     makeObservable(this, {
       treeWidth: observable,
       border: observable,
+      attribute: observable,
     })
 
     this.init()
@@ -25,6 +27,7 @@ export class Layout {
     await main.setMainStore('layout', {
       treeWidth: this.treeWidth,
       border: this.border,
+      attribute: this.attribute,
     })
   }
 }

@@ -128,12 +128,14 @@ export default observer(function Screenshot() {
           }
         />
       </LunaToolbar>
-      {image && (
+      {image ? (
         <LunaImageViewer
           className="panel-body"
           image={image.url}
           onCreate={(imageViewer) => (imageViewerRef.current = imageViewer)}
-        ></LunaImageViewer>
+        />
+      ) : (
+        <div className="panel-body" />
       )}
     </div>
   )

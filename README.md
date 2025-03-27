@@ -43,6 +43,7 @@ Click [here](https://github.com/liriliri/aya/releases/) to download and install 
 * File explorer
 * Application manager
 * Process monitor
+* Layout inspector
 * CPU, memory and FPS monitor
 * Logcat viewer
 * Interactive shell

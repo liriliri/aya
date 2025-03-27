@@ -1,3 +1,9 @@
+## v1.4.0 (27 Mar 2025)
+
+* feat: layout screenshot zoom in and zoom out
+* feat: layout tree expand all and collapse all
+* fix: screenshot unable to enlarged beyond the border 
+
 ## v1.3.0 (24 Mar 2025)
 
 * feat: layout inspector [#22](https://github.com/liriliri/aya/issues/22)

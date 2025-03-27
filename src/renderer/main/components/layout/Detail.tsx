@@ -87,4 +87,4 @@ export default observer(function Detail(props: IProps) {
   return <div className={Style.container}>{content}</div>
 })
 
-const IGNORE_ATTRS = ['x', 'y', 'width', 'height', 'bounds']
+const IGNORE_ATTRS = ['id', 'x', 'y', 'width', 'height', 'bounds', 'class']

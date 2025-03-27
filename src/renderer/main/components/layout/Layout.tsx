@@ -29,6 +29,7 @@ import toBool from 'licia/toBool'
 import ImageViewer from 'luna-image-viewer'
 import DomViewer from 'luna-dom-viewer'
 import isEmpty from 'licia/isEmpty'
+import filter from 'licia/filter'
 
 export default observer(function Layout() {
   const [image, setImage] = useState<IImage>({
@@ -64,7 +65,7 @@ export default observer(function Layout() {
     })
     windowHierarchy.current = await main.dumpWindowHierarchy(store.device.id)
     const doc = xmlToDom(windowHierarchy.current)
-    transfromHierarchy(doc)
+    transfromHierarchy(doc, windowHierarchy.current)
     setHierarchy(doc)
   }
 
@@ -215,11 +216,25 @@ function changeElType(doc: Document, oldEl: Element, newType: string): Element {
   return newEl
 }
 
-function transfromHierarchy(hierarchy: Document) {
+function transfromHierarchy(hierarchy: Document, windowHierarchy: string) {
+  const resourceIds = windowHierarchy.match(/resource-id="([^"]+)"/g) || []
+  const resourceIdsMap: Record<string, number> = {}
+  each(resourceIds, (resourceId) => {
+    const count = resourceIdsMap[resourceId] || 0
+    resourceIdsMap[resourceId] = count + 1
+  })
+
   const transformRecursively = (el: Element) => {
     const className = el.getAttribute('class')
     if (className) {
-      el = changeElType(hierarchy, el, className.split('.').pop()!)
+      el = changeElType(hierarchy, el, className)
+    }
+
+    const resourceId = el.getAttribute('resource-id') || ''
+    if (resourceId) {
+      if (resourceIdsMap[`resource-id="${resourceId}"`] === 1) {
+        el.setAttribute('id', resourceId)
+      }
     }
 
     const bounds = el.getAttribute('bounds')
@@ -242,6 +257,11 @@ function transfromHierarchy(hierarchy: Document) {
       el.appendChild(hierarchy.createTextNode(text))
     } else {
       each(el.childNodes, (child) => transformRecursively(child as Element))
+      // for xpath
+      ;(el as any).children = filter(
+        el.childNodes,
+        (child) => child.nodeType === 1
+      )
     }
   }
 

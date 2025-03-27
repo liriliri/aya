@@ -6,7 +6,11 @@ import store from '../../store'
 import contain from 'licia/contain'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import uuid from 'licia/uuid'
+import xpath from 'licia/xpath'
+import copy from 'licia/copy'
 import { Document, Element } from '@xmldom/xmldom'
+import { t } from '../../../../common/util'
+import CopyButton from 'share/renderer/components/CopyButton'
 
 interface IProps {
   hierarchy?: Document
@@ -53,6 +57,10 @@ export default observer(function Tree(props: IProps) {
     document.addEventListener('mouseup', onMouseUp)
   }, [])
 
+  const path = props.selected
+    ? xpath(props.selected as any, true).replace(/@id=/g, '@resource-id=')
+    : ''
+
   return (
     <div
       className={Style.container}
@@ -89,6 +97,16 @@ export default observer(function Tree(props: IProps) {
           />
         )}
       </div>
+      <div className={Style.xpathContainer}>
+        <div className={Style.xpath}>{path || t('componentNotSelected')}</div>
+        <CopyButton
+          onClick={() => {
+            if (path) {
+              copy(path)
+            }
+          }}
+        />
+      </div>
     </div>
   )
 })
@@ -110,4 +128,4 @@ const IGNORE_ATTRS_ALL = [
   'bounds',
 ]
 
-const IGNORE_ATTRS = ['text', 'class', 'x', 'y', 'width', 'height']
+const IGNORE_ATTRS = ['id', 'text', 'class', 'x', 'y', 'width', 'height']

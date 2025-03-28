@@ -9,27 +9,10 @@ import convertBin from 'licia/convertBin'
 import dateFormat from 'licia/dateFormat'
 import { IModalProps } from 'share/common/types'
 import { Copyable } from '../common/Copyable'
+import { IPackageInfo } from '../../../../common/types'
 
 interface IProps extends IModalProps {
   packageInfo: IPackageInfo
-}
-
-export interface IPackageInfo {
-  icon: string
-  label: string
-  packageName: string
-  versionName: string
-  apkPath: string
-  apkSize: number
-  system: boolean
-  firstInstallTime: number
-  lastUpdateTime: number
-  minSdkVersion?: number
-  targetSdkVersion?: number
-  dataSize?: number
-  cacheSize?: number
-  appSize?: number
-  signatures: string[]
 }
 
 export default function PackageInfoModal(props: IProps) {

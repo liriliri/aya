@@ -4,6 +4,7 @@ import {
   IpcGetDevices,
   IpcGetFps,
   IpcGetLogs,
+  IpcGetPackageInfos,
   IpcListForwards,
   IpcListReverses,
   IpcReverse,
@@ -76,9 +77,7 @@ export default Object.assign(mainObj, {
   getPackages: (deviceId: string, system?: boolean) => {
     return ipcRenderer.invoke('getPackages', deviceId, system)
   },
-  getPackageInfos: (deviceId: string, packageNames: string[]) => {
-    return ipcRenderer.invoke('getPackageInfos', deviceId, packageNames)
-  },
+  getPackageInfos: invoke<IpcGetPackageInfos>('getPackageInfos'),
   disablePackage: (deviceId: string, pkg: string) => {
     return ipcRenderer.invoke('disablePackage', deviceId, pkg)
   },

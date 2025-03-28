@@ -8,6 +8,7 @@ import waitUntil from 'licia/waitUntil'
 import { getDeviceStore, setDeviceStore, shell } from './base'
 import contain from 'licia/contain'
 import log from 'share/common/log'
+import { IpcGetPackageInfos } from '../../../common/types'
 
 const logger = log('server')
 
@@ -104,9 +105,9 @@ async function getAyaClient(deviceId: string): Promise<AyaClient> {
   return ayaClient
 }
 
-const getPackageInfos = singleton(async function (
-  deviceId: string,
-  packageNames: string[]
+const getPackageInfos: IpcGetPackageInfos = singleton(async function (
+  deviceId,
+  packageNames
 ) {
   const client = await getAyaClient(deviceId)
   const result: any = await client.sendMessage('getPackageInfos', {

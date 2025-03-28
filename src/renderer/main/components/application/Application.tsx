@@ -27,7 +27,8 @@ import concat from 'licia/concat'
 import clone from 'licia/clone'
 import LunaModal from 'luna-modal'
 import findIdx from 'licia/findIdx'
-import PackageInfoModal, { IPackageInfo } from './PackageInfoModal'
+import PackageInfoModal from './PackageInfoModal'
+import { IPackageInfo } from '../../../../common/types'
 import defaultIcon from '../../../assets/default-icon.png'
 import contextMenu from 'share/renderer/lib/contextMenu'
 import dateFormat from 'licia/dateFormat'
@@ -48,8 +49,8 @@ export default observer(function Application() {
     width: 0,
     height: 0,
   })
-  const dragging = useRef(0)
-  const icons = useRef<any[]>([])
+  const draggingRef = useRef(0)
+  const iconsRef = useRef<any[]>([])
 
   const { device } = store
 
@@ -88,7 +89,7 @@ export default observer(function Application() {
           packageInfos,
           await main.getPackageInfos(device.id, chunk)
         )
-        icons.current = map(packageInfos, (info) => {
+        iconsRef.current = map(packageInfos, (info) => {
           const style: any = {
             borderRadius: '20%',
           }
@@ -121,13 +122,13 @@ export default observer(function Application() {
         if (!info.enabled) {
           style.filter = 'grayscale(100%)'
         }
-        icons.current[idx] = {
+        iconsRef.current[idx] = {
           info: info,
           src: info.icon || defaultIcon,
           name: info.label,
           style,
         }
-        icons.current = clone(icons.current)
+        iconsRef.current = clone(iconsRef.current)
         setPackageInfos(clone(packageInfos))
       }
     }
@@ -292,11 +293,11 @@ export default observer(function Application() {
       }}
       onDrop={onDrop}
       onDragEnter={() => {
-        dragging.current++
+        draggingRef.current++
       }}
       onDragLeave={() => {
-        dragging.current--
-        if (dragging.current === 0) {
+        draggingRef.current--
+        if (draggingRef.current === 0) {
           setDropHighlight(false)
         }
       }}
@@ -350,7 +351,7 @@ export default observer(function Application() {
         />
       ) : (
         <LunaIconList
-          icons={icons.current}
+          icons={iconsRef.current}
           size={store.application.itemSize}
           filter={filter}
           onClick={(e: any, icon) => {

@@ -8,6 +8,7 @@ export interface IDevice {
 export interface IPackageInfo {
   icon: string
   label: string
+  enabled: boolean
   packageName: string
   versionName: string
   apkPath: string

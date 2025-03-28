@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import store from '../../store'
 import LunaDataGrid from 'luna-data-grid/react'
 import Style from './Process.module.scss'
@@ -32,66 +32,75 @@ export default observer(function Process() {
 
   const { device } = store
 
-  useEffect(() => {
-    let destroyed = false
-
-    const getPackageInfos = singleton(async function () {
+  const getPackageInfos = useCallback(
+    singleton(async function () {
       if (!device) {
         return
       }
       const packages = await main.getPackages(device.id)
       packageInfos.current = await main.getPackageInfos(device.id, packages)
-    })
+    }),
+    []
+  )
 
-    async function getProcesses() {
+  const getProcesses = useCallback(
+    singleton(async function () {
       if (device) {
-        if (store.panel === 'process') {
-          if (isEmpty(packageInfos.current)) {
-            getPackageInfos()
-          }
-          const allProcesses = await main.getProcesses(device.id)
-          let processes = map(allProcesses, (process: any) => {
-            const info = find(packageInfos.current, (info) => {
-              const match = process.name.match(/^[\w.]+/)
-              if (!match) {
-                return false
-              }
-
-              return match[0] === info.packageName
-            })
-
-            if (info) {
-              const icon = info.icon || defaultIcon
-              const name = toEl(
-                `<span><img src="${icon}" />${process.name.replace(
-                  info.packageName,
-                  info.label
-                )}</span>`
-              )
-              return {
-                ...process,
-                packageName: info.packageName,
-                label: info.label,
-                name,
-              }
-            } else {
-              return process
-            }
-          })
-          if (!isEmpty(packageInfos.current) && store.process.onlyPackage) {
-            processes = processes.filter((process) => {
-              return process.packageName
-            })
-          }
-          setProcesses(processes)
+        if (isEmpty(packageInfos.current)) {
+          getPackageInfos()
         }
+        const allProcesses = await main.getProcesses(device.id)
+        let processes = map(allProcesses, (process: any) => {
+          const info = find(packageInfos.current, (info) => {
+            const match = process.name.match(/^[\w.]+/)
+            if (!match) {
+              return false
+            }
+
+            return match[0] === info.packageName
+          })
+
+          if (info) {
+            const icon = info.icon || defaultIcon
+            const name = toEl(
+              `<span><img src="${icon}" />${process.name.replace(
+                info.packageName,
+                info.label
+              )}</span>`
+            )
+            return {
+              ...process,
+              packageName: info.packageName,
+              label: info.label,
+              name,
+            }
+          } else {
+            return process
+          }
+        })
+        if (!isEmpty(packageInfos.current) && store.process.onlyPackage) {
+          processes = processes.filter((process) => {
+            return process.packageName
+          })
+        }
+        setProcesses(processes)
+      }
+    }),
+    []
+  )
+
+  useEffect(() => {
+    let destroyed = false
+
+    async function refresh() {
+      if (store.panel === 'process') {
+        await getProcesses()
       }
       if (!destroyed) {
-        setTimeout(getProcesses, 5000)
+        setTimeout(refresh, 5000)
       }
     }
-
-    getProcesses()
+    refresh()
 
     function resize() {
       const height = window.innerHeight - 89
@@ -117,6 +126,7 @@ export default observer(function Process() {
     )
     if (result) {
       await main.stopPackage(device!.id, selected.packageName)
+      await getProcesses()
     }
   }
 
@@ -134,6 +144,7 @@ export default observer(function Process() {
           value={store.process.onlyPackage}
           label={t('onlyPackage')}
           onChange={(val) => {
+            getProcesses()
             store.process.set('onlyPackage', val)
           }}
         />

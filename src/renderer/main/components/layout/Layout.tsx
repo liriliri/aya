@@ -42,16 +42,18 @@ export default observer(function Layout() {
   const windowHierarchy = useRef('')
   const [hierarchy, setHierarchy] = useState<any>(null)
   const [selected, setSelected] = useState<Element | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     refresh()
   }, [])
 
   async function refresh() {
-    if (!store.device) {
+    if (!store.device || isLoading) {
       return
     }
 
+    setIsLoading(true)
     const data = await main.screencap(store.device.id)
     const url = dataUrl.stringify(data, 'image/png')
     setHierarchy(null)
@@ -67,6 +69,7 @@ export default observer(function Layout() {
     const doc = xmlToDom(windowHierarchy.current)
     transfromHierarchy(doc, windowHierarchy.current)
     setHierarchy(doc)
+    setIsLoading(false)
   }
 
   function save() {
@@ -176,6 +179,7 @@ export default observer(function Layout() {
       <div className={className('panel-body', Style.container)}>
         <Tree
           hierarchy={hierarchy}
+          isLoading={isLoading}
           onSelect={select}
           selected={selected}
           onDomViewerCreate={(domViewer) => {

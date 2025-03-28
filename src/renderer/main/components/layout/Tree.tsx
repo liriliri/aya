@@ -11,10 +11,12 @@ import copy from 'licia/copy'
 import { Document, Element } from '@xmldom/xmldom'
 import { t } from '../../../../common/util'
 import CopyButton from 'share/renderer/components/CopyButton'
+import { PannelLoading } from '../common/loading'
 
 interface IProps {
   hierarchy?: Document
   selected: Element | null
+  isLoading: boolean
   onSelect?: (el: Element) => void
   onDomViewerCreate?: (domViewer: DomViewer) => void
 }
@@ -61,6 +63,35 @@ export default observer(function Tree(props: IProps) {
     ? xpath(props.selected as any, true).replace(/@id=/g, '@resource-id=')
     : ''
 
+  let content: JSX.Element | null = null
+  if (props.isLoading) {
+    content = <PannelLoading />
+  } else if (props.hierarchy) {
+    content = (
+      <LunaDomViewer
+        theme={store.theme}
+        node={props.hierarchy.documentElement as any}
+        ignoreAttr={(el, name, value) => {
+          let ignore = contain(IGNORE_ATTRS, name) || value === ''
+          if (!ignore && !store.layout.attribute) {
+            ignore = contain(IGNORE_ATTRS_ALL, name)
+          }
+          return ignore
+        }}
+        observe={false}
+        lowerCaseTagName={false}
+        onSelect={(node) => {
+          if (node.nodeType === 1) {
+            props.onSelect?.(node as any)
+          } else if (node.nodeType === 3) {
+            props.onSelect?.(node.parentNode as any)
+          }
+        }}
+        onCreate={props.onDomViewerCreate}
+      />
+    )
+  }
+
   return (
     <div
       className={Style.container}
@@ -73,29 +104,7 @@ export default observer(function Tree(props: IProps) {
         onMouseDown={onMouseDown}
       />
       <div className={Style.tree} key={key}>
-        {props.hierarchy && (
-          <LunaDomViewer
-            theme={store.theme}
-            node={props.hierarchy.documentElement as any}
-            ignoreAttr={(el, name, value) => {
-              let ignore = contain(IGNORE_ATTRS, name) || value === ''
-              if (!ignore && !store.layout.attribute) {
-                ignore = contain(IGNORE_ATTRS_ALL, name)
-              }
-              return ignore
-            }}
-            observe={false}
-            lowerCaseTagName={false}
-            onSelect={(node) => {
-              if (node.nodeType === 1) {
-                props.onSelect?.(node as any)
-              } else if (node.nodeType === 3) {
-                props.onSelect?.(node.parentNode as any)
-              }
-            }}
-            onCreate={props.onDomViewerCreate}
-          />
-        )}
+        {content}
       </div>
       <div className={Style.xpathContainer}>
         <div className={Style.xpath}>{path || t('componentNotSelected')}</div>

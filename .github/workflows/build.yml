@@ -41,5 +41,5 @@ jobs:
           release/**/*.dmg
           release/**/*.exe
           release/**/*.AppImage
-          release/**/lates*.yml
+          release/**/*-latest-*.yml
           !release/**/win-unpacked/

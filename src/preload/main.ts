@@ -3,7 +3,6 @@ import {
   IpcForward,
   IpcGetDevices,
   IpcGetFps,
-  IpcGetLogs,
   IpcGetPackageInfos,
   IpcListForwards,
   IpcListReverses,
@@ -126,8 +125,6 @@ export default Object.assign(mainObj, {
   inputKey: (deviceId: string, keyCode: number) => {
     return ipcRenderer.invoke('inputKey', deviceId, keyCode)
   },
-  getLogs: invoke<IpcGetLogs>('getLogs'),
-  clearLogs: invoke('clearLogs'),
   listForwards: invoke<IpcListForwards>('listForwards'),
   listReverses: invoke<IpcListReverses>('listReverses'),
   forward: invoke<IpcForward>('forward'),

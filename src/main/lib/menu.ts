@@ -1,6 +1,6 @@
 import { Menu, MenuItemConstructorOptions, app, shell } from 'electron'
 import * as window from 'share/main/lib/window'
-import * as terminal from '../window/terminal'
+import * as terminal from 'share/main/window/terminal'
 import isMac from 'licia/isMac'
 import { t } from '../../common/util'
 import upperCase from 'licia/upperCase'

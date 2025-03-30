@@ -1,3 +1,8 @@
+## v1.5.0 (30 Mar 2025)
+
+* feat: layout xpath
+* feat: check for updates
+
 ## v1.4.0 (27 Mar 2025)
 
 * feat: layout screenshot zoom in and zoom out

@@ -26,6 +26,10 @@ const config = {
   mac: {
     electronLanguages: ['zh_CN', 'en'],
   },
+  publish: {
+    provider: 'generic',
+    url: 'https://release.liriliri.io/',
+  },
 }
 
 await builder.build({

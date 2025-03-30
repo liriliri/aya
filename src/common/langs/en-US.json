@@ -189,5 +189,9 @@
   "rootModeErr": "Failed to switch root mode, please check if the device is rooted",
   "expandAll": "Expand All",
   "collapseAll": "Collapse All",
-  "showAttr": "Show Attribute"
+  "showAttr": "Show Attribute",
+  "checkUpdate": "Check for Updates",
+  "updateNotAvailable": "There are currently no updates available",
+  "updateAvailable": "A new version is available, do you want to download it?",
+  "updateErr": "Failed to check for updates"
 }

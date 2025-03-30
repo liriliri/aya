@@ -53,6 +53,7 @@
     "custom-electron-titlebar": "^4.2.8",
     "electron": "30.5.1",
     "electron-builder": "^25.1.8",
+    "electron-updater": "^6.6.2",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
     "fs-extra": "^11.2.0",

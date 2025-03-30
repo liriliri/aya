@@ -6,6 +6,7 @@ import * as language from 'share/main/lib/language'
 import * as theme from 'share/main/lib/theme'
 import * as adb from './lib/adb'
 import * as terminal from 'share/main/window/terminal'
+import * as updater from 'share/main/lib/updater'
 import { setupTitlebar } from 'custom-electron-titlebar/main'
 import log from 'share/common/log'
 import { isDev } from 'share/common/util'
@@ -35,4 +36,5 @@ app.on('ready', () => {
   main.init()
   main.showWin()
   menu.init()
+  updater.init()
 })

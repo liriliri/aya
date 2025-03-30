@@ -5,6 +5,7 @@ import isMac from 'licia/isMac'
 import { t } from '../../common/util'
 import upperCase from 'licia/upperCase'
 import isWindows from 'licia/isWindows'
+import * as updater from 'share/main/lib/updater'
 import { handleEvent } from 'share/main/lib/util'
 import * as language from 'share/main/lib/language'
 
@@ -36,6 +37,12 @@ function getTemplate(): MenuItemConstructorOptions[] {
         label: t('aboutAya'),
         click() {
           window.sendTo('main', 'showAbout')
+        },
+      },
+      {
+        label: `${t('checkUpdate')}...`,
+        click() {
+          updater.checkUpdate()
         },
       },
       ...hideMenu,

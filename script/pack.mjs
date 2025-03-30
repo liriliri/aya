@@ -29,7 +29,7 @@ const config = {
   publish: {
     provider: 'generic',
     url: 'https://release.liriliri.io/',
-    channel: '${productName}-latest-${os}-${arch}',
+    channel: '${productName}-latest-${arch}',
   },
 }
 

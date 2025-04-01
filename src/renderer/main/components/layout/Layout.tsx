@@ -39,7 +39,7 @@ export default observer(function Layout() {
   })
   const imageViewerRef = useRef<ImageViewer>()
   const domViewerRef = useRef<DomViewer>()
-  const windowHierarchy = useRef('')
+  const windowHierarchyRef = useRef('')
   const [hierarchy, setHierarchy] = useState<any>(null)
   const [selected, setSelected] = useState<Element | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -65,15 +65,15 @@ export default observer(function Layout() {
         height: img.height,
       })
     })
-    windowHierarchy.current = await main.dumpWindowHierarchy(store.device.id)
-    const doc = xmlToDom(windowHierarchy.current)
-    transfromHierarchy(doc, windowHierarchy.current)
+    windowHierarchyRef.current = await main.dumpWindowHierarchy(store.device.id)
+    const doc = xmlToDom(windowHierarchyRef.current)
+    transformHierarchy(doc, windowHierarchyRef.current)
     setHierarchy(doc)
     setIsLoading(false)
   }
 
   function save() {
-    download(windowHierarchy.current, 'window_hierarchy.xml', 'text/xml')
+    download(windowHierarchyRef.current, 'window_hierarchy.xml', 'text/xml')
   }
 
   function select(el: Element) {
@@ -98,15 +98,15 @@ export default observer(function Layout() {
           icon="save"
           title={t('save')}
           onClick={save}
-          disabled={!windowHierarchy.current}
+          disabled={!windowHierarchyRef.current}
         />
         <LunaToolbarButton
           onClick={() => {}}
-          disabled={!windowHierarchy.current}
+          disabled={!windowHierarchyRef.current}
         >
           <CopyButton
             className="toolbar-icon"
-            onClick={() => copy(windowHierarchy.current)}
+            onClick={() => copy(windowHierarchyRef.current)}
           />
         </LunaToolbarButton>
         <LunaToolbarSeparator />
@@ -114,13 +114,13 @@ export default observer(function Layout() {
           icon="expand"
           title={t('expandAll')}
           onClick={() => domViewerRef.current?.expand(true)}
-          disabled={!windowHierarchy.current}
+          disabled={!windowHierarchyRef.current}
         />
         <ToolbarIcon
           icon="collapse"
           title={t('collapseAll')}
           onClick={() => domViewerRef.current?.collapse(true)}
-          disabled={!windowHierarchy.current}
+          disabled={!windowHierarchyRef.current}
         />
         <LunaToolbarCheckbox
           keyName="attribute"
@@ -220,7 +220,7 @@ function changeElType(doc: Document, oldEl: Element, newType: string): Element {
   return newEl
 }
 
-function transfromHierarchy(hierarchy: Document, windowHierarchy: string) {
+function transformHierarchy(hierarchy: Document, windowHierarchy: string) {
   const resourceIds = windowHierarchy.match(/resource-id="([^"]+)"/g) || []
   const resourceIdsMap: Record<string, number> = {}
   each(resourceIds, (resourceId) => {

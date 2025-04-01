@@ -28,7 +28,7 @@ export default observer(function File() {
   const [dropHighlight, setDropHighlight] = useState(false)
   const [history, setHistory] = useState<string[]>([])
   const [historyIdx, setHistoryIdx] = useState(-1)
-  const dragging = useRef(0)
+  const draggingRef = useRef(0)
 
   const { device } = store
 
@@ -333,11 +333,11 @@ export default observer(function File() {
       <div
         onDrop={onDrop}
         onDragEnter={() => {
-          dragging.current++
+          draggingRef.current++
         }}
         onDragLeave={() => {
-          dragging.current--
-          if (dragging.current === 0) {
+          draggingRef.current--
+          if (draggingRef.current === 0) {
             setDropHighlight(false)
           }
         }}

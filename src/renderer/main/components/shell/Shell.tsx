@@ -18,7 +18,7 @@ import filter from 'licia/filter'
 export default observer(function Shell() {
   const [shells, setShells] = useState<Array<{ id: string; name: string }>>([])
   const [selectedShell, setSelectedShell] = useState('')
-  const num = useRef(1)
+  const numRef = useRef(1)
   const { device } = store
 
   useEffect(() => add(), [])
@@ -29,7 +29,7 @@ export default observer(function Shell() {
       ...shells,
       {
         id,
-        name: `${t('shell')} ${num.current++}`,
+        name: `${t('shell')} ${numRef.current++}`,
       },
     ])
     setSelectedShell(id)

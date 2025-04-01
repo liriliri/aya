@@ -25,7 +25,7 @@ import find from 'licia/find'
 
 export default observer(function Process() {
   const [processes, setProcesses] = useState<any[]>([])
-  const packageInfos = useRef<any[]>([])
+  const packageInfosRef = useRef<any[]>([])
   const [listHeight, setListHeight] = useState(0)
   const [selected, setSelected] = useState<any>(null)
   const [filter, setFilter] = useState('')
@@ -38,7 +38,7 @@ export default observer(function Process() {
         return
       }
       const packages = await main.getPackages(device.id)
-      packageInfos.current = await main.getPackageInfos(device.id, packages)
+      packageInfosRef.current = await main.getPackageInfos(device.id, packages)
     }),
     []
   )
@@ -46,12 +46,12 @@ export default observer(function Process() {
   const getProcesses = useCallback(
     singleton(async function () {
       if (device) {
-        if (isEmpty(packageInfos.current)) {
+        if (isEmpty(packageInfosRef.current)) {
           getPackageInfos()
         }
         const allProcesses = await main.getProcesses(device.id)
         let processes = map(allProcesses, (process: any) => {
-          const info = find(packageInfos.current, (info) => {
+          const info = find(packageInfosRef.current, (info) => {
             const match = process.name.match(/^[\w.]+/)
             if (!match) {
               return false
@@ -78,7 +78,7 @@ export default observer(function Process() {
             return process
           }
         })
-        if (!isEmpty(packageInfos.current) && store.process.onlyPackage) {
+        if (!isEmpty(packageInfosRef.current) && store.process.onlyPackage) {
           processes = processes.filter((process) => {
             return process.packageName
           })

@@ -16,7 +16,7 @@ import { getSettingsStore } from './store'
 import isWindows from 'licia/isWindows'
 import isEmpty from 'licia/isEmpty'
 import * as base from './adb/base'
-import { shell, getProcesses } from './adb/base'
+import { shell } from './adb/base'
 import * as logcat from './adb/logcat'
 import * as shellAdb from './adb/shell'
 import * as server from './adb/server'
@@ -364,7 +364,6 @@ export async function init() {
   handleEvent('setFontScale', setFontScale)
   handleEvent('screencap', screencap)
   handleEvent('getMemory', getMemory)
-  handleEvent('getProcesses', getProcesses)
   handleEvent('getPerformance', getPerformance)
   handleEvent('getUptime', getUptime)
   handleEvent('connectDevice', connectDevice)

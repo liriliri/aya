@@ -96,6 +96,7 @@ export async function init(c: Client) {
   client = c
 
   handleEvent('reverseTcp', reverseTcp)
+  handleEvent('getProcesses', getProcesses)
 }
 
 export async function shell(deviceId: string, cmd: string): Promise<string>

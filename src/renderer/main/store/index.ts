@@ -21,6 +21,7 @@ class Store extends BaseStore {
   process = new Process()
   file = new File()
   layout = new Layout()
+  isInit = false
   constructor() {
     super()
 
@@ -29,6 +30,7 @@ class Store extends BaseStore {
       device: observable,
       panel: observable,
       settings: observable,
+      isInit: observable,
       selectDevice: action,
       selectPanel: action,
     })
@@ -63,6 +65,8 @@ class Store extends BaseStore {
       runInAction(() => (this.device = device))
     }
     await this.refreshDevices()
+
+    this.isInit = true
   }
   refreshDevices = async () => {
     const devices = await main.getDevices()

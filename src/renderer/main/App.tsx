@@ -47,40 +47,45 @@ export default observer(function App() {
   return (
     <>
       <Toolbar />
-      <div className={Style.workspace}>
-        <div className={Style.panels} key={store.device ? store.device.id : ''}>
-          <Panel panel="overview">
-            <Overview />
-          </Panel>
-          <Panel panel="application">
-            <Application />
-          </Panel>
-          <Panel panel="screenshot">
-            <Screenshot />
-          </Panel>
-          <Panel panel="logcat">
-            <Logcat />
-          </Panel>
-          <Panel panel="shell">
-            <Shell />
-          </Panel>
-          <Panel panel="process">
-            <Process />
-          </Panel>
-          <Panel panel="performance">
-            <Performance />
-          </Panel>
-          <Panel panel="webview">
-            <Webview />
-          </Panel>
-          <Panel panel="file">
-            <File />
-          </Panel>
-          <Panel panel="layout">
-            <Layout />
-          </Panel>
+      {store.isInit && (
+        <div className={Style.workspace}>
+          <div
+            className={Style.panels}
+            key={store.device ? store.device.id : ''}
+          >
+            <Panel panel="overview">
+              <Overview />
+            </Panel>
+            <Panel panel="application">
+              <Application />
+            </Panel>
+            <Panel panel="screenshot">
+              <Screenshot />
+            </Panel>
+            <Panel panel="logcat">
+              <Logcat />
+            </Panel>
+            <Panel panel="shell">
+              <Shell />
+            </Panel>
+            <Panel panel="process">
+              <Process />
+            </Panel>
+            <Panel panel="performance">
+              <Performance />
+            </Panel>
+            <Panel panel="webview">
+              <Webview />
+            </Panel>
+            <Panel panel="file">
+              <File />
+            </Panel>
+            <Panel panel="layout">
+              <Layout />
+            </Panel>
+          </div>
         </div>
-      </div>
+      )}
       {createPortal(
         <LunaModal
           title={t('aboutAya')}

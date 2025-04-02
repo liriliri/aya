@@ -56,11 +56,11 @@ export default observer(function SettingsModal(props: IModalProps) {
             [t('sysPreference')]: 'system',
             ['العربية']: 'ar-IQ',
             English: 'en-US',
+            ['Français']: 'fr-FR',
             ['Русский']: 'ru-RU',
             ['Türkçe']: 'tr-TR',
             ['中文']: 'zh-CN',
             ['繁體中文']: 'zh-TW',
-            ['Français']: 'fr-FR',
           }}
         />
         <LunaSettingSeparator />

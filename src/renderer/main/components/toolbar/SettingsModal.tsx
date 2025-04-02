@@ -60,6 +60,7 @@ export default observer(function SettingsModal(props: IModalProps) {
             ['Türkçe']: 'tr-TR',
             ['中文']: 'zh-CN',
             ['繁體中文']: 'zh-TW',
+            ['Français']: 'fr-FR',
           }}
         />
         <LunaSettingSeparator />

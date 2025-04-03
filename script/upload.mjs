@@ -5,7 +5,6 @@ import {
   ListObjectsCommand,
 } from '@aws-sdk/client-s3'
 import each from 'licia/each.js'
-import isWindows from 'licia/isWindows.js'
 
 const pkg = await fs.readJson('package.json')
 const version = pkg.version

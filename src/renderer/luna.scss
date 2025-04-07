@@ -73,7 +73,7 @@ $theme-variables: meta.module-variables(theme);
         background-color: if($class == ':root', #ddd, #393939);
       }
       tr:nth-child(even) {
-        background-color: if($class == ':root', #f6fbf6, #071108);
+        background-color: if($class == ':root', #ededed, #1e1e1e);
       }
     }
     .luna-data-grid:focus {
@@ -86,6 +86,7 @@ $theme-variables: meta.module-variables(theme);
 
 .luna-performance-monitor {
   border: none;
+  background-color: var(--color-bg-container) !important;
 }
 
 .luna-performance-monitor-title {

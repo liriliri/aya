@@ -36,15 +36,13 @@
             color-primary-bg: color.adjust($color-primary, $lightness: 40%),
             color-border: color.adjust($color-border, $lightness: 2%),
             color-bg-container-darker:
-              color.adjust($color-bg-container, $lightness: -2%),
-            border-radius-x-s: #{$border-radius-x-s}px,
-            border-radius-s-m: #{$border-radius-s-m}px,
+              color.adjust($color-bg-container, $lightness: -5%),
           ),
           (
             color-primary-bg: color.adjust($color-primary, $lightness: -25%),
             color-border: color.adjust($color-border-dark, $lightness: -8%),
             color-bg-container-darker:
-              color.adjust($color-bg-container-dark, $lightness: -2%),
+              color.adjust($color-bg-container-dark, $lightness: -5%),
           )
         )
       ),

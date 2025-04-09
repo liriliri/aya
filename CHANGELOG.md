@@ -1,3 +1,9 @@
+## v1.6.0 (9 Apr 2025)
+
+* feat: adjust theme color scheme
+* feat: support french [#56](https://github.com/liriliri/aya/pull/56)
+* feat: keep remote devices history [#47](https://github.com/liriliri/aya/issues/47)
+
 ## v1.5.0 (30 Mar 2025)
 
 * feat: layout xpath

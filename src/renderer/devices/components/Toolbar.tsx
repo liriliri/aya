@@ -51,7 +51,7 @@ export default observer(function Toolbar() {
       >
         {t('connect')}
       </LunaToolbarButton>
-      <LunaToolbarSeparator />
+      <LunaToolbarSpace />
       <ToolbarIcon
         icon="disconnect"
         title={t('disconnect')}
@@ -69,7 +69,19 @@ export default observer(function Toolbar() {
           }
         }}
       />
-      <LunaToolbarSpace />
+      <ToolbarIcon
+        icon="delete"
+        title={t('delete')}
+        disabled={
+          !device || !isRemoteDevice(device.id) || device.type !== 'offline'
+        }
+        onClick={async () => {
+          if (device) {
+            store.removeRemoteDevice(device.id)
+          }
+        }}
+      />
+      <LunaToolbarSeparator />
       <LunaToolbarInput
         keyName="filter"
         value={store.filter}

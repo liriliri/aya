@@ -3,6 +3,7 @@ export interface IDevice {
   name: string
   androidVersion: string
   sdkVersion: string
+  type: 'emulator' | 'device' | 'offline' | 'unauthorized' | 'unknown'
 }
 
 export interface IPackageInfo {

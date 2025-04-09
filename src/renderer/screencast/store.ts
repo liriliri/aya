@@ -31,7 +31,7 @@ class Store extends BaseStore {
     if (device === null) {
       main.closeScreencast()
     } else {
-      const deviceSettings = (await main.getScreencastStore('settings')) || {}
+      const deviceSettings = await main.getScreencastStore('settings')
       let settings = defaultSettings
       if (deviceSettings[device.id]) {
         settings = deviceSettings[device.id]
@@ -59,7 +59,7 @@ class Store extends BaseStore {
   }
   async setSettings(name: string, val: any) {
     runInAction(() => (this.settings[name] = val))
-    const deviceSettings = (await main.getScreencastStore('settings')) || {}
+    const deviceSettings = await main.getScreencastStore('settings')
     deviceSettings[this.device.id] = toJS(this.settings)
     main.setScreencastStore('settings', deviceSettings)
   }

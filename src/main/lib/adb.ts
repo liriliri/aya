@@ -41,7 +41,10 @@ let client: Client
 
 const getDevices: IpcGetDevices = async function () {
   let devices = await client.listDevices()
-  devices = filter(devices, (device: Device) => device.type !== 'offline')
+  devices = filter(
+    devices,
+    (device: Device) => device.type === 'emulator' || device.type === 'device'
+  )
 
   return Promise.all(
     map(devices, async (device: Device) => {
@@ -55,6 +58,7 @@ const getDevices: IpcGetDevices = async function () {
 
       return {
         id: device.id,
+        type: device.type,
         name,
         androidVersion: properties['ro.build.version.release'],
         sdkVersion: properties['ro.build.version.sdk'],

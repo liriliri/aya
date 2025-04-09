@@ -193,5 +193,8 @@
   "checkUpdate": "Check for Updates",
   "updateNotAvailable": "There are currently no updates available",
   "updateAvailable": "A new version is available, do you want to download it?",
-  "updateErr": "Failed to check for updates"
+  "updateErr": "Failed to check for updates",
+  "status": "Status",
+  "online": "Online",
+  "offline": "Offline"
 }

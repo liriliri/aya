@@ -6,18 +6,15 @@ import LunaToolbar, {
   LunaToolbarSpace,
 } from 'luna-toolbar/react'
 import Style from './Toolbar.module.scss'
-import { useState } from 'react'
 import toNum from 'licia/toNum'
-import isIp from 'licia/isIp'
 import isStrBlank from 'licia/isStrBlank'
 import { t } from '../../../common/util'
 import { notify } from 'share/renderer/lib/util'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import store from '../store'
+import { isRemoteDevice } from '../lib/util'
 
 export default observer(function Toolbar() {
-  const [ip, setIp] = useState('')
-  const [port, setPort] = useState('')
   const { device } = store
 
   return (
@@ -26,23 +23,23 @@ export default observer(function Toolbar() {
         keyName="ip"
         className={Style.ip}
         placeholder={t('ipAddress')}
-        value={ip}
-        onChange={(val) => setIp(val)}
+        value={store.ip}
+        onChange={(val) => store.setIp(val)}
       />
       <LunaToolbarInput
         keyName="port"
         className={Style.port}
         placeholder={t('port')}
-        value={port}
-        onChange={(val) => setPort(val)}
+        value={store.port}
+        onChange={(val) => store.setPort(val)}
       />
       <LunaToolbarButton
         onClick={async () => {
           try {
-            if (port) {
-              await main.connectDevice(ip, toNum(port))
+            if (store.port) {
+              await main.connectDevice(store.ip, toNum(store.port))
             } else {
-              await main.connectDevice(ip)
+              await main.connectDevice(store.ip)
             }
             // eslint-disable-next-line
           } catch (e) {
@@ -50,7 +47,7 @@ export default observer(function Toolbar() {
           }
         }}
         state="hover"
-        disabled={isStrBlank(ip)}
+        disabled={isStrBlank(store.ip)}
       >
         {t('connect')}
       </LunaToolbarButton>
@@ -58,7 +55,9 @@ export default observer(function Toolbar() {
       <ToolbarIcon
         icon="disconnect"
         title={t('disconnect')}
-        disabled={!device || !isIp.v4(device.id.split(':')[0])}
+        disabled={
+          !device || !isRemoteDevice(device.id) || device.type === 'offline'
+        }
         onClick={async () => {
           if (device) {
             const [ip, port] = device.id.split(':')

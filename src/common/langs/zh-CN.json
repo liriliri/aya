@@ -193,5 +193,8 @@
   "checkUpdate": "检查更新",
   "updateNotAvailable": "当前没有可用的更新",
   "updateAvailable": "有可用的更新，是否下载？",
-  "updateErr": "检查更新失败"
+  "updateErr": "检查更新失败",
+  "status": "Status",
+  "online": "在线",
+  "offline": "离线"
 }

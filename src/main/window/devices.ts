@@ -1,6 +1,9 @@
 import { BrowserWindow } from 'electron'
 import { getDevicesStore } from '../lib/store'
 import * as window from 'share/main/lib/window'
+import once from 'licia/once'
+import { handleEvent } from 'share/main/lib/util'
+import { IpcGetStore, IpcSetStore } from 'share/common/types'
 
 const store = getDevicesStore()
 
@@ -11,6 +14,8 @@ export function showWin() {
     win.focus()
     return
   }
+
+  initIpc()
 
   win = window.create({
     name: 'devices',
@@ -27,3 +32,10 @@ export function showWin() {
 
   window.loadPage(win, { page: 'devices' })
 }
+
+const initIpc = once(() => {
+  handleEvent('setDevicesStore', <IpcSetStore>(
+    ((name, val) => store.set(name, val))
+  ))
+  handleEvent('getDevicesStore', <IpcGetStore>((name) => store.get(name)))
+})

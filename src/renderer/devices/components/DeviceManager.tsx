@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite'
 import Style from './DeviceManager.module.scss'
 import { t } from '../../../common/util'
 import map from 'licia/map'
+import concat from 'licia/concat'
 import store from '../store'
 import { useEffect, useState } from 'react'
 
@@ -22,11 +23,13 @@ export default observer(function DeviceManager() {
     }
   }, [])
 
-  const devices = map(store.devices, (device) => {
+  const devices = map(concat(store.devices, store.remoteDevices), (device) => {
     return {
       id: device.id,
       name: device.name,
       androidVersion: `Android ${device.androidVersion} (API ${device.sdkVersion})`,
+      status: device.type === 'offline' ? t('offline') : t('online'),
+      type: device.type,
     }
   })
 
@@ -43,7 +46,9 @@ export default observer(function DeviceManager() {
         minHeight={height}
         maxHeight={height}
         onDoubleClick={(e, node) => {
-          main.sendToWindow('main', 'selectDevice', node.data.id)
+          if (node.data.type !== 'offline') {
+            main.sendToWindow('main', 'selectDevice', node.data.id)
+          }
         }}
         uniqueId="id"
       />
@@ -62,12 +67,18 @@ const columns = [
     id: 'name',
     title: t('name'),
     sortable: true,
-    weight: 40,
+    weight: 30,
   },
   {
     id: 'androidVersion',
     title: t('androidVersion'),
     sortable: true,
-    weight: 40,
+    weight: 30,
+  },
+  {
+    id: 'status',
+    title: t('status'),
+    sortable: true,
+    weight: 20,
   },
 ]

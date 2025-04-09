@@ -17,6 +17,8 @@ export const getScreencastStore = memoize(function () {
       width: 430,
       height: 640,
     },
+    settings: {},
+    alwaysOnTop: false,
   })
 })
 
@@ -26,6 +28,7 @@ export const getDevicesStore = memoize(function () {
       width: 960,
       height: 640,
     },
+    remoteDevices: [],
   })
 })
 

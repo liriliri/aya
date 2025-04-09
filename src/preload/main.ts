@@ -20,6 +20,8 @@ export default Object.assign(mainObj, {
   setMainStore: invoke<IpcSetStore>('setMainStore'),
   getScreencastStore: invoke<IpcGetStore>('getScreencastStore'),
   setScreencastStore: invoke<IpcSetStore>('setScreencastStore'),
+  getDevicesStore: invoke<IpcGetStore>('getDevicesStore'),
+  setDevicesStore: invoke<IpcSetStore>('setDevicesStore'),
   setScreencastAlwaysOnTop: invoke<IpcSetScreencastAlwaysOnTop>(
     'setScreencastAlwaysOnTop'
   ),

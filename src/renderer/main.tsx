@@ -26,9 +26,6 @@ import LunaModal from 'luna-modal'
 import LunaFileList from 'luna-file-list'
 import log from 'share/common/log'
 
-if (!isDev()) {
-  log.setLevel('info')
-}
 const logger = log('renderer')
 logger.info('start')
 

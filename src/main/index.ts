@@ -9,11 +9,7 @@ import * as terminal from 'share/main/window/terminal'
 import * as updater from 'share/main/lib/updater'
 import { setupTitlebar } from 'custom-electron-titlebar/main'
 import log from 'share/common/log'
-import { isDev } from 'share/common/util'
 
-if (!isDev()) {
-  log.setLevel('info')
-}
 const logger = log('main')
 logger.info('start')
 

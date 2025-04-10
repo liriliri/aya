@@ -28,6 +28,7 @@ class Store extends BaseStore {
       setFilter: action,
       selectDevice: action,
       updateDevices: action,
+      removeRemoteDevice: action,
     })
 
     this.init()
@@ -84,6 +85,12 @@ class Store extends BaseStore {
         }
       })
     }
+  }
+  removeRemoteDevice(id: string) {
+    this.remoteDevices = filter(this.remoteDevices, (device) => {
+      return device.id !== id
+    })
+    main.setDevicesStore('remoteDevices', toJS(this.remoteDevices))
   }
   private bindEvent() {
     main.on('changeMemStore', (name, val) => {

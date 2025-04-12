@@ -4,7 +4,7 @@ import {
   IpcListForwards,
   IpcListReverses,
   IpcReverse,
-} from 'common/types'
+} from '../../../common/types'
 import map from 'licia/map'
 import { handleEvent } from 'share/main/lib/util'
 

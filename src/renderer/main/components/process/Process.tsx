@@ -144,8 +144,8 @@ export default observer(function Process() {
           value={store.process.onlyPackage}
           label={t('onlyPackage')}
           onChange={(val) => {
-            getProcesses()
             store.process.set('onlyPackage', val)
+            getProcesses()
           }}
         />
         <LunaToolbarSeparator />

@@ -5,6 +5,7 @@ import BaseStore from 'share/renderer/store/BaseStore'
 import { Settings } from './settings'
 import { Application } from './application'
 import { Process } from './process'
+import { Webview } from './webview'
 import { File } from './file'
 import { Layout } from './layout'
 import { setMainStore } from '../../lib/util'
@@ -19,6 +20,7 @@ class Store extends BaseStore {
   settings = new Settings()
   application = new Application()
   process = new Process()
+  webview = new Webview()
   file = new File()
   layout = new Layout()
   isInit = false

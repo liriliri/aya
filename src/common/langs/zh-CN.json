@@ -196,5 +196,6 @@
   "updateErr": "检查更新失败",
   "status": "Status",
   "online": "在线",
-  "offline": "离线"
+  "offline": "离线",
+  "useLocalInspector": "使用本地调试器"
 }

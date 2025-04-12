@@ -1,7 +1,9 @@
 import { observer } from 'mobx-react-lite'
 import Style from './Webview.module.scss'
 import LunaToolbar, {
+  LunaToolbarCheckbox,
   LunaToolbarInput,
+  LunaToolbarSeparator,
   LunaToolbarSpace,
   LunaToolbarText,
 } from 'luna-toolbar/react'
@@ -98,12 +100,28 @@ export default observer(function Webview() {
         />
         <LunaToolbarText text={topPackage ? topPackage.label : ''} />
         <LunaToolbarSpace />
+        <LunaToolbarCheckbox
+          keyName="useLocalInspector"
+          value={store.webview.useLocalInspector}
+          label={t('useLocalInspector')}
+          onChange={(val) => {
+            store.webview.set('useLocalInspector', val)
+          }}
+        />
         <ToolbarIcon
           disabled={selected === null}
           icon="debug"
           title={t('inspect')}
-          onClick={() => main.openWindow(selected.devtoolsFrontendUrl)}
+          onClick={() => {
+            let url = selected.devtoolsFrontendUrl
+            if (store.webview.useLocalInspector) {
+              url = 'devtools://devtools/bundled/inspector.html'
+              url += `?ws=${selected.webSocketDebuggerUrl.replace('ws://', '')}`
+            }
+            main.openWindow(url)
+          }}
         />
+        <LunaToolbarSeparator />
         <ToolbarIcon
           disabled={selected === null}
           icon="browser"

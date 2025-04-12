@@ -196,5 +196,6 @@
   "updateErr": "Failed to check for updates",
   "status": "Status",
   "online": "Online",
-  "offline": "Offline"
+  "offline": "Offline",
+  "useLocalInspector": "Use Local Inspector"
 }

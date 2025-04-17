@@ -56,4 +56,5 @@ async function upload(Key) {
 
 await upload(`AYA-${version}-win-x64.exe`)
 await upload(`AYA-${version}-mac-arm64.dmg`)
+await upload(`AYA-${version}-mac-x64.dmg`)
 await upload(`AYA-${version}-linux-x86_64.AppImage`)

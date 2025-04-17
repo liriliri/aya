@@ -6,11 +6,11 @@ on:
 jobs:
   build:
 
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        os: [windows, macos, ubuntu]
+        os: [windows-latest, macos-latest, macos-13, ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v4

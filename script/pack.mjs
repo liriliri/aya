@@ -1,8 +1,14 @@
 import builder from 'electron-builder'
+import isMac from 'licia/isMac.js'
 
 cd('dist')
 
 const pkg = await fs.readJson('package.json')
+
+let publishChannel = '${productName}-latest'
+if (isMac && process.arch !== 'arm64') {
+  publishChannel = '${productName}-latest-${arch}'
+}
 
 const config = {
   directories: {
@@ -34,7 +40,7 @@ const config = {
   publish: {
     provider: 'generic',
     url: 'https://release.liriliri.io/',
-    channel: '${productName}-latest',
+    channel: publishChannel,
   },
 }
 

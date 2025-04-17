@@ -194,7 +194,7 @@
   "updateNotAvailable": "当前没有可用的更新",
   "updateAvailable": "有可用的更新，是否下载？",
   "updateErr": "检查更新失败",
-  "status": "Status",
+  "status": "状态",
   "online": "在线",
   "offline": "离线",
   "useLocalInspector": "使用本地调试器",

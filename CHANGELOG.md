@@ -1,3 +1,9 @@
+## v1.7.0 (17 Apr 2025)
+
+* feat: webview use local inspector
+* feat: scrcpy input text
+* feat: support macos intel chip [#59](https://github.com/liriliri/aya/issues/59)
+
 ## v1.6.0 (9 Apr 2025)
 
 * feat: adjust theme color scheme

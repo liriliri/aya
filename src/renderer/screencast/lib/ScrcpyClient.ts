@@ -79,6 +79,17 @@ export default class ScrcpyClient extends Emitter {
       controller.setScreenPowerMode(AndroidScreenPowerMode.Normal)
     }
   }
+  async setClipboard(text: string) {
+    await this.readiness.ready('control')
+    if (this.control) {
+      const controller: ScrcpyControlMessageWriter = this.control.controller
+      controller.setClipboard({
+        sequence: 0n,
+        content: text,
+        paste: true,
+      })
+    }
+  }
   private start = async () => {
     const { deviceId, options } = this
 

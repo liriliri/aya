@@ -10,6 +10,7 @@ class Store extends BaseStore {
   scrcpyClient!: ScrcpyClient
   alwaysOnTop = false
   settings = defaultSettings
+  screenOff = false
   constructor() {
     super()
 
@@ -17,6 +18,7 @@ class Store extends BaseStore {
       alwaysOnTop: observable,
       settings: observable,
       device: observable,
+      screenOff: observable,
     })
 
     this.init()
@@ -26,6 +28,14 @@ class Store extends BaseStore {
     this.alwaysOnTop = val
     main.setScreencastStore('alwaysOnTop', val)
     main.setScreencastAlwaysOnTop(val)
+  }
+  turnOnScreen() {
+    this.screenOff = false
+    this.scrcpyClient.turnOnScreen()
+  }
+  turnOffScreen() {
+    this.screenOff = true
+    this.scrcpyClient.turnOffScreen()
   }
   async setDevice(device: IDevice | null) {
     if (device === null) {
@@ -37,7 +47,6 @@ class Store extends BaseStore {
         settings = deviceSettings[device.id]
         defaults(settings, defaultSettings)
       }
-      this.settings = settings
 
       this.scrcpyClient = new ScrcpyClient(
         device.id,
@@ -45,7 +54,7 @@ class Store extends BaseStore {
           audio: true,
           videoBitRate: settings.videoBitRate,
           maxSize: settings.maxSize,
-          clipboardAutosync: false,
+          clipboardAutosync: true,
         })
       )
       this.scrcpyClient.on('close', () => {
@@ -54,7 +63,11 @@ class Store extends BaseStore {
         }
       })
 
-      runInAction(() => (this.device = device))
+      runInAction(() => {
+        this.settings = settings
+        this.screenOff = false
+        this.device = device
+      })
     }
   }
   async setSettings(name: string, val: any) {

@@ -197,5 +197,6 @@
   "status": "Status",
   "online": "Online",
   "offline": "Offline",
-  "useLocalInspector": "Use Local Inspector"
+  "useLocalInspector": "Use Local Inspector",
+  "inputText": "Input Text"
 }

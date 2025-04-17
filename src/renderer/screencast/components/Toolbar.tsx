@@ -12,6 +12,7 @@ import fullscreen from 'licia/fullscreen'
 import SettingsModal from './SettingsModal'
 import { useState } from 'react'
 import { AndroidKeyCode } from '@yume-chan/scrcpy'
+import LunaModal from 'luna-modal'
 
 export default observer(function Toolbar() {
   const [settingsModalVisiable, setSettingsModalVisiable] = useState(false)
@@ -32,6 +33,13 @@ export default observer(function Toolbar() {
 
   function inputKey(keyCode: AndroidKeyCode) {
     return () => main.inputKey(device.id, keyCode)
+  }
+
+  async function injectText() {
+    const text = await LunaModal.prompt(t('inputText'), '')
+    if (text) {
+      scrcpyClient.setClipboard(text)
+    }
   }
 
   return (
@@ -68,18 +76,19 @@ export default observer(function Toolbar() {
           title={t('appSwitch')}
           onClick={() => inputKey(AndroidKeyCode.AndroidAppSwitch)}
         />
+        <ToolbarIcon icon="text" title={t('inputText')} onClick={injectText} />
         <LunaToolbarSeparator />
         <ToolbarIcon
-          icon="screen-on"
-          title={t('screenOn')}
-          onClick={() => scrcpyClient.turnOnScreen()}
+          icon={store.screenOff ? 'screen-on' : 'screen-off'}
+          title={t(store.screenOff ? 'screenOn' : 'screenOff')}
+          onClick={() => {
+            if (store.screenOff) {
+              store.turnOnScreen()
+            } else {
+              store.turnOffScreen()
+            }
+          }}
         />
-        <ToolbarIcon
-          icon="screen-off"
-          title={t('screenOff')}
-          onClick={() => scrcpyClient.turnOffScreen()}
-        />
-        <LunaToolbarSeparator />
         <ToolbarIcon
           icon="camera"
           title={t('screenshot')}

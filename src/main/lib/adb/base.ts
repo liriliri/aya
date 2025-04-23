@@ -113,7 +113,7 @@ export async function shell(
   const socket = await device.shell(cmds.join('\necho "aya_separator"\n'))
   const output: string = (await Adb.util.readAll(socket)).toString()
 
-  if (cmds.length === 1) {
+  if (isStr(cmd)) {
     return trim(output)
   }
 

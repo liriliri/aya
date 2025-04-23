@@ -21,10 +21,12 @@ import singleton from 'licia/singleton'
 import map from 'licia/map'
 import defaultIcon from '../../../assets/default-icon.png'
 import toEl from 'licia/toEl'
+import contain from 'licia/contain'
 import find from 'licia/find'
 
 export default observer(function Process() {
   const [processes, setProcesses] = useState<any[]>([])
+  const packagesRef = useRef<string[]>([])
   const packageInfosRef = useRef<any[]>([])
   const [listHeight, setListHeight] = useState(0)
   const [selected, setSelected] = useState<any>(null)
@@ -37,8 +39,11 @@ export default observer(function Process() {
       if (!device) {
         return
       }
-      const packages = await main.getPackages(device.id)
-      packageInfosRef.current = await main.getPackageInfos(device.id, packages)
+      packagesRef.current = await main.getPackages(device.id)
+      packageInfosRef.current = await main.getPackageInfos(
+        device.id,
+        packagesRef.current
+      )
     }),
     []
   )
@@ -78,9 +83,18 @@ export default observer(function Process() {
             return process
           }
         })
-        if (!isEmpty(packageInfosRef.current) && store.process.onlyPackage) {
+        if (!isEmpty(packagesRef.current) && store.process.onlyPackage) {
           processes = processes.filter((process) => {
-            return process.packageName
+            if (process.packageName) {
+              return true
+            }
+
+            const match = process.name.match(/^[\w.]+/)
+            if (match) {
+              return contain(packagesRef.current, match[0])
+            }
+
+            return false
           })
         }
         setProcesses(processes)

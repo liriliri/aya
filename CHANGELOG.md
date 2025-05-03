@@ -1,3 +1,9 @@
+## v1.7.1 (3 May 2025)
+
+* fix: quit shortcut [#61](https://github.com/liriliri/aya/issues/61)
+* fix: russian missing translation [#63](https://github.com/liriliri/aya/pull/63)
+* fix: table header rendering error when resized
+
 ## v1.7.0 (17 Apr 2025)
 
 * feat: webview use local inspector

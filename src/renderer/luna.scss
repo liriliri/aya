@@ -14,8 +14,13 @@
   }
 }
 
+.custom-titlebar {
+  .luna-modal {
+    top: 28px;
+  }
+}
+
 .luna-modal {
-  top: 28px;
   z-index: theme.$z-index-popup-base;
 }
 
@@ -96,8 +101,13 @@ $theme-variables: meta.module-variables(theme);
   line-height: 16px;
 }
 
+.custom-titlebar {
+  .luna-command-palette {
+    top: 28px;
+  }
+}
+
 .luna-command-palette {
-  top: 28px;
   z-index: theme.$z-index-popup-base;
 }
 

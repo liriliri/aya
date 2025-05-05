@@ -23,7 +23,7 @@ const notifyRequireReload = debounce(() => {
 
 export default observer(function SettingsModal(props: IModalProps) {
   function onChange(key, val) {
-    if (contain(['language'], key)) {
+    if (contain(['language', 'useNativeTitlebar'], key)) {
       notifyRequireReload()
     }
     store.settings.set(key, val)
@@ -62,6 +62,11 @@ export default observer(function SettingsModal(props: IModalProps) {
             ['中文']: 'zh-CN',
             ['繁體中文']: 'zh-TW',
           }}
+        />
+        <LunaSettingCheckbox
+          keyName="useNativeTitlebar"
+          value={store.settings.useNativeTitlebar}
+          description={t('useNativeTitlebar')}
         />
         <LunaSettingSeparator />
         <LunaSettingTitle title="ADB" />

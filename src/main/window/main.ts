@@ -29,6 +29,7 @@ export function showWin() {
     name: 'main',
     minWidth: 960,
     minHeight: 640,
+    customTitlebar: !settingsStore.get('useNativeTitlebar'),
     ...store.get('bounds'),
     maximized: store.get('maximized'),
     onSavePos: () => window.savePos(win, store, true),

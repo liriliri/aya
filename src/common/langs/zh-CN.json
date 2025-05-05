@@ -198,5 +198,6 @@
   "online": "在线",
   "offline": "离线",
   "useLocalInspector": "使用本地调试器",
-  "inputText": "输入文本"
+  "inputText": "输入文本",
+  "useNativeTitlebar": "使用原生标题栏"
 }

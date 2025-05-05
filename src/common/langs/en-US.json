@@ -198,5 +198,6 @@
   "online": "Online",
   "offline": "Offline",
   "useLocalInspector": "Use Local Inspector",
-  "inputText": "Input Text"
+  "inputText": "Input Text",
+  "useNativeTitlebar": "Use Native Titlebar"
 }

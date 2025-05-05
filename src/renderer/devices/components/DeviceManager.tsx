@@ -6,13 +6,15 @@ import map from 'licia/map'
 import concat from 'licia/concat'
 import store from '../store'
 import { useEffect, useState } from 'react'
+import { getWindowHeight } from 'share/renderer/lib/util'
 
 export default observer(function DeviceManager() {
   const [height, setHeight] = useState(0)
 
   useEffect(() => {
-    function resize() {
-      const height = window.innerHeight - 58
+    async function resize() {
+      const windowHeight = await getWindowHeight()
+      const height = windowHeight - 31
       setHeight(height)
     }
     resize()

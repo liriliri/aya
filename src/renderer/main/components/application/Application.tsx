@@ -16,7 +16,7 @@ import store from '../../store'
 import { PannelLoading } from '../common/loading'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import { installPackages } from '../../../lib/util'
-import { notify, isFileDrop } from 'share/renderer/lib/util'
+import { notify, isFileDrop, getWindowHeight } from 'share/renderer/lib/util'
 import { t } from '../../../../common/util'
 import className from 'licia/className'
 import endWith from 'licia/endWith'
@@ -57,8 +57,9 @@ export default observer(function Application() {
   useEffect(() => {
     refresh()
 
-    function resize() {
-      const height = window.innerHeight - 89
+    async function resize() {
+      const windowHeight = await getWindowHeight()
+      const height = windowHeight - 61
       setListHeight(height)
     }
     resize()

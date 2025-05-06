@@ -1,12 +1,14 @@
 import { app, BrowserWindow, session } from 'electron'
 import { getMainStore, getSettingsStore } from '../lib/store'
-import { handleEvent } from 'share/main/lib/util'
+import { getOpenFileFromArgv, handleEvent } from 'share/main/lib/util'
 import * as window from 'share/main/lib/window'
 import * as screencast from './screencast'
 import * as devices from './devices'
 import log from 'share/common/log'
 import once from 'licia/once'
 import { IpcGetStore, IpcSetStore } from 'share/common/types'
+import isMac from 'licia/isMac'
+import endWith from 'licia/endWith'
 
 const logger = log('mainWin')
 
@@ -82,4 +84,21 @@ const initIpc = once(() => {
     screencast.showWin()
   })
   handleEvent('showDevices', () => devices.showWin())
+  if (isMac) {
+    app.on('open-file', (_, path) => {
+      if (!endWith(path, '.apk')) {
+        return
+      }
+      if (app.isReady()) {
+        window.sendTo('main', 'installPackage', path)
+      }
+    })
+  } else {
+    app.on('second-instance', (_, argv) => {
+      const apkPath = getOpenFileFromArgv(argv, '.apk')
+      if (apkPath) {
+        window.sendTo('main', 'installPackage', apkPath)
+      }
+    })
+  }
 })

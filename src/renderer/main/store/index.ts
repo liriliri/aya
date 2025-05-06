@@ -8,7 +8,7 @@ import { Process } from './process'
 import { Webview } from './webview'
 import { File } from './file'
 import { Layout } from './layout'
-import { setMainStore } from '../../lib/util'
+import { installPackages, setMainStore } from '../../lib/util'
 import { setMemStore } from 'share/renderer/lib/util'
 import isEmpty from 'licia/isEmpty'
 import { IDevice } from '../../../common/types'
@@ -23,7 +23,7 @@ class Store extends BaseStore {
   webview = new Webview()
   file = new File()
   layout = new Layout()
-  isInit = false
+  ready = false
   constructor() {
     super()
 
@@ -32,7 +32,7 @@ class Store extends BaseStore {
       device: observable,
       panel: observable,
       settings: observable,
-      isInit: observable,
+      ready: observable,
       selectDevice: action,
       selectPanel: action,
     })
@@ -68,7 +68,12 @@ class Store extends BaseStore {
     }
     await this.refreshDevices()
 
-    this.isInit = true
+    this.ready = true
+
+    const openFile = await main.getOpenFile('.apk')
+    if (openFile && this.device) {
+      installPackages(this.device.id, [openFile])
+    }
   }
   refreshDevices = async () => {
     const devices = await main.getDevices()
@@ -95,6 +100,11 @@ class Store extends BaseStore {
     main.on('changeDevice', this.refreshDevices)
     main.on('refreshDevices', this.refreshDevices)
     main.on('selectDevice', this.selectDevice)
+    main.on('installPackage', async (path: string) => {
+      if (this.device) {
+        await installPackages(this.device.id, [path])
+      }
+    })
   }
 }
 

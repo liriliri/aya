@@ -47,7 +47,7 @@ export default observer(function App() {
   return (
     <>
       <Toolbar />
-      {store.isInit && (
+      {store.ready && (
         <div className={Style.workspace}>
           <div
             className={Style.panels}

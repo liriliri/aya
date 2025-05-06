@@ -13,6 +13,7 @@ import SettingsModal from './SettingsModal'
 import { useState } from 'react'
 import { AndroidKeyCode } from '@yume-chan/scrcpy'
 import LunaModal from 'luna-modal'
+import dateFormat from 'licia/dateFormat'
 
 export default observer(function Toolbar() {
   const [settingsModalVisiable, setSettingsModalVisiable] = useState(false)
@@ -22,7 +23,7 @@ export default observer(function Toolbar() {
   async function captureScreenshot() {
     const video = await scrcpyClient.getVideo()
     const blob = await video.decoder.snapshot()
-    download(blob, `screenshot.png`, 'image/png')
+    download(blob, `screenshot-${dateFormat('yyyymmddHHMM')}.png`, 'image/png')
   }
 
   async function toggleFullscreen() {

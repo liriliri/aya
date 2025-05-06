@@ -37,6 +37,7 @@ import { socketToReadableStream, socketToWritableStream } from './util'
 import clamp from 'licia/clamp'
 import Recorder from './Recorder'
 import convertBin from 'licia/convertBin'
+import dateFormat from 'licia/dateFormat'
 
 const logger = log('ScrcpyClient')
 
@@ -76,7 +77,7 @@ export default class ScrcpyClient extends Emitter {
     const buf = this.recorder.stop()
     if (buf) {
       const { canceled, filePath } = await main.showSaveDialog({
-        defaultPath: `recording.mkv`,
+        defaultPath: `recording-${dateFormat('yyyymmddHHMM')}.mkv`,
       })
       if (canceled) {
         return

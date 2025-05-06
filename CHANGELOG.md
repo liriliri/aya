@@ -1,3 +1,9 @@
+## v1.8.0 (7 May 2025)
+
+* feat: use native titlebar [#68](https://github.com/liriliri/aya/issues/68)
+* feat: screen recording [#51](https://github.com/liriliri/aya/issues/51)
+* feat: support opening apk file
+
 ## v1.7.1 (3 May 2025)
 
 * fix: quit shortcut [#61](https://github.com/liriliri/aya/issues/61)

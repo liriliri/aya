@@ -90,6 +90,7 @@ const initIpc = once(() => {
         return
       }
       if (app.isReady()) {
+        showWin()
         window.sendTo('main', 'installPackage', path)
       }
     })
@@ -97,6 +98,7 @@ const initIpc = once(() => {
     app.on('second-instance', (_, argv) => {
       const apkPath = getOpenFileFromArgv(argv, '.apk')
       if (apkPath) {
+        showWin()
         window.sendTo('main', 'installPackage', apkPath)
       }
     })

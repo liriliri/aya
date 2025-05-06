@@ -8,6 +8,9 @@ import {
   ScrcpyVideoStreamMetadata,
 } from '@yume-chan/scrcpy'
 import { ArrayBufferTarget, Muxer as WebMMuxer } from 'webm-muxer'
+import log from 'share/common/log'
+
+const logger = log('Recorder')
 
 // https://ffmpeg.org/doxygen/0.11/avc_8c-source.html#l00106
 function h264ConfigurationToAvcDecoderConfigurationRecord(
@@ -79,10 +82,6 @@ export default class Recorder {
   private videoCodecDescription?: Uint8Array
   private configurationWritten = false
   private _firstTimestamp = -1
-  private _packetsFromLastKeyframe: {
-    type: 'video' | 'audio'
-    packet: ScrcpyMediaStreamDataPacket
-  }[] = []
   start() {
     if (!this.videoMetadata) {
       throw new Error('videoMetadata must be set')
@@ -111,16 +110,6 @@ export default class Recorder {
     }
 
     this.muxer = new WebMMuxer(options as any)
-
-    if (this._packetsFromLastKeyframe.length > 0) {
-      for (const { type, packet } of this._packetsFromLastKeyframe) {
-        if (type === 'video') {
-          this.addVideoChunk(packet)
-        } else {
-          this.addAudioChunk(packet)
-        }
-      }
-    }
   }
   stop() {
     if (!this.muxer) {
@@ -131,8 +120,10 @@ export default class Recorder {
     const buf = this.muxer.target.buffer
 
     this.muxer = undefined
+    this.videoCodecDescription = undefined
     this.configurationWritten = false
     this.running = false
+    this._firstTimestamp = -1
 
     return buf
   }
@@ -142,6 +133,7 @@ export default class Recorder {
     }
 
     if (packet.type === 'configuration') {
+      logger.info('video configuration packet')
       switch (this.videoMetadata.codec) {
         case ScrcpyVideoCodecId.H264:
           const { sequenceParameterSet, pictureParameterSet } =
@@ -157,11 +149,6 @@ export default class Recorder {
       return
     }
 
-    if (packet.keyframe === true) {
-      this._packetsFromLastKeyframe.length = 0
-    }
-    this._packetsFromLastKeyframe.push({ type: 'video', packet })
-
     if (!this.muxer) {
       return
     }
@@ -169,7 +156,6 @@ export default class Recorder {
     this.addVideoChunk(packet)
   }
   addAudioPacket(packet: ScrcpyMediaStreamDataPacket) {
-    this._packetsFromLastKeyframe.push({ type: 'audio', packet })
     this.addAudioChunk(packet)
   }
   private addVideoChunk(packet: ScrcpyMediaStreamDataPacket) {
@@ -186,7 +172,6 @@ export default class Recorder {
         ? undefined
         : {
             decoderConfig: {
-              // Not used
               codec: '',
               description: this.videoCodecDescription,
             },

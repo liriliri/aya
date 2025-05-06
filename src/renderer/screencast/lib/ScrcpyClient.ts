@@ -71,6 +71,10 @@ export default class ScrcpyClient extends Emitter {
     }
   }
   startRecording() {
+    if (this.control) {
+      const controller: ScrcpyControlMessageWriter = this.control.controller
+      controller.resetVideo()
+    }
     this.recorder.start()
   }
   async stopRecording() {

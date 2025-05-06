@@ -199,5 +199,6 @@
   "offline": "Offline",
   "useLocalInspector": "Use Local Inspector",
   "inputText": "Input Text",
-  "useNativeTitlebar": "Use Native Titlebar"
+  "useNativeTitlebar": "Use Native Titlebar",
+  "screenRecordeing": "Screen Recording"
 }

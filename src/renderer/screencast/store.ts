@@ -1,6 +1,6 @@
 import BaseStore from 'share/renderer/store/BaseStore'
 import { IDevice } from '../../common/types'
-import { makeObservable, observable, runInAction, toJS } from 'mobx'
+import { action, makeObservable, observable, runInAction, toJS } from 'mobx'
 import ScrcpyClient from './lib/ScrcpyClient'
 import { ScrcpyOptions3_1 } from '@yume-chan/scrcpy'
 import defaults from 'licia/defaults'
@@ -11,6 +11,7 @@ class Store extends BaseStore {
   alwaysOnTop = false
   settings = defaultSettings
   screenOff = false
+  recording = false
   constructor() {
     super()
 
@@ -19,6 +20,12 @@ class Store extends BaseStore {
       settings: observable,
       device: observable,
       screenOff: observable,
+      recording: observable,
+      setAlwaysOnTop: action,
+      turnOnScreen: action,
+      turnOffScreen: action,
+      startRecording: action,
+      stopRecording: action,
     })
 
     this.init()
@@ -36,6 +43,14 @@ class Store extends BaseStore {
   turnOffScreen() {
     this.screenOff = true
     this.scrcpyClient.turnOffScreen()
+  }
+  startRecording() {
+    this.recording = true
+    this.scrcpyClient.startRecording()
+  }
+  stopRecording() {
+    this.recording = false
+    this.scrcpyClient.stopRecording()
   }
   async setDevice(device: IDevice | null) {
     if (device === null) {

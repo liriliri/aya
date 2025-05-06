@@ -22,7 +22,7 @@ export default observer(function Toolbar() {
   async function captureScreenshot() {
     const video = await scrcpyClient.getVideo()
     const blob = await video.decoder.snapshot()
-    download(blob, 'screenshot.png', 'image/png')
+    download(blob, `screenshot.png`, 'image/png')
   }
 
   async function toggleFullscreen() {
@@ -93,6 +93,18 @@ export default observer(function Toolbar() {
           icon="camera"
           title={t('screenshot')}
           onClick={captureScreenshot}
+        />
+        <ToolbarIcon
+          icon="video-recorder"
+          title={t('screenRecording')}
+          state={store.recording ? 'hover' : ''}
+          onClick={() => {
+            if (store.recording) {
+              store.stopRecording()
+            } else {
+              store.startRecording()
+            }
+          }}
         />
         <LunaToolbarSeparator />
         <ToolbarIcon

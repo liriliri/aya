@@ -199,5 +199,6 @@
   "offline": "离线",
   "useLocalInspector": "使用本地调试器",
   "inputText": "输入文本",
-  "useNativeTitlebar": "使用原生标题栏"
+  "useNativeTitlebar": "使用原生标题栏",
+  "screenRecording": "录屏"
 }

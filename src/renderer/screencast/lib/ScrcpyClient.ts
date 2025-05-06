@@ -14,6 +14,7 @@ import {
   AndroidKeyEventAction,
   AndroidKeyCode,
   AndroidScreenPowerMode,
+  ScrcpyMediaStreamDataPacket,
 } from '@yume-chan/scrcpy'
 import {
   InspectStream,
@@ -34,6 +35,8 @@ import { OpusStream } from './AudioStream'
 import sleep from 'licia/sleep'
 import { socketToReadableStream, socketToWritableStream } from './util'
 import clamp from 'licia/clamp'
+import Recorder from './Recorder'
+import convertBin from 'licia/convertBin'
 
 const logger = log('ScrcpyClient')
 
@@ -45,6 +48,7 @@ export default class ScrcpyClient extends Emitter {
   private control: any
   private options: ScrcpyOptions3_1
   private readiness = new Readiness()
+  private recorder = new Recorder()
   constructor(deviceId: string, options: ScrcpyOptions3_1) {
     super()
 
@@ -63,6 +67,21 @@ export default class ScrcpyClient extends Emitter {
 
     if (this.server) {
       this.server.close()
+    }
+  }
+  startRecording() {
+    this.recorder.start()
+  }
+  async stopRecording() {
+    const buf = this.recorder.stop()
+    if (buf) {
+      const { canceled, filePath } = await main.showSaveDialog({
+        defaultPath: `recording.mkv`,
+      })
+      if (canceled) {
+        return
+      }
+      await node.writeFile(filePath, convertBin(buf, 'Uint8Array'))
     }
   }
   async turnOffScreen() {
@@ -178,6 +197,7 @@ export default class ScrcpyClient extends Emitter {
     )
 
     logger.info('video metadata', metadata)
+    this.recorder.videoMetadata = metadata
 
     let codec: any = 0
     switch (metadata.codec) {
@@ -196,6 +216,7 @@ export default class ScrcpyClient extends Emitter {
         .pipeThrough(options.createMediaStreamTransformer())
         .pipeThrough(
           new InspectStream((packet) => {
+            this.recorder.addVideoPacket(packet)
             if (packet.type === 'configuration') {
               logger.info('video configuration', packet.data)
             }
@@ -366,7 +387,6 @@ export default class ScrcpyClient extends Emitter {
         ),
       }
 
-      // eslint-disable-next-line
       const [recordStream, playbackStream] = this.audio.stream.tee()
 
       let player: any
@@ -393,6 +413,18 @@ export default class ScrcpyClient extends Emitter {
 
         player.start()
       }
+
+      this.recorder.audioCodec = metadata.codec
+
+      recordStream.pipeTo(
+        new WritableStream({
+          write: (packet: ScrcpyMediaStreamDataPacket) => {
+            if (packet.type === 'data') {
+              this.recorder.addAudioPacket(packet)
+            }
+          },
+        })
+      )
     }
 
     logger.info('audio ready')

@@ -54,5 +54,6 @@
   "../share/renderer/icon/unlock.svg",
   "../share/renderer/icon/expand.svg",
   "../share/renderer/icon/collapse.svg",
-  "../share/renderer/icon/text.svg"
+  "../share/renderer/icon/text.svg",
+  "../share/renderer/icon/video-recorder.svg"
 ]

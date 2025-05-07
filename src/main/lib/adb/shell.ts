@@ -135,8 +135,7 @@ async function createShell(deviceId: string) {
   let adbPty = new AdbPty(transport)
   try {
     await adbPty.init()
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-  } catch (e) {
+  } catch {
     adbPty.kill()
     const transport = await device.transport()
     adbPty = new AdbPty(transport)

@@ -41,8 +41,7 @@ export default observer(function Toolbar() {
             } else {
               await main.connectDevice(store.ip)
             }
-            // eslint-disable-next-line
-          } catch (e) {
+          } catch {
             notify(t('connectErr'), { icon: 'error' })
           }
         }}

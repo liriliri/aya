@@ -86,8 +86,9 @@ export default observer(function Performance() {
               .then((fps) => {
                 dataRef.current.fps = fps
               })
-            /* eslint-disable @typescript-eslint/no-unused-vars, no-empty */
-          } catch (e) {}
+          } catch {
+            // ignore
+          }
         }
       }
       if (!destroyed) {

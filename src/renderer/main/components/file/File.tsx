@@ -225,8 +225,7 @@ export default observer(function File() {
       notify(t('fileUploading', { path: file }), { icon: 'info' })
       try {
         await main.pushFile(device.id, file, path + name)
-        // eslint-disable-next-line
-      } catch (e) {
+      } catch {
         notify(t('uploadFileErr'), { icon: 'error' })
       }
     }
@@ -246,8 +245,7 @@ export default observer(function File() {
       if (stat.directory) {
         go(p)
       }
-      // eslint-disable-next-line
-    } catch (e) {
+    } catch {
       notify(t('folderNotExistErr'), { icon: 'error' })
     }
   }

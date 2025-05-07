@@ -64,8 +64,9 @@ export default observer(function Webview() {
                 })
               )
             }
-            /* eslint-disable @typescript-eslint/no-unused-vars, no-empty */
-          } catch (e) {}
+          } catch {
+            // ignore
+          }
         }
       }
       if (!destroyed) {

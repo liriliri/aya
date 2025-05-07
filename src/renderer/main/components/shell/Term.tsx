@@ -59,8 +59,7 @@ export default observer(function Term(props: ITermProps) {
 
     try {
       term.loadAddon(new WebglAddon())
-      /* eslint-disable @typescript-eslint/no-unused-vars */
-    } catch (e) {
+    } catch {
       term.loadAddon(new CanvasAddon())
     }
 

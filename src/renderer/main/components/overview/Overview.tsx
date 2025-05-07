@@ -42,8 +42,7 @@ export default observer(function Overview() {
       setIsLoading(true)
       const overview = await main.getOverview(device.id)
       setOverview(overview)
-      // eslint-disable-next-line
-    } catch (e) {
+    } catch {
       notify(t('commonErr'), { icon: 'error' })
     }
 
@@ -138,8 +137,7 @@ export default observer(function Overview() {
     try {
       await main.root(device.id)
       setTimeout(() => refresh(), 2000)
-      // eslint-disable-next-line
-    } catch (e) {
+    } catch {
       notify(t('rootModeErr'), { icon: 'error' })
     }
   }

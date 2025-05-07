@@ -27,8 +27,7 @@ export async function installPackages(deviceId: string, apkPaths?: string[]) {
     try {
       await main.installPackage(deviceId, apkPath!)
       hasSuccess = true
-      // eslint-disable-next-line
-    } catch (e) {
+    } catch {
       notify(t('installPackageErr'), { icon: 'error' })
     }
   }

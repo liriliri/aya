@@ -181,8 +181,7 @@ export default observer(function Application() {
   async function open(packageName: string) {
     try {
       await main.startPackage(store.device!.id, packageName)
-      // eslint-disable-next-line
-    } catch (e) {
+    } catch {
       notify(t('startPackageErr'), { icon: 'error' })
     }
   }

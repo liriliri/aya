@@ -60,13 +60,13 @@ class AyaClient {
           if (resolve) {
             resolve(JSON.parse(result))
           }
-          // eslint-disable-next-line
-        } catch (e) {}
+        } catch {
+          // ignore
+        }
       })
       socket.on('end', () => (this.socket = null))
       this.socket = socket
-      // eslint-disable-next-line
-    } catch (e) {
+    } catch {
       if (tryStart) {
         await this.push()
         await this.start()

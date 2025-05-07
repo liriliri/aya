@@ -72,7 +72,7 @@
   "performance": "Производительность",
   "uptime": "Время работы",
   "cpuNum": "{{count}} ядер",
-  "webview": "WebView",
+  "webview": "Веб-просмотр",
   "title": "Название",
   "type": "Тип",
   "inspect": "Инспектировать",
@@ -199,4 +199,6 @@
   "offline": "Оффлайн",
   "useLocalInspector": "Использовать локальный инспектор",
   "inputText": "Ввод текста"
+  "useNativeTitlebar": "Использовать системную рамку окна",
+  "screenRecordeing": "Запись экрана"
 }

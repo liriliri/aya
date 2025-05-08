@@ -3,6 +3,10 @@
 }
 
 .tabs {
-  flex: 1;
   width: auto;
+}
+
+.controls {
+  flex: 1;
+  min-width: 100px;
 }

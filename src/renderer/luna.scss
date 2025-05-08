@@ -113,6 +113,7 @@ $theme-variables: meta.module-variables(theme);
 
 .luna-command-palette-body {
   padding: #{theme.$padding-x-x-s}px;
+  border: 1px solid var(--color-border);
   border-radius: #{theme.$border-radius-x-s}px;
 }
 

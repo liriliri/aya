@@ -75,14 +75,14 @@ export default observer(function Shell() {
         >
           {tabItems}
         </LunaTab>
-        <LunaToolbar>
-          <LunaToolbarSpace />
+        <LunaToolbar className={Style.controls}>
           <ToolbarIcon
             icon="add"
             title={t('add')}
             onClick={add}
             disabled={!device}
           />
+          <LunaToolbarSpace />
           <LunaToolbarSeparator />
           <ToolbarIcon
             icon="delete"

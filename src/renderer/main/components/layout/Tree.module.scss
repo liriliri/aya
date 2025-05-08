@@ -23,6 +23,7 @@
   padding-bottom: 31px;
   & > :global(.luna-dom-viewer) {
     height: 100%;
+    overflow: auto;
   }
 }
 

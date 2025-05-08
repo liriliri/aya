@@ -198,7 +198,7 @@
   "online": "Онлайн",
   "offline": "Оффлайн",
   "useLocalInspector": "Использовать локальный инспектор",
-  "inputText": "Ввод текста"
+  "inputText": "Ввод текста",
   "useNativeTitlebar": "Использовать системную рамку окна",
   "screenRecordeing": "Запись экрана"
 }

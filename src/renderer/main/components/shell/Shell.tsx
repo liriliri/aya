@@ -14,10 +14,25 @@ import { useEffect, useRef, useState } from 'react'
 import uuid from 'licia/uuid'
 import map from 'licia/map'
 import filter from 'licia/filter'
+import LunaCommandPalette from 'luna-command-palette/react'
+import find from 'licia/find'
+import { Terminal } from '@xterm/xterm'
+
+interface IShell {
+  id: string
+  name: string
+  sessionId: string
+  terminal?: Terminal
+}
 
 export default observer(function Shell() {
-  const [shells, setShells] = useState<Array<{ id: string; name: string }>>([])
-  const [selectedShell, setSelectedShell] = useState('')
+  const [shells, setShells] = useState<Array<IShell>>([])
+  const [commandPaletteVisible, setCommandPaletteVisible] = useState(false)
+  const [selectedShell, setSelectedShell] = useState<IShell>({
+    id: '',
+    name: '',
+    sessionId: '',
+  })
   const numRef = useRef(1)
   const { device } = store
 
@@ -25,24 +40,23 @@ export default observer(function Shell() {
 
   function add() {
     const id = uuid()
-    setShells([
-      ...shells,
-      {
-        id,
-        name: `${t('shell')} ${numRef.current++}`,
-      },
-    ])
-    setSelectedShell(id)
+    const shell = {
+      id,
+      name: `${t('shell')} ${numRef.current++}`,
+      sessionId: '',
+    }
+    setShells([...shells, shell])
+    setSelectedShell(shell)
   }
 
   function close() {
-    let selectedIdx = shells.findIndex((shell) => shell.id === selectedShell)
-    const newShells = filter(shells, (shell) => shell.id !== selectedShell)
+    let selectedIdx = shells.findIndex((shell) => shell.id === selectedShell.id)
+    const newShells = filter(shells, (shell) => shell.id !== selectedShell.id)
     setShells(newShells)
     if (selectedIdx >= newShells.length) {
       selectedIdx = newShells.length - 1
     }
-    setSelectedShell(newShells[selectedIdx].id)
+    setSelectedShell(newShells[selectedIdx])
   }
 
   const tabItems = map(shells, (shell) => {
@@ -51,7 +65,7 @@ export default observer(function Shell() {
         key={shell.id}
         id={shell.id}
         title={shell.name}
-        selected={selectedShell === shell.id}
+        selected={selectedShell.id === shell.id}
       />
     )
   })
@@ -60,9 +74,29 @@ export default observer(function Shell() {
     return (
       <Term
         key={shell.id}
-        visible={selectedShell === shell.id && store.panel === 'shell'}
+        onSessionIdChange={(id) => {
+          shell.sessionId = id
+        }}
+        onCreate={(terminal) => {
+          shell.terminal = terminal
+        }}
+        visible={selectedShell.id === shell.id && store.panel === 'shell'}
       />
     )
+  })
+
+  const commands = map(getCommands(), ([title, command]) => {
+    return {
+      title: `${title} (${command})`,
+      handler: () => {
+        main.writeShell(selectedShell.sessionId, command)
+        setTimeout(() => {
+          if (selectedShell.terminal) {
+            selectedShell.terminal.focus()
+          }
+        }, 500)
+      },
+    }
   })
 
   return (
@@ -71,11 +105,16 @@ export default observer(function Shell() {
         <LunaTab
           className={Style.tabs}
           height={31}
-          onSelect={(id) => setSelectedShell(id)}
+          onSelect={(id) => {
+            const shell = find(shells, (shell) => shell.id === id)
+            if (shell) {
+              setSelectedShell(shell)
+            }
+          }}
         >
           {tabItems}
         </LunaTab>
-        <LunaToolbar className={Style.controls}>
+        <LunaToolbar className={Style.control}>
           <ToolbarIcon
             icon="add"
             title={t('add')}
@@ -83,6 +122,12 @@ export default observer(function Shell() {
             disabled={!device}
           />
           <LunaToolbarSpace />
+          <ToolbarIcon
+            icon="list"
+            title={t('shortcut')}
+            onClick={() => setCommandPaletteVisible(true)}
+            disabled={!device}
+          />
           <LunaToolbarSeparator />
           <ToolbarIcon
             icon="delete"
@@ -92,7 +137,29 @@ export default observer(function Shell() {
           />
         </LunaToolbar>
       </div>
-      <div className="panel-body">{terms}</div>
+      <div className="panel-body">
+        {terms}
+        <LunaCommandPalette
+          placeholder={t('typeCmd')}
+          visible={commandPaletteVisible}
+          onClose={() => setCommandPaletteVisible(false)}
+          commands={commands}
+        />
+      </div>
     </div>
   )
 })
+
+function getCommands() {
+  return [
+    [t('reboot'), 'reboot\n'],
+    [t('rebootRecovery'), 'reboot recovery\n'],
+    [t('rebootBootloader'), 'reboot bootloader\n'],
+    [
+      `${t('start')} shizuku`,
+      'sh /sdcard/Android/data/moe.shizuku.privileged.api/start.sh\n',
+    ],
+    [t('memInfo'), 'dumpsys meminfo\n'],
+    [t('batteryInfo'), 'dumpsys battery\n'],
+  ]
+}

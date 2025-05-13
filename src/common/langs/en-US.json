@@ -200,5 +200,6 @@
   "useLocalInspector": "Use Local Inspector",
   "inputText": "Input Text",
   "useNativeTitlebar": "Use Native Titlebar",
-  "screenRecordeing": "Screen Recording"
+  "screenRecordeing": "Screen Recording",
+  "wirelessMode": "Wireless Mode"
 }

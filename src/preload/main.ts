@@ -131,6 +131,7 @@ export default Object.assign(mainObj, {
   listReverses: invoke<IpcListReverses>('listReverses'),
   forward: invoke<IpcForward>('forward'),
   reverse: invoke<IpcReverse>('reverse'),
+  startWireless: invoke('startWireless'),
   openAdbCli: invoke('openAdbCli'),
   dumpWindowHierarchy: invoke<IpcDumpWindowHierarchy>('dumpWindowHierarchy'),
   root: invoke('root'),

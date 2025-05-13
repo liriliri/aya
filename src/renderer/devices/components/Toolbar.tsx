@@ -13,9 +13,17 @@ import { notify } from 'share/renderer/lib/util'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import store from '../store'
 import { isRemoteDevice } from '../lib/util'
+import some from 'licia/some'
 
 export default observer(function Toolbar() {
-  const { device } = store
+  const { device, remoteDevices } = store
+
+  const wirelessDisabled =
+    !device ||
+    isRemoteDevice(device.id) ||
+    some(remoteDevices, (d) => {
+      return d.serialno === device.serialno && d.type !== 'offline'
+    })
 
   return (
     <LunaToolbar className={Style.toolbar}>
@@ -51,6 +59,16 @@ export default observer(function Toolbar() {
         {t('connect')}
       </LunaToolbarButton>
       <LunaToolbarSpace />
+      <ToolbarIcon
+        icon="wifi"
+        title={t('wirelessMode')}
+        disabled={wirelessDisabled}
+        onClick={() => {
+          if (device) {
+            main.startWireless(device.id)
+          }
+        }}
+      />
       <ToolbarIcon
         icon="disconnect"
         title={t('disconnect')}

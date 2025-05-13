@@ -32,6 +32,7 @@ import { IpcDumpWindowHierarchy, IpcGetDevices } from '../../common/types'
 import path from 'node:path'
 import childProcess from 'node:child_process'
 import isMac from 'licia/isMac'
+import sleep from 'licia/sleep'
 
 const logger = log('adb')
 
@@ -83,19 +84,6 @@ async function getOverview(deviceId: string) {
   if (ssidMatch && ssidMatch[1] === '<unknown ssid>') {
     ssidMatch = null
   }
-  let ip = ''
-  let mac = ''
-  const wlan0 = await shell(deviceId, 'ip addr show wlan0')
-  const ipMatch = wlan0.match(/inet (\d+\.\d+\.\d+\.\d+)/)
-  if (ipMatch) {
-    ip = ipMatch[1]
-  }
-  const macMatch = wlan0.match(
-    /link\/ether (([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))/
-  )
-  if (macMatch) {
-    mac = macMatch[1]
-  }
 
   const root = contain(id, 'uid=0')
 
@@ -110,12 +98,32 @@ async function getOverview(deviceId: string) {
     kernelVersion,
     fontScale: fontScale === 'null' ? 0 : toNum(fontScale),
     wifi: ssidMatch ? ssidMatch[1] : '',
-    ip,
     root,
-    mac,
+    ...(await getIpAndMac(deviceId)),
     ...(await getStorage(deviceId)),
     ...(await getMemory(deviceId)),
     ...(await getScreen(deviceId)),
+  }
+}
+
+async function getIpAndMac(deviceId: string) {
+  let ip = ''
+  let mac = ''
+  const wlan0 = await shell(deviceId, 'ip addr show wlan0')
+  const ipMatch = wlan0.match(/inet (\d+\.\d+\.\d+\.\d+)/)
+  if (ipMatch) {
+    ip = ipMatch[1]
+  }
+  const macMatch = wlan0.match(
+    /link\/ether (([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))/
+  )
+  if (macMatch) {
+    mac = macMatch[1]
+  }
+
+  return {
+    ip,
+    mac,
   }
 }
 
@@ -324,6 +332,14 @@ async function root(deviceId: string) {
   await device.root()
 }
 
+async function startWireless(deviceId: string) {
+  const device = await client.getDevice(deviceId)
+  const { ip } = await getIpAndMac(deviceId)
+  const port = await device.tcpip(5555)
+  await sleep(500)
+  await connectDevice(ip, port)
+}
+
 export async function init() {
   logger.info('init')
 
@@ -377,4 +393,5 @@ export async function init() {
   handleEvent('openAdbCli', openAdbCli)
   handleEvent('dumpWindowHierarchy', dumpWindowHierarchy)
   handleEvent('root', root)
+  handleEvent('startWireless', startWireless)
 }

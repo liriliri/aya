@@ -63,9 +63,13 @@ export default observer(function Toolbar() {
         icon="wifi"
         title={t('wirelessMode')}
         disabled={wirelessDisabled}
-        onClick={() => {
+        onClick={async () => {
           if (device) {
-            main.startWireless(device.id)
+            try {
+              await main.startWireless(device.id)
+            } catch {
+              notify(t('commonErr'), { icon: 'error' })
+            }
           }
         }}
       />

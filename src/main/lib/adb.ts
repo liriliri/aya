@@ -59,6 +59,7 @@ const getDevices: IpcGetDevices = async function () {
       return {
         id: device.id,
         type: device.type,
+        serialno: properties['ro.serialno'] || '',
         name,
         androidVersion: properties['ro.build.version.release'],
         sdkVersion: properties['ro.build.version.sdk'],
@@ -104,7 +105,7 @@ async function getOverview(deviceId: string) {
     abi: properties['ro.product.cpu.abi'],
     brand: properties['ro.product.brand'],
     model: properties['ro.product.model'],
-    serialNum: properties['ro.serialno'] || '',
+    serialno: properties['ro.serialno'] || '',
     cpuNum: cpus.length,
     kernelVersion,
     fontScale: fontScale === 'null' ? 0 : toNum(fontScale),

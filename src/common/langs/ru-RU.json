@@ -58,7 +58,7 @@
   "storage": "Хранилище",
   "copied": "Скопировано",
   "resolution": "Разрешение",
-  "serialNum": "Серийный номер",
+  "serialno": "Серийный номер",
   "restartAya": "Перезапустить AYA",
   "process": "Процесс",
   "processName": "Имя процесса",

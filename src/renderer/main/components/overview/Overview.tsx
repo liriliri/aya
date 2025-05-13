@@ -68,7 +68,7 @@ export default observer(function Overview() {
           {item(t('model'), overview.model, 'model')}
         </div>
         <div className={Style.row}>
-          {item(t('serialNum'), overview.serialNum, 'serial-number')}
+          {item(t('serialno'), overview.serialno, 'serial-number')}
           {item(
             t('androidVersion'),
             `Android ${device.androidVersion} (API ${device.sdkVersion})`,

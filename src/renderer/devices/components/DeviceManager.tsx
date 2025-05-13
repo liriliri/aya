@@ -29,6 +29,7 @@ export default observer(function DeviceManager() {
     return {
       id: device.id,
       name: device.name,
+      serialno: device.serialno,
       androidVersion: `Android ${device.androidVersion} (API ${device.sdkVersion})`,
       status: device.type === 'offline' ? t('offline') : t('online'),
       type: device.type,
@@ -63,7 +64,13 @@ const columns = [
     id: 'id',
     title: 'ID',
     sortable: true,
-    weight: 20,
+    weight: 15,
+  },
+  {
+    id: 'serialno',
+    title: t('serialno'),
+    sortable: true,
+    weight: 15,
   },
   {
     id: 'name',
@@ -81,6 +88,6 @@ const columns = [
     id: 'status',
     title: t('status'),
     sortable: true,
-    weight: 20,
+    weight: 10,
   },
 ]

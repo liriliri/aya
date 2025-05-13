@@ -1,6 +1,7 @@
 export interface IDevice {
   id: string
   name: string
+  serialno: string
   androidVersion: string
   sdkVersion: string
   type: 'emulator' | 'device' | 'offline' | 'unauthorized' | 'unknown'

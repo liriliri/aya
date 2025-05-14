@@ -3,6 +3,7 @@ import {
   Consumable,
   ReadableStream,
   WritableStream,
+  ReadableWritablePair,
 } from '@yume-chan/stream-extra'
 
 export function socketToReadableStream(socket: net.Socket) {
@@ -44,4 +45,13 @@ export function socketToWritableStream(socket: net.Socket) {
       socket.destroy()
     },
   })
+}
+
+export function socketToReadableWritablePair(
+  socket: net.Socket
+): ReadableWritablePair<Uint8Array, Consumable<Uint8Array>> {
+  return {
+    readable: socketToReadableStream(socket),
+    writable: socketToWritableStream(socket),
+  }
 }

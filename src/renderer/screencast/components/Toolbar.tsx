@@ -39,7 +39,7 @@ export default observer(function Toolbar() {
   async function injectText() {
     const text = await LunaModal.prompt(t('inputText'), '')
     if (text) {
-      scrcpyClient.setClipboard(text)
+      scrcpyClient.setClipboard(text, true)
     }
   }
 

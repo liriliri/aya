@@ -23,6 +23,7 @@ import {
   BufferedReadableStream,
   PushReadableStream,
   Consumable,
+  ReadableWritablePair,
 } from '@yume-chan/stream-extra'
 import {
   WebCodecsVideoDecoder,
@@ -33,11 +34,12 @@ import { getUint32BigEndian } from '@yume-chan/no-data-view'
 import Readiness from 'licia/Readiness'
 import { OpusStream } from './AudioStream'
 import sleep from 'licia/sleep'
-import { socketToReadableStream, socketToWritableStream } from './util'
+import { socketToReadableStream, socketToReadableWritablePair } from './util'
 import clamp from 'licia/clamp'
 import Recorder from './Recorder'
 import convertBin from 'licia/convertBin'
 import dateFormat from 'licia/dateFormat'
+import noop from 'licia/noop'
 
 const logger = log('ScrcpyClient')
 
@@ -103,14 +105,14 @@ export default class ScrcpyClient extends Emitter {
       controller.setScreenPowerMode(AndroidScreenPowerMode.Normal)
     }
   }
-  async setClipboard(text: string) {
+  async setClipboard(text: string, paste = false) {
     await this.readiness.ready('control')
     if (this.control) {
       const controller: ScrcpyControlMessageWriter = this.control.controller
       controller.setClipboard({
         sequence: 0n,
         content: text,
-        paste: true,
+        paste,
       })
     }
   }
@@ -142,7 +144,7 @@ export default class ScrcpyClient extends Emitter {
       })
       sleep(1000).then(() => {
         if (!isAudio) {
-          this.createControl(socketToWritableStream(socket))
+          this.createControl(socketToReadableWritablePair(socket))
         }
       })
     })
@@ -436,16 +438,25 @@ export default class ScrcpyClient extends Emitter {
     this.readiness.signal('audio')
   }
   private async createControl(
-    controlStream: WritableStream<Consumable<Uint8Array>>
+    controlStream: ReadableWritablePair<Uint8Array, Consumable<Uint8Array>>
   ) {
     logger.info('control stream connected')
 
     const { options } = this
 
     const controller = new ScrcpyControlMessageWriter(
-      controlStream.getWriter(),
+      controlStream.writable.getWriter(),
       options
     )
+
+    options.clipboard!.pipeTo(
+      new WritableStream({
+        write: (content) => {
+          navigator.clipboard.writeText(content)
+        },
+      })
+    )
+    this.parseDeviceMessages(controlStream.readable).catch(noop)
 
     this.control = {
       controller,
@@ -453,6 +464,25 @@ export default class ScrcpyClient extends Emitter {
 
     logger.info('control ready')
     this.readiness.signal('control')
+  }
+  private async parseDeviceMessages(controlStream: ReadableStream<Uint8Array>) {
+    const buffered = new BufferedReadableStream(controlStream)
+    try {
+      while (true) {
+        let type: number
+        try {
+          const result = await buffered.readExactly(1)
+          type = result[0]!
+        } catch {
+          this.options.endDeviceMessageStream()
+          break
+        }
+        await this.options.parseDeviceMessage(type, buffered)
+      }
+    } catch (e) {
+      this.options.endDeviceMessageStream(e)
+      buffered.cancel(e).catch(() => {})
+    }
   }
 }
 

@@ -106,6 +106,10 @@ class Store extends BaseStore {
         this.setDevice(val)
       }
     })
+    main.on('focusWin', async () => {
+      const text = await navigator.clipboard.readText()
+      this.scrcpyClient.setClipboard(text)
+    })
   }
 }
 

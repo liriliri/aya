@@ -1,3 +1,11 @@
+## v1.9.0 (14 May 2025)
+
+* feat: optimize the shell panel ui
+* feat: screencast clipboard sync
+* feat: start wireless mode
+* feat: show serialno in device manager
+* feat: device manager screenshot
+
 ## v1.8.0 (7 May 2025)
 
 * feat: use native titlebar [#68](https://github.com/liriliri/aya/issues/68)

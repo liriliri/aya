@@ -201,5 +201,6 @@
   "inputText": "输入文本",
   "useNativeTitlebar": "使用原生标题栏",
   "screenRecording": "录屏",
-  "wirelessMode": "无线模式"
+  "wirelessMode": "无线模式",
+  "deviceNotSelected": "未选择设备"
 }

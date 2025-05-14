@@ -15,6 +15,8 @@ import isStrBlank from 'licia/isStrBlank'
 import store from '../../store'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import { IModalProps } from 'share/common/types'
+import { notify } from 'share/renderer/lib/util'
+import { normalizePort } from '../../lib/util'
 
 export default observer(function PortMappingModal(props: IModalProps) {
   const portForwarding = useRef(true)
@@ -82,10 +84,17 @@ export default observer(function PortMappingModal(props: IModalProps) {
               if (!store.device) {
                 return
               }
-              if (portForwarding.current) {
-                await main.forward(store.device.id, local, remote)
-              } else {
-                await main.reverse(store.device.id, remote, local)
+              const l = normalizePort(local)
+              const r = normalizePort(remote)
+              try {
+                if (portForwarding.current) {
+                  await main.forward(store.device.id, l, r)
+                } else {
+                  await main.reverse(store.device.id, r, l)
+                }
+              } catch {
+                notify(t('commonErr'), { icon: 'error' })
+                return
               }
               refresh()
             }}

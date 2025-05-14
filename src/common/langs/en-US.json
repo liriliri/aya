@@ -201,5 +201,6 @@
   "inputText": "Input Text",
   "useNativeTitlebar": "Use Native Titlebar",
   "screenRecordeing": "Screen Recording",
-  "wirelessMode": "Wireless Mode"
+  "wirelessMode": "Wireless Mode",
+  "deviceNotSelected": "Device not selected"
 }

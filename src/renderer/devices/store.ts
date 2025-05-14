@@ -6,6 +6,7 @@ import filter from 'licia/filter'
 import concat from 'licia/concat'
 import unique from 'licia/unique'
 import { isRemoteDevice } from './lib/util'
+import dataUrl from 'licia/dataUrl'
 
 class Store extends BaseStore {
   filter = ''
@@ -13,7 +14,9 @@ class Store extends BaseStore {
   port = ''
   devices: IDevice[] = []
   remoteDevices: IDevice[] = []
+  screenshotHeight = 200
   device: IDevice | null = null
+  screenshot: string | null = null
   constructor() {
     super()
     makeObservable(this, {
@@ -23,12 +26,15 @@ class Store extends BaseStore {
       device: observable,
       remoteDevices: observable,
       filter: observable,
+      screenshotHeight: observable,
+      screenshot: observable,
       setIp: action,
       setPort: action,
       setFilter: action,
       selectDevice: action,
       updateDevices: action,
       removeRemoteDevice: action,
+      setScreenshotHeight: action,
     })
 
     this.init()
@@ -59,6 +65,16 @@ class Store extends BaseStore {
       this.port = port
     }
     this.device = device
+
+    this.screenshot = null
+    if (device && device.type !== 'offline') {
+      main.screencap(device.id).then((data) => {
+        const url = dataUrl.stringify(data, 'image/png')
+        runInAction(() => {
+          this.screenshot = url
+        })
+      })
+    }
   }
   updateDevices(devices: IDevice[]) {
     let remoteDevices: IDevice[] = toJS(this.remoteDevices)
@@ -91,6 +107,10 @@ class Store extends BaseStore {
       return device.id !== id
     })
     main.setDevicesStore('remoteDevices', toJS(this.remoteDevices))
+  }
+  setScreenshotHeight(height: number) {
+    this.screenshotHeight = height
+    main.setDevicesStore('screenshotHeight', height)
   }
   private bindEvent() {
     main.on('changeMemStore', (name, val) => {

@@ -75,7 +75,7 @@ export default observer(function Toolbar() {
         <ToolbarIcon
           icon="square"
           title={t('appSwitch')}
-          onClick={() => inputKey(AndroidKeyCode.AndroidAppSwitch)}
+          onClick={inputKey(AndroidKeyCode.AndroidAppSwitch)}
         />
         <ToolbarIcon icon="text" title={t('inputText')} onClick={injectText} />
         <LunaToolbarSeparator />

@@ -7,6 +7,17 @@ export interface IDevice {
   type: 'emulator' | 'device' | 'offline' | 'unauthorized' | 'unknown'
 }
 
+export interface IAvd {
+  id: string
+  name: string
+  abi: string
+  sdkVersion: string
+  memory: number
+  internalStorage: string
+  resolution: string
+  folder: string
+}
+
 export interface IPackageInfo {
   icon: string
   label: string
@@ -48,3 +59,5 @@ export type IpcGetPackageInfos = (
   deviceId: string,
   packageNames: string[]
 ) => Promise<IPackageInfo[]>
+export type IpcGetAvds = (forceRefresh?: boolean) => Promise<IAvd[]>
+export type IpcStartAvd = (avdId: string) => Promise<void>

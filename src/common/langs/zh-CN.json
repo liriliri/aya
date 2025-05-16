@@ -150,7 +150,7 @@
   "reboot": "重启",
   "rebootRecovery": "重启到恢复模式",
   "rebootBootloader": "重启到引导模式",
-  "deviceManager": "设备管理",
+  "deviceManager": "设备管理器",
   "port": "端口",
   "connect": "连接",
   "disconnect": "断开",
@@ -202,5 +202,8 @@
   "useNativeTitlebar": "使用原生标题栏",
   "screenRecording": "录屏",
   "wirelessMode": "无线模式",
-  "deviceNotSelected": "未选择设备"
+  "deviceNotSelected": "未选择设备",
+  "avdManager": "AVD 管理器",
+  "sdkVersion": "SDK 版本",
+  "openDir": "打开目录"
 }

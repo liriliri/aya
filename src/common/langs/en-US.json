@@ -202,5 +202,8 @@
   "useNativeTitlebar": "Use Native Titlebar",
   "screenRecordeing": "Screen Recording",
   "wirelessMode": "Wireless Mode",
-  "deviceNotSelected": "Device not selected"
+  "deviceNotSelected": "Device not selected",
+  "avdManager": "AVD Manager",
+  "sdkVersion": "SDK Version",
+  "openDir": "Open Directory"
 }

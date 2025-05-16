@@ -42,10 +42,10 @@ export default observer(function DeviceManager() {
   const listHeight = clamp(height - store.screenshotHeight, minHeight, height)
 
   return (
-    <div className={Style.devices}>
+    <div className={Style.container}>
       <LunaDataGrid
-        className={Style.grid}
-        onSelect={(node) => store.selectDevice(node.data as any)}
+        className={Style.devices}
+        onSelect={(node) => store.selectDevice(node.data.id as string)}
         onDeselect={() => store.selectDevice(null)}
         columns={columns}
         data={devices}

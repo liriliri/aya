@@ -50,6 +50,10 @@ function renderApp() {
       App = lazy(() => import('./devices/App.js') as Promise<any>)
       title = t('deviceManager')
       break
+    case 'avd':
+      App = lazy(() => import('./avd/App.js') as Promise<any>)
+      title = t('avdManager')
+      break
   }
 
   preload.setTitle(title)

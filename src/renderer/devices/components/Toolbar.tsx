@@ -26,7 +26,7 @@ export default observer(function Toolbar() {
     })
 
   return (
-    <LunaToolbar className={Style.toolbar}>
+    <LunaToolbar className={Style.container}>
       <LunaToolbarInput
         keyName="ip"
         className={Style.ip}

@@ -1,6 +1,7 @@
 import { Menu, MenuItemConstructorOptions, app, shell } from 'electron'
 import * as window from 'share/main/lib/window'
 import * as terminal from 'share/main/window/terminal'
+import * as avd from '../window/avd'
 import isMac from 'licia/isMac'
 import { t } from '../../common/util'
 import upperCase from 'licia/upperCase'
@@ -92,6 +93,12 @@ function getTemplate(): MenuItemConstructorOptions[] {
         label: t('terminal'),
         click() {
           terminal.showWin()
+        },
+      },
+      {
+        label: t('avdManager'),
+        click() {
+          avd.showWin()
         },
       },
     ],

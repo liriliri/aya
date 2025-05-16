@@ -1,6 +1,7 @@
 import {
   IpcDumpWindowHierarchy,
   IpcForward,
+  IpcGetAvds,
   IpcGetDevices,
   IpcGetFps,
   IpcGetPackageInfos,
@@ -8,6 +9,7 @@ import {
   IpcListReverses,
   IpcReverse,
   IpcSetScreencastAlwaysOnTop,
+  IpcStartAvd,
 } from '../common/types'
 import { ipcRenderer } from 'electron'
 import { IpcGetStore, IpcSetStore } from 'share/common/types'
@@ -135,4 +137,6 @@ export default Object.assign(mainObj, {
   openAdbCli: invoke('openAdbCli'),
   dumpWindowHierarchy: invoke<IpcDumpWindowHierarchy>('dumpWindowHierarchy'),
   root: invoke('root'),
+  getAvds: invoke<IpcGetAvds>('getAvds'),
+  startAvd: invoke<IpcStartAvd>('startAvd'),
 })

@@ -7,6 +7,8 @@ import concat from 'licia/concat'
 import unique from 'licia/unique'
 import { isRemoteDevice } from './lib/util'
 import dataUrl from 'licia/dataUrl'
+import isStr from 'licia/isStr'
+import find from 'licia/find'
 
 class Store extends BaseStore {
   filter = ''
@@ -58,7 +60,10 @@ class Store extends BaseStore {
   setFilter(filter: string) {
     this.filter = filter
   }
-  selectDevice(device: IDevice | null) {
+  selectDevice(device: IDevice | string | null) {
+    if (isStr(device)) {
+      device = find(this.devices, (d) => d.id === device) || null
+    }
     if (device && isRemoteDevice(device.id) && device.type === 'offline') {
       const [ip, port] = device.id.split(':')
       this.ip = ip

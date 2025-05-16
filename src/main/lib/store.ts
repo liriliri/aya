@@ -32,6 +32,15 @@ export const getDevicesStore = memoize(function () {
   })
 })
 
+export const getAvdStore = memoize(function () {
+  return new FileStore(getUserDataPath('data/avd.json'), {
+    bounds: {
+      width: 720,
+      height: 480,
+    },
+  })
+})
+
 export const getSettingsStore = memoize(function () {
   return new FileStore(getUserDataPath('data/settings.json'), {
     language: 'system',

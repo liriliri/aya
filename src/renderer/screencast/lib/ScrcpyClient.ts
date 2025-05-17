@@ -11,8 +11,6 @@ import {
   ScrcpyControlMessageWriter,
   AndroidMotionEventAction,
   AndroidMotionEventButton,
-  AndroidKeyEventAction,
-  AndroidKeyCode,
   AndroidScreenPowerMode,
   ScrcpyMediaStreamDataPacket,
 } from '@yume-chan/scrcpy'
@@ -40,6 +38,7 @@ import Recorder from './Recorder'
 import convertBin from 'licia/convertBin'
 import dateFormat from 'licia/dateFormat'
 import noop from 'licia/noop'
+import Keyboard from './Keyboard'
 
 const logger = log('ScrcpyClient')
 
@@ -52,6 +51,7 @@ export default class ScrcpyClient extends Emitter {
   private options: ScrcpyOptions3_1
   private readiness = new Readiness()
   private recorder = new Recorder()
+  private keyboard = new Keyboard(this)
   constructor(deviceId: string, options: ScrcpyOptions3_1) {
     super()
 
@@ -64,6 +64,10 @@ export default class ScrcpyClient extends Emitter {
   async getVideo() {
     await this.readiness.ready('video')
     return this.video
+  }
+  async getControl() {
+    await this.readiness.ready('control')
+    return this.control
   }
   destroy() {
     logger.info('destroy')
@@ -251,38 +255,8 @@ export default class ScrcpyClient extends Emitter {
     el.addEventListener('wheel', (e) => this.injectScroll(el, e))
 
     el.setAttribute('tabindex', '0')
-    el.addEventListener('keydown', (e) => this.injectKeyCode(e))
-    el.addEventListener('keyup', (e) => this.injectKeyCode(e))
-  }
-  private injectKeyCode(e: KeyboardEvent) {
-    e.preventDefault()
-    e.stopPropagation()
-
-    const { type, code } = e
-
-    let action: AndroidKeyEventAction
-    switch (type) {
-      case 'keydown':
-        action = AndroidKeyEventAction.Down
-        break
-      case 'keyup':
-        action = AndroidKeyEventAction.Up
-        break
-      default:
-        throw new Error(`Unsupported event type: ${type}`)
-    }
-
-    const keyCode = AndroidKeyCode[code as keyof typeof AndroidKeyCode]
-
-    if (this.control) {
-      const controller: ScrcpyControlMessageWriter = this.control.controller
-      controller.injectKeyCode({
-        action,
-        keyCode,
-        repeat: 0,
-        metaState: 0,
-      })
-    }
+    el.addEventListener('keydown', this.keyboard.down)
+    el.addEventListener('keyup', this.keyboard.up)
   }
   private injectScroll(el: HTMLVideoElement, e: WheelEvent) {
     e.preventDefault()

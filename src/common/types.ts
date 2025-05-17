@@ -13,7 +13,7 @@ export interface IAvd {
   abi: string
   sdkVersion: string
   memory: number
-  internalStorage: string
+  internalStorage: number
   resolution: string
   folder: string
 }

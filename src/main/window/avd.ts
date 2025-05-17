@@ -14,7 +14,11 @@ import filter from 'licia/filter'
 import endWith from 'licia/endWith'
 import ini from 'licia/ini'
 import toNum from 'licia/toNum'
+import fileSize from 'licia/fileSize'
 import childProcess from 'node:child_process'
+import memoize from 'licia/memoize'
+import isWindows from 'licia/isWindows'
+import isMac from 'licia/isMac'
 
 const store = getAvdStore()
 const settingsStore = getSettingsStore()
@@ -87,7 +91,7 @@ async function parseAvdInfo(file: string): Promise<IAvd> {
     abi: properties['abi.type'],
     sdkVersion: metadata['target'].replace('android-', ''),
     memory: toNum(properties['hw.ramSize']),
-    internalStorage: properties['disk.dataPartition.size'],
+    internalStorage: fileSize(properties['disk.dataPartition.size'] as string),
     resolution: `${properties['hw.lcd.width']}x${properties['hw.lcd.height']}`,
     folder,
   }
@@ -101,17 +105,34 @@ const getAvds: IpcGetAvds = async (forceRefresh) => {
   return map(avds, (avd) => avd)
 }
 
-function getEmulatorPath() {
-  if (process.env.ANDROID_HOME) {
-    return path.resolve(process.env.ANDROID_HOME, 'emulator/emulator')
+const getEmulatorPath = memoize(function () {
+  let androidHome = process.env.ANDROID_HOME
+  if (!androidHome) {
+    if (isWindows) {
+      androidHome = path.resolve(process.env.LOCALAPPDATA || '', 'Android/Sdk')
+    } else if (isMac) {
+      androidHome = path.resolve(os.homedir(), 'Library/Android/sdk')
+    } else {
+      androidHome = path.resolve(os.homedir(), 'Android/Sdk')
+    }
   }
+
+  if (androidHome && fs.existsSync(androidHome)) {
+    return path.resolve(
+      androidHome,
+      `emulator/emulator${isWindows ? '.exe' : ''}`
+    )
+  }
+
   return 'emulator'
-}
+})
 
 const startAvd: IpcStartAvd = async (avdId) => {
   const cp = childProcess.spawn(getEmulatorPath(), [`@${avdId}`], {
     detached: true,
+    windowsHide: true,
     stdio: 'ignore',
+    shell: isWindows,
   })
   cp.unref()
 }

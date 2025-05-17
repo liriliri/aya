@@ -33,7 +33,7 @@ export default observer(function AvdManager() {
       abi: avd.abi,
       sdkVersion: avd.sdkVersion,
       memory: fileSize(avd.memory * 1024 * 1024),
-      internalStorage: avd.internalStorage,
+      internalStorage: fileSize(avd.internalStorage),
       resolution: avd.resolution,
     }
   })

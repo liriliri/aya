@@ -1,3 +1,9 @@
+## v1.10.0 (19 May 2025)
+
+* feat: AVD manager
+* fix: screencast app switch button
+* fix: screencast key mapping [#80](https://github.com/liriliri/aya/issues/80)
+
 ## v1.9.0 (14 May 2025)
 
 * feat: optimize the shell panel ui

@@ -5,6 +5,9 @@ import {
   ScrcpyControlMessageWriter,
 } from '@yume-chan/scrcpy'
 import ScrcpyClient from './ScrcpyClient'
+import contain from 'licia/contain'
+import upperCase from 'licia/upperCase'
+import isNumeric from 'licia/isNumeric'
 
 export default class Keyboard {
   private controlLeft = false
@@ -27,18 +30,21 @@ export default class Keyboard {
 
     const control = await this.client.getControl()
 
-    const { code } = e
-
-    const keyCode = AndroidKeyCode[code as keyof typeof AndroidKeyCode]
-    this.setModifier(keyCode, true)
-
+    const keyCode = this.getKeyCode(e)
     const controller: ScrcpyControlMessageWriter = control.controller
-    controller.injectKeyCode({
-      action: AndroidKeyEventAction.Down,
-      keyCode,
-      repeat: 0,
-      metaState: this.getMetaState(),
-    })
+
+    if (keyCode) {
+      this.setModifier(keyCode, true)
+
+      controller.injectKeyCode({
+        action: AndroidKeyEventAction.Down,
+        keyCode,
+        repeat: 0,
+        metaState: this.getMetaState(),
+      })
+    } else if (e.key.length === 1) {
+      controller.injectText(e.key)
+    }
   }
   up = async (e: KeyboardEvent) => {
     e.preventDefault()
@@ -46,18 +52,19 @@ export default class Keyboard {
 
     const control = await this.client.getControl()
 
-    const { code } = e
-
-    const keyCode = AndroidKeyCode[code as keyof typeof AndroidKeyCode]
-    this.setModifier(keyCode, false)
-
+    const keyCode = this.getKeyCode(e)
     const controller: ScrcpyControlMessageWriter = control.controller
-    controller.injectKeyCode({
-      action: AndroidKeyEventAction.Up,
-      keyCode,
-      repeat: 0,
-      metaState: this.getMetaState(),
-    })
+
+    if (keyCode) {
+      this.setModifier(keyCode, false)
+
+      controller.injectKeyCode({
+        action: AndroidKeyEventAction.Up,
+        keyCode,
+        repeat: 0,
+        metaState: this.getMetaState(),
+      })
+    }
   }
   private setModifier(keyCode: AndroidKeyCode, value: boolean) {
     switch (keyCode) {
@@ -133,4 +140,74 @@ export default class Keyboard {
 
     return metaState
   }
+  private getKeyCode(e: KeyboardEvent): AndroidKeyCode | undefined {
+    let code = ''
+    const key = e.key
+
+    if (contain(ignoreCodes, e.code)) {
+      code = e.code
+    }
+
+    if (key.length === 1 && /[a-zA-Z]/.test(key)) {
+      if (/[a-zA-Z]/.test(key)) {
+        code = `Key${upperCase(key)}`
+      } else if (isNumeric(key)) {
+        code = `Digit${key}`
+      }
+    }
+
+    if (keyCodes[key]) {
+      code = keyCodes[key]
+    }
+
+    return AndroidKeyCode[code as keyof typeof AndroidKeyCode]
+  }
+}
+
+const ignoreCodes = [
+  'ControlLeft',
+  'ControlRight',
+  'ShiftLeft',
+  'ShiftRight',
+  'AltLeft',
+  'AltRight',
+  'MetaLeft',
+  'MetaRight',
+  'CapsLock',
+  'NumLock',
+  'ArrowUp',
+  'ArrowDown',
+  'ArrowLeft',
+  'ArrowRight',
+  'Enter',
+  'Backspace',
+  'PageUp',
+  'PageDown',
+  'Escape',
+  'Delete',
+  'PrintScreen',
+  'Pause',
+  'Home',
+  'End',
+  'Insert',
+  'NumLock',
+]
+
+const keyCodes = {
+  ' ': 'Space',
+  ';': 'Semicolon',
+  '*': 'Star',
+  '#': 'Pound',
+  ',': 'Comma',
+  '.': 'Period',
+  '`': 'Backquote',
+  '-': 'Minus',
+  '=': 'Equal',
+  '[': 'BracketLeft',
+  ']': 'BracketRight',
+  '\\': 'Backslash',
+  "'": 'Quote',
+  '/': 'Slash',
+  '@': 'At',
+  '+': 'Plus',
 }

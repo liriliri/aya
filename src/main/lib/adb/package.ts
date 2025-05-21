@@ -8,10 +8,17 @@ import { handleEvent } from 'share/main/lib/util'
 
 let client: Client
 
+const getCurrentUser = singleton(async (deviceId: string) => {
+  const result = await shell(deviceId, 'am get-current-user')
+  return parseInt(result, 10)
+})
+
 const getPackages = singleton(async (deviceId: string, system = true) => {
   const result: string = await shell(
     deviceId,
-    `pm list packages${system ? '' : ' -3'}`
+    `pm list packages${system ? '' : ' -3'} --user ${await getCurrentUser(
+      deviceId
+    )}`
   )
 
   return map(trim(result).split('\n'), (line) => line.slice(8))

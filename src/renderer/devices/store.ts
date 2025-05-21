@@ -62,7 +62,8 @@ class Store extends BaseStore {
   }
   selectDevice(device: IDevice | string | null) {
     if (isStr(device)) {
-      device = find(this.devices, (d) => d.id === device) || null
+      const devices: IDevice[] = concat(this.devices, this.remoteDevices)
+      device = find(devices, (d) => d.id === device) || null
     }
     if (device && isRemoteDevice(device.id) && device.type === 'offline') {
       const [ip, port] = device.id.split(':')

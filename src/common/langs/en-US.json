@@ -205,5 +205,6 @@
   "deviceNotSelected": "Device not selected",
   "avdManager": "AVD Manager",
   "sdkVersion": "SDK Version",
-  "openDir": "Open Directory"
+  "openDir": "Open Directory",
+  "qrcodePair": "Pair using QR code"
 }

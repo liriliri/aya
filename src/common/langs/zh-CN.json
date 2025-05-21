@@ -205,5 +205,6 @@
   "deviceNotSelected": "未选择设备",
   "avdManager": "AVD 管理器",
   "sdkVersion": "SDK 版本",
-  "openDir": "打开目录"
+  "openDir": "打开目录",
+  "qrcodePair": "扫码配对"
 }

@@ -58,6 +58,8 @@ export default observer(function Toolbar() {
       >
         {t('connect')}
       </LunaToolbarButton>
+      <LunaToolbarSeparator />
+      <ToolbarIcon icon="qrcode" title={t('qrcodePair')} onClick={() => {}} />
       <LunaToolbarSpace />
       <ToolbarIcon
         icon="wifi"

@@ -56,5 +56,6 @@
   "../share/renderer/icon/collapse.svg",
   "../share/renderer/icon/text.svg",
   "../share/renderer/icon/video-recorder.svg",
-  "../share/renderer/icon/open-file.svg"
+  "../share/renderer/icon/open-file.svg",
+  "../share/renderer/icon/qrcode.svg"
 ]

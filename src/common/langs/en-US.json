@@ -206,5 +206,7 @@
   "avdManager": "AVD Manager",
   "sdkVersion": "SDK Version",
   "openDir": "Open Directory",
-  "qrcodePair": "Pair using QR code"
+  "qrcodePair": "Pair using QR code",
+  "wipeDate": "Wipe Data",
+  "wipeDataConfirm": "Are you sure you want to wipe user files from {{name}}?"
 }

@@ -19,6 +19,7 @@ import memoize from 'licia/memoize'
 import isWindows from 'licia/isWindows'
 import isMac from 'licia/isMac'
 import keys from 'licia/keys'
+import sleep from 'licia/sleep'
 
 const store = getAvdStore()
 const settingsStore = getSettingsStore()
@@ -165,10 +166,29 @@ const stopAvd: IpcStopAvd = async (avdId) => {
   process.kill(avd.pid)
 }
 
+const wipeAvdData = async (avdId: string) => {
+  const avd = avds[avdId]
+  if (!avd) {
+    return
+  }
+  if (avd.pid) {
+    await stopAvd(avdId)
+    await sleep(1000)
+  }
+  const removed = [
+    path.resolve(avd.folder, 'snapshots'),
+    path.resolve(avd.folder, 'userdata-qemu.img'),
+  ]
+  for (const item of removed) {
+    await fs.remove(item)
+  }
+}
+
 const initIpc = once(() => {
   reloadAvds()
 
   handleEvent('getAvds', getAvds)
   handleEvent('startAvd', startAvd)
   handleEvent('stopAvd', stopAvd)
+  handleEvent('wipeAvdData', wipeAvdData)
 })

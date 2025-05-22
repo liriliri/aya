@@ -9,6 +9,7 @@ import { t } from '../../../common/util'
 import store from '../store'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import { notify } from 'share/renderer/lib/util'
+import Modal from 'luna-modal'
 
 export default observer(function Toolbar() {
   let pid = 0
@@ -34,6 +35,19 @@ export default observer(function Toolbar() {
             main.stopAvd(id)
           } else {
             main.startAvd(id)
+          }
+        }}
+        disabled={!store.avd}
+      />
+      <ToolbarIcon
+        icon="clear"
+        title={t('wipeData')}
+        onClick={async () => {
+          const result = await Modal.confirm(
+            t('wipeDataConfirm', { name: store.avd!.name })
+          )
+          if (result) {
+            await main.wipeAvdData(store.avd!.id)
           }
         }}
         disabled={!store.avd}

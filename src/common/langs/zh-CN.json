@@ -206,5 +206,7 @@
   "avdManager": "AVD 管理器",
   "sdkVersion": "SDK 版本",
   "openDir": "打开目录",
-  "qrcodePair": "扫码配对"
+  "qrcodePair": "扫码配对",
+  "wipeData": "清除数据",
+  "wipeDataConfirm": "确定要清除 {{name}} 的数据吗？"
 }

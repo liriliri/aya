@@ -2,9 +2,8 @@ import { BrowserWindow } from 'electron'
 import { getAvdStore, getSettingsStore } from '../lib/store'
 import * as window from 'share/main/lib/window'
 import once from 'licia/once'
-import { IpcGetAvds, IpcStartAvd } from 'common/types'
+import { IpcGetAvds, IpcStartAvd, IpcStopAvd } from 'common/types'
 import types from 'licia/types'
-import map from 'licia/map'
 import path from 'path'
 import os from 'os'
 import fs from 'fs-extra'
@@ -19,6 +18,7 @@ import childProcess from 'node:child_process'
 import memoize from 'licia/memoize'
 import isWindows from 'licia/isWindows'
 import isMac from 'licia/isMac'
+import keys from 'licia/keys'
 
 const store = getAvdStore()
 const settingsStore = getSettingsStore()
@@ -94,7 +94,18 @@ async function parseAvdInfo(file: string): Promise<IAvd> {
     internalStorage: fileSize(properties['disk.dataPartition.size'] as string),
     resolution: `${properties['hw.lcd.width']}x${properties['hw.lcd.height']}`,
     folder,
+    pid: 0,
   }
+}
+
+async function getAvdPid(folder: string) {
+  const file = path.resolve(folder, 'hardware-qemu.ini.lock')
+  if (!(await fs.pathExists(file))) {
+    return 0
+  }
+
+  const content = await fs.readFile(file, 'utf-8')
+  return parseInt(content, 10)
 }
 
 const getAvds: IpcGetAvds = async (forceRefresh) => {
@@ -102,7 +113,16 @@ const getAvds: IpcGetAvds = async (forceRefresh) => {
     await reloadAvds()
   }
 
-  return map(avds, (avd) => avd)
+  const ret: IAvd[] = []
+  const _keys = keys(avds)
+  for (let i = 0, len = _keys.length; i < len; i++) {
+    const key = _keys[i]
+    const avd = avds[key]
+    avd.pid = await getAvdPid(avd.folder)
+    ret.push(avd)
+  }
+
+  return ret
 }
 
 const getEmulatorPath = memoize(function () {
@@ -137,9 +157,18 @@ const startAvd: IpcStartAvd = async (avdId) => {
   cp.unref()
 }
 
+const stopAvd: IpcStopAvd = async (avdId) => {
+  const avd = avds[avdId]
+  if (!avd || !avd.pid) {
+    return
+  }
+  process.kill(avd.pid)
+}
+
 const initIpc = once(() => {
   reloadAvds()
 
   handleEvent('getAvds', getAvds)
   handleEvent('startAvd', startAvd)
+  handleEvent('stopAvd', stopAvd)
 })

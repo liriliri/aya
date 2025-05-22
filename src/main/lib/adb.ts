@@ -366,7 +366,7 @@ export async function init() {
   })
   function onDeviceChange() {
     logger.info('device change')
-    setTimeout(() => window.sendTo('main', 'changeDevice'), 2000)
+    setTimeout(() => window.sendAll('changeDevice'), 2000)
   }
 
   base.init(client)

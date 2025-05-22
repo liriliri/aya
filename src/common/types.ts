@@ -16,6 +16,7 @@ export interface IAvd {
   internalStorage: number
   resolution: string
   folder: string
+  pid: number
 }
 
 export interface IPackageInfo {
@@ -61,3 +62,4 @@ export type IpcGetPackageInfos = (
 ) => Promise<IPackageInfo[]>
 export type IpcGetAvds = (forceRefresh?: boolean) => Promise<IAvd[]>
 export type IpcStartAvd = (avdId: string) => Promise<void>
+export type IpcStopAvd = IpcStartAvd

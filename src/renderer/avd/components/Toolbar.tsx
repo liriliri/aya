@@ -11,6 +11,11 @@ import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import { notify } from 'share/renderer/lib/util'
 
 export default observer(function Toolbar() {
+  let pid = 0
+  if (store.avd) {
+    pid = store.avd.pid
+  }
+
   return (
     <LunaToolbar className={Style.container}>
       <LunaToolbarInput
@@ -21,10 +26,15 @@ export default observer(function Toolbar() {
       />
       <LunaToolbarSpace />
       <ToolbarIcon
-        icon="play"
-        title={t('start')}
+        icon={pid ? 'pause' : 'play'}
+        title={t(pid ? 'stop' : 'start')}
         onClick={() => {
-          main.startAvd(store.avd!.id)
+          const id = store.avd!.id
+          if (pid) {
+            main.stopAvd(id)
+          } else {
+            main.startAvd(id)
+          }
         }}
         disabled={!store.avd}
       />

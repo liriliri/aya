@@ -10,6 +10,7 @@ import {
   IpcReverse,
   IpcSetScreencastAlwaysOnTop,
   IpcStartAvd,
+  IpcStopAvd,
 } from '../common/types'
 import { ipcRenderer } from 'electron'
 import { IpcGetStore, IpcSetStore } from 'share/common/types'
@@ -139,4 +140,5 @@ export default Object.assign(mainObj, {
   root: invoke('root'),
   getAvds: invoke<IpcGetAvds>('getAvds'),
   startAvd: invoke<IpcStartAvd>('startAvd'),
+  stopAvd: invoke<IpcStopAvd>('stopAvd'),
 })

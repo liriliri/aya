@@ -19,6 +19,7 @@ class Store extends BaseStore {
       selectAvd: action,
     })
 
+    this.bindEvent()
     this.init()
   }
   async init() {
@@ -29,6 +30,10 @@ class Store extends BaseStore {
   }
   updateAvds(avds: IAvd[]) {
     this.avds = avds
+    if (this.avd) {
+      const avd = find(avds, (d) => d.id === this.avd!.id) || null
+      this.avd = avd
+    }
   }
   setFilter(filter: string) {
     this.filter = filter
@@ -39,6 +44,11 @@ class Store extends BaseStore {
     }
 
     this.avd = avd
+  }
+  private bindEvent() {
+    main.on('changeDevice', async () => {
+      this.updateAvds(await main.getAvds())
+    })
   }
 }
 

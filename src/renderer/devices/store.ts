@@ -87,6 +87,7 @@ class Store extends BaseStore {
     each(remoteDevices, (device) => {
       device.type = 'offline'
     })
+    remoteDevices = unique(remoteDevices, (a, b) => a.serialno === b.serialno)
     remoteDevices = unique(
       concat(
         remoteDevices,

@@ -21,7 +21,7 @@
     "format": "lsla prettier \"src/**/*.{ts,tsx,scss,css,json}\" \"*.{js,ts,json}\" \"script/*.mjs\" --write",
     "start": "electron ./dist/main/index.js",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
-    "genIcon": "lsla genIcon --input src/renderer/ --output src/renderer/icon.css --name aya-icon",
+    "genIcon": "lsla genIcon --input src/renderer/ --output src/renderer/icon.css --name aya-icon --source src/share/renderer/icon/",
     "genTheme": "lsla genTheme --input src/common/theme.json --output src/renderer/theme.scss && lsla genTheme --input src/common/theme.json --output src/common/theme.ts",
     "genPb": "pbjs -t static-module -w es6 -o src/main/lib/wire.js server/server/src/main/proto/Wire.proto && pbts -o src/main/lib/wire.d.ts src/main/lib/wire.js"
   },

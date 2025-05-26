@@ -143,4 +143,5 @@ export default Object.assign(mainObj, {
   startAvd: invoke<IpcStartAvd>('startAvd'),
   stopAvd: invoke<IpcStopAvd>('stopAvd'),
   wipeAvdData: invoke<IpcWipeAvdData>('wipeAvdData'),
+  restartAdbServer: invoke('restartAdbServer'),
 })

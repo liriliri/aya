@@ -208,5 +208,7 @@
   "openDir": "Open Directory",
   "qrcodePair": "Pair using QR code",
   "wipeDate": "Wipe Data",
-  "wipeDataConfirm": "Are you sure you want to wipe user files from {{name}}?"
+  "wipeDataConfirm": "Are you sure you want to wipe user files from {{name}}?",
+  "restartAdbServer": "Restart ADB Server",
+  "adbServerRestarted": "ADB Server restarted"
 }

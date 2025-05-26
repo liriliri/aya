@@ -340,6 +340,11 @@ async function startWireless(deviceId: string) {
   await connectDevice(ip, port)
 }
 
+async function restartAdbServer() {
+  await client.kill()
+  await client.version()
+}
+
 export async function init() {
   logger.info('init')
 
@@ -359,15 +364,29 @@ export async function init() {
   client = Adb.createClient({
     bin,
   })
-  client.trackDevices().then((tracker) => {
-    tracker.on('add', onDeviceChange)
-    tracker.on('remove', onDeviceChange)
-    tracker.on('end', () => logger.info('tracker end'))
-  })
+  async function track() {
+    logger.info('track devices')
+    try {
+      const tracker = await client.trackDevices()
+      tracker.on('add', onDeviceChange)
+      tracker.on('remove', onDeviceChange)
+      tracker.on('error', () => {
+        logger.error('tracker error')
+      })
+      tracker.on('end', async () => {
+        logger.info('tracker end')
+        await sleep(2000)
+        track()
+      })
+    } catch (e) {
+      logger.error('track error', e)
+    }
+  }
   function onDeviceChange() {
     logger.info('device change')
     setTimeout(() => window.sendAll('changeDevice'), 2000)
   }
+  track()
 
   base.init(client)
   logcat.init(client)
@@ -394,4 +413,5 @@ export async function init() {
   handleEvent('dumpWindowHierarchy', dumpWindowHierarchy)
   handleEvent('root', root)
   handleEvent('startWireless', startWireless)
+  handleEvent('restartAdbServer', restartAdbServer)
 }

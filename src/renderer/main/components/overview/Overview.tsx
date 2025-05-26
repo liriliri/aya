@@ -142,6 +142,11 @@ export default observer(function Overview() {
     }
   }
 
+  async function restartAdbServer() {
+    await main.restartAdbServer()
+    notify(t('adbServerRestarted'), { icon: 'success' })
+  }
+
   return (
     <div className={className('panel-with-toolbar', Style.container)}>
       <LunaToolbar className="panel-toolbar">
@@ -149,6 +154,11 @@ export default observer(function Overview() {
           icon="terminal"
           title={t('adbCli')}
           onClick={() => main.openAdbCli()}
+        />
+        <ToolbarIcon
+          icon="reset"
+          title={t('restartAdbServer')}
+          onClick={restartAdbServer}
         />
         <ToolbarIcon
           icon="unlock"

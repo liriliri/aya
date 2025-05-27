@@ -1,3 +1,12 @@
+## v1.11.0 (27 May 2025)
+
+* feat: avd manager stop avd
+* feat: avd manager wipe data
+* feat: restart adb server
+* feat: pair new device
+* fix: Window position on multi-display desktop [#84](https://github.com/liriliri/aya/issues/84)
+* fix: get packages in multi-user scenarios [#79](https://github.com/liriliri/aya/issues/79)
+
 ## v1.10.0 (19 May 2025)
 
 * feat: AVD manager

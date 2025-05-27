@@ -69,6 +69,7 @@
     "luna-menu": "^0.1.3",
     "luna-modal": "^1.3.1",
     "luna-notification": "^0.3.3",
+    "luna-otp-input": "^0.1.1",
     "luna-performance-monitor": "^1.2.2",
     "luna-setting": "^2.0.2",
     "luna-tab": "^0.4.3",

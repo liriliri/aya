@@ -64,3 +64,8 @@ export type IpcGetAvds = (forceRefresh?: boolean) => Promise<IAvd[]>
 export type IpcStartAvd = (avdId: string) => Promise<void>
 export type IpcStopAvd = IpcStartAvd
 export type IpcWipeAvdData = (avdId: string) => Promise<void>
+export type IpcPairDevice = (
+  host: string,
+  port: number,
+  password: string
+) => Promise<void>

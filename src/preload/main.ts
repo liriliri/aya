@@ -7,6 +7,7 @@ import {
   IpcGetPackageInfos,
   IpcListForwards,
   IpcListReverses,
+  IpcPairDevice,
   IpcReverse,
   IpcSetScreencastAlwaysOnTop,
   IpcStartAvd,
@@ -144,4 +145,5 @@ export default Object.assign(mainObj, {
   stopAvd: invoke<IpcStopAvd>('stopAvd'),
   wipeAvdData: invoke<IpcWipeAvdData>('wipeAvdData'),
   restartAdbServer: invoke('restartAdbServer'),
+  pairDevice: invoke<IpcPairDevice>('pairDevice'),
 })

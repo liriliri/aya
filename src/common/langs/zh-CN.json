@@ -206,9 +206,11 @@
   "avdManager": "AVD 管理器",
   "sdkVersion": "SDK 版本",
   "openDir": "打开目录",
-  "qrcodePair": "扫码配对",
   "wipeData": "清除数据",
   "wipeDataConfirm": "确定要清除 {{name}} 的数据吗？",
   "restartAdbServer": "重启 ADB 服务",
-  "adbServerRestarted": "ADB 服务已重启"
+  "adbServerRestarted": "ADB 服务已重启",
+  "pair": "配对",
+  "pairDevice": "通过 Wi-Fi 配对新设备",
+  "pairingCode": "配对码"
 }

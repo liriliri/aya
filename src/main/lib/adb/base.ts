@@ -10,9 +10,16 @@ import toNum from 'licia/toNum'
 import types from 'licia/types'
 import isStr from 'licia/isStr'
 import log from 'share/common/log'
-import { handleEvent } from 'share/main/lib/util'
+import { handleEvent, resolveUnpack } from 'share/main/lib/util'
+import isWindows from 'licia/isWindows'
+import isStrBlank from 'licia/isStrBlank'
+import fs from 'fs-extra'
+import { getSettingsStore } from '../store'
+import childProcess from 'node:child_process'
 
 const logger = log('adbBase')
+
+const settingsStore = getSettingsStore()
 
 let client: Client
 
@@ -167,4 +174,47 @@ export function setDeviceStore(deviceId: string, key: string, value: any) {
     deviceStore[deviceId] = {}
   }
   deviceStore[deviceId][key] = value
+}
+
+export function getAdbPath() {
+  let bin = isWindows ? resolveUnpack('adb/adb.exe') : resolveUnpack('adb/adb')
+  const adbPath = settingsStore.get('adbPath')
+  if (adbPath === 'adb' || (!isStrBlank(adbPath) && fs.existsSync(adbPath))) {
+    bin = adbPath
+  }
+  return bin
+}
+
+export function spawnAdb(args: string[]): Promise<{
+  stdout: string
+  stderr: string
+  code: number | null
+}> {
+  const bin = getAdbPath()
+
+  return new Promise((resolve, reject) => {
+    const cp = childProcess.spawn(bin, args, {
+      env: { ...process.env },
+      shell: true,
+    })
+
+    let stdout = ''
+    let stderr = ''
+
+    cp.stdout?.on('data', (data) => {
+      stdout += data.toString()
+    })
+
+    cp.stderr?.on('data', (data) => {
+      stderr += data.toString()
+    })
+
+    cp.on('error', (err) => {
+      reject(err)
+    })
+
+    cp.on('close', (code) => {
+      resolve({ stdout, stderr, code })
+    })
+  })
 }

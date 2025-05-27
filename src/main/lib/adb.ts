@@ -16,7 +16,7 @@ import { getSettingsStore } from './store'
 import isWindows from 'licia/isWindows'
 import isEmpty from 'licia/isEmpty'
 import * as base from './adb/base'
-import { shell } from './adb/base'
+import { shell, getAdbPath, spawnAdb } from './adb/base'
 import * as logcat from './adb/logcat'
 import * as shellAdb from './adb/shell'
 import * as server from './adb/server'
@@ -28,7 +28,11 @@ import * as webview from './adb/webview'
 import * as port from './adb/port'
 import { getCpuLoads, getCpus } from './adb/cpu'
 import log from 'share/common/log'
-import { IpcDumpWindowHierarchy, IpcGetDevices } from '../../common/types'
+import {
+  IpcDumpWindowHierarchy,
+  IpcGetDevices,
+  IpcPairDevice,
+} from '../../common/types'
 import path from 'node:path'
 import childProcess from 'node:child_process'
 import isMac from 'licia/isMac'
@@ -294,6 +298,13 @@ async function disconnectDevice(host: string, port?: number) {
   await client.disconnect(host, port)
 }
 
+const pairDevice: IpcPairDevice = async function (host, port, password) {
+  const { stdout } = await spawnAdb(['pair', `${host}:${port}`, password])
+  if (!contain(stdout, 'Successfully')) {
+    throw new Error(`Pair device failed: ${stdout}`)
+  }
+}
+
 async function inputKey(deviceId: string, keyCode: number) {
   await base.shell(deviceId, `input keyevent ${keyCode}`)
 }
@@ -348,12 +359,6 @@ async function restartAdbServer() {
 export async function init() {
   logger.info('init')
 
-  let bin = isWindows ? resolveUnpack('adb/adb.exe') : resolveUnpack('adb/adb')
-  const adbPath = settingsStore.get('adbPath')
-  if (adbPath === 'adb' || (!isStrBlank(adbPath) && fs.existsSync(adbPath))) {
-    bin = adbPath
-  }
-
   app.on('will-quit', async () => {
     if (settingsStore.get('killAdbWhenExit')) {
       logger.info('kill adb')
@@ -362,7 +367,7 @@ export async function init() {
   })
 
   client = Adb.createClient({
-    bin,
+    bin: getAdbPath(),
   })
   async function track() {
     logger.info('track devices')
@@ -414,4 +419,5 @@ export async function init() {
   handleEvent('root', root)
   handleEvent('startWireless', startWireless)
   handleEvent('restartAdbServer', restartAdbServer)
+  handleEvent('pairDevice', pairDevice)
 }

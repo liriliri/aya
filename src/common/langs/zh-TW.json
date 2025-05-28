@@ -172,7 +172,7 @@
   "maxSize": "最大尺寸",
   "alwaysOnTop": "置頂",
   "documentation": "文件",
-  "donate": "捐贈"
+  "donate": "捐贈",
   "killAdbWhenExit": "退出時關閉 ADB",
   "portMapping": "端口映射",
   "portForwarding": "端口轉發",

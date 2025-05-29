@@ -11,6 +11,8 @@ import last from 'licia/last'
 import trim from 'licia/trim'
 import { handleEvent } from 'share/main/lib/util'
 import { IpcGetFps } from '../../../common/types'
+import startWith from 'licia/startWith'
+import endWith from 'licia/endWith'
 
 const getFps: IpcGetFps = async function (deviceId, pkg) {
   let fps = 0
@@ -47,10 +49,53 @@ async function getFpsByLatency(deviceId: string, pkg: string) {
   }
 
   const list = await shell(deviceId, 'dumpsys SurfaceFlinger --list')
-  const layers = filter(list.split('\n'), (line) => contain(line, pkg))
+  let layers = filter(list.split('\n'), (line) => contain(line, pkg))
   if (isEmpty(layers)) {
     return fps
   }
+
+  layers = map(layers, (layer) => {
+    if (startWith(layer, 'RequestedLayerState{')) {
+      layer = layer.replace('RequestedLayerState{', '')
+      const keys = [
+        'parentId=',
+        'relativeParentId=',
+        'mirrorId=',
+        'z=',
+        'layerStack=',
+      ]
+      for (const key of keys) {
+        if (contain(layer, key)) {
+          layer = layer.slice(0, layer.indexOf(key) - 1)
+          break
+        }
+      }
+      if (endWith(layer, '}')) {
+        layer = layer.slice(0, -1)
+      }
+    }
+    return layer
+  })
+
+  layers = filter(layers, (layer) => {
+    let result = true
+
+    each(
+      [
+        'ActivityRecordInputSink',
+        'Background for SurfaceView',
+        'ActivityRecord',
+        'Bounds for -',
+      ],
+      (content) => {
+        if (contain(layer, content)) {
+          result = false
+        }
+      }
+    )
+
+    return result
+  })
 
   const latencies = await shell(
     deviceId,

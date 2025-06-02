@@ -20,6 +20,9 @@ import isWindows from 'licia/isWindows'
 import isMac from 'licia/isMac'
 import keys from 'licia/keys'
 import sleep from 'licia/sleep'
+import log from 'share/common/log'
+
+const logger = log('avd')
 
 const store = getAvdStore()
 const settingsStore = getSettingsStore()
@@ -53,7 +56,7 @@ export function showWin() {
 }
 
 let avds: types.PlainObj<IAvd> = {}
-const avdFolder = path.resolve(os.homedir(), '.android', 'avd')
+let avdFolder = process.env.ANDROID_AVD_HOME || ''
 
 async function reloadAvds() {
   avds = {}
@@ -68,8 +71,8 @@ async function reloadAvds() {
     try {
       const avdInfo = await parseAvdInfo(iniFiles[i])
       avds[avdInfo.id] = avdInfo
-    } catch {
-      // ignore
+    } catch (e) {
+      logger.error(e)
     }
   }
 }
@@ -100,11 +103,15 @@ async function parseAvdInfo(file: string): Promise<IAvd> {
 }
 
 async function getAvdPid(folder: string) {
-  const file = path.resolve(folder, 'hardware-qemu.ini.lock')
+  let file = path.resolve(folder, 'hardware-qemu.ini.lock')
   if (!(await fs.pathExists(file))) {
     return 0
   }
 
+  const stat = await fs.stat(file)
+  if (!stat.isFile()) {
+    file = path.resolve(file, 'pid')
+  }
   const content = await fs.readFile(file, 'utf-8')
   return parseInt(content, 10)
 }
@@ -164,6 +171,12 @@ const stopAvd: IpcStopAvd = async (avdId) => {
     return
   }
   process.kill(avd.pid)
+  setTimeout(async () => {
+    const pidPath = path.resolve(avd.folder, 'hardware-qemu.ini.lock')
+    if (await fs.pathExists(pidPath)) {
+      await fs.remove(pidPath)
+    }
+  }, 500)
 }
 
 const wipeAvdData = async (avdId: string) => {
@@ -185,6 +198,12 @@ const wipeAvdData = async (avdId: string) => {
 }
 
 const initIpc = once(() => {
+  if (!fs.existsSync(avdFolder)) {
+    avdFolder = path.resolve(os.homedir(), '.android', 'avd')
+  }
+
+  logger.info('AVD folder', avdFolder)
+
   reloadAvds()
 
   handleEvent('getAvds', getAvds)

@@ -334,10 +334,7 @@ export default observer(function Application() {
               versionName: info.versionName,
               minSdkVersion: info.minSdkVersion,
               targetSdkVersion: info.targetSdkVersion,
-              firstInstallTime: dateFormat(
-                new Date(info.firstInstallTime),
-                'yyyy-mm-dd HH:MM:ss'
-              ),
+              enabled: info.enabled ? t('enabled') : t('disabled'),
               lastUpdateTime: dateFormat(
                 new Date(info.lastUpdateTime),
                 'yyyy-mm-dd HH:MM:ss'
@@ -502,7 +499,7 @@ const columns = [
     id: 'packageName',
     title: t('package'),
     sortable: true,
-    weight: 20,
+    weight: 25,
   },
   {
     id: 'versionName',
@@ -523,10 +520,10 @@ const columns = [
     weight: 10,
   },
   {
-    id: 'firstInstallTime',
-    title: t('firstInstallTime'),
+    id: 'enabled',
+    title: t('status'),
     sortable: true,
-    weight: 15,
+    weight: 10,
   },
   {
     id: 'lastUpdateTime',

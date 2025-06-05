@@ -212,5 +212,7 @@
   "adbServerRestarted": "ADB Server restarted",
   "pair": "Pair",
   "pairDevice": "Pair new devices over Wi-Fi",
-  "pairingCode": "Pairing Code"
+  "pairingCode": "Pairing Code",
+  "enabled": "Enabled",
+  "disabled": "Disabled"
 }

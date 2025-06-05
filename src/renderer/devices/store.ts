@@ -44,8 +44,16 @@ class Store extends BaseStore {
   }
   async init() {
     const remoteDevices: IDevice[] = await main.getDevicesStore('remoteDevices')
+    const screenshotHeight: number = await main.getDevicesStore(
+      'screenshotHeight'
+    )
     runInAction(() => {
-      this.remoteDevices = remoteDevices
+      if (remoteDevices) {
+        this.remoteDevices = remoteDevices
+      }
+      if (screenshotHeight) {
+        this.screenshotHeight = screenshotHeight
+      }
     })
 
     const devices: IDevice[] = await main.getMemStore('devices')

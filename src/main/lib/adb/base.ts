@@ -16,6 +16,7 @@ import isStrBlank from 'licia/isStrBlank'
 import fs from 'fs-extra'
 import { getSettingsStore } from '../store'
 import childProcess from 'node:child_process'
+import contain from 'licia/contain'
 
 const logger = log('adbBase')
 
@@ -217,4 +218,10 @@ export function spawnAdb(args: string[]): Promise<{
       resolve({ stdout, stderr, code })
     })
   })
+}
+
+export async function isRooted(deviceId: string): Promise<boolean> {
+  const device = await client.getDevice(deviceId)
+  const id = await device.shell('id')
+  return contain(id, 'uid=0')
 }

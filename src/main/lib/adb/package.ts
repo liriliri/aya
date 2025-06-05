@@ -13,16 +13,18 @@ const getCurrentUser = singleton(async (deviceId: string) => {
   return parseInt(result, 10)
 })
 
-const getPackages = singleton(async (deviceId: string, system = true) => {
-  const result: string = await shell(
-    deviceId,
-    `pm list packages${system ? '' : ' -3'} --user ${await getCurrentUser(
-      deviceId
-    )}`
-  )
+export const getPackages = singleton(
+  async (deviceId: string, system = true) => {
+    const result: string = await shell(
+      deviceId,
+      `pm list packages${system ? '' : ' -3'} --user ${await getCurrentUser(
+        deviceId
+      )}`
+    )
 
-  return map(trim(result).split('\n'), (line) => line.slice(8))
-})
+    return map(trim(result).split('\n'), (line) => line.slice(8))
+  }
+)
 
 async function stopPackage(deviceId: string, pkg: string) {
   await shell(deviceId, `am force-stop ${pkg}`)

@@ -16,7 +16,7 @@ import { getSettingsStore } from './store'
 import isWindows from 'licia/isWindows'
 import isEmpty from 'licia/isEmpty'
 import * as base from './adb/base'
-import { shell, getAdbPath, spawnAdb } from './adb/base'
+import { shell, getAdbPath, spawnAdb, isRooted } from './adb/base'
 import * as logcat from './adb/logcat'
 import * as shellAdb from './adb/shell'
 import * as server from './adb/server'
@@ -77,19 +77,16 @@ async function getOverview(deviceId: string) {
   const device = await client.getDevice(deviceId)
   const properties = await device.getProperties()
   const cpus = await getCpus(deviceId)
-  const [kernelVersion, fontScale, wifi, id] = await shell(deviceId, [
+  const [kernelVersion, fontScale, wifi] = await shell(deviceId, [
     'uname -r',
     'settings get system font_scale',
     'dumpsys wifi',
-    'id',
   ])
 
   let ssidMatch = wifi.match(/mWifiInfo\s+SSID: "?(.+?)"?,/)
   if (ssidMatch && ssidMatch[1] === '<unknown ssid>') {
     ssidMatch = null
   }
-
-  const root = contain(id, 'uid=0')
 
   return {
     name: getMarketName(properties) || properties['ro.product.name'],
@@ -102,7 +99,7 @@ async function getOverview(deviceId: string) {
     kernelVersion,
     fontScale: fontScale === 'null' ? 0 : toNum(fontScale),
     wifi: ssidMatch ? ssidMatch[1] : '',
-    root,
+    root: await isRooted(deviceId),
     ...(await getIpAndMac(deviceId)),
     ...(await getStorage(deviceId)),
     ...(await getMemory(deviceId)),

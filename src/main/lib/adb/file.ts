@@ -4,18 +4,41 @@ import os from 'node:os'
 import path from 'node:path'
 import { handleEvent } from 'share/main/lib/util'
 import { shell as electronShell } from 'electron'
-import { shell } from './base'
+import { isRooted, shell } from './base'
+import map from 'licia/map'
+import filter from 'licia/filter'
+import startWith from 'licia/startWith'
+import contain from 'licia/contain'
+import trim from 'licia/trim'
+import each from 'licia/each'
+import uuid from 'licia/uuid'
+import { getPackages } from './package'
 
 let client: Client
 
 async function pullFile(deviceId: string, path: string, dest: string) {
+  let tmpFilePath = ''
+  if (startWith(path, '/data/data/')) {
+    if (!(await isRooted(deviceId))) {
+      tmpFilePath = '/data/local/tmp/' + uuid()
+      await shell(deviceId, `touch "${tmpFilePath}"`)
+      await fileShell(deviceId, 'cp', path, tmpFilePath)
+      path = tmpFilePath
+    }
+  }
+
   const device = await client.getDevice(deviceId)
   const transfer = await device.pull(path)
 
   return new Promise((resolve, reject) => {
     try {
       const writable = fs.createWriteStream(dest)
-      writable.on('finish', () => resolve(null))
+      writable.on('finish', () => {
+        if (tmpFilePath) {
+          deleteFile(deviceId, tmpFilePath)
+        }
+        resolve(null)
+      })
       transfer.on('error', reject)
       transfer.pipe(writable)
     } catch (err) {
@@ -50,32 +73,51 @@ async function openFile(deviceId: string, p: string) {
 }
 
 async function deleteFile(deviceId: string, path: string) {
-  await shell(deviceId, `rm "${path}"`)
+  await fileShell(deviceId, 'rm', path)
 }
 
 async function deleteDir(deviceId: string, path: string) {
-  await shell(deviceId, `rm -rf "${path}"`)
+  await fileShell(deviceId, 'rm -rf', path)
 }
 
 async function createDir(deviceId: string, path: string) {
-  await shell(deviceId, `mkdir -p "${path}"`)
+  await fileShell(deviceId, 'mkdir -p', path)
 }
 
 async function pushFile(deviceId: string, src: string, dest: string) {
+  let tmpFilePath = ''
+  if (startWith(dest, '/data/data/')) {
+    if (!(await isRooted(deviceId))) {
+      tmpFilePath = '/data/local/tmp/' + uuid()
+    }
+  }
+
   const device = await client.getDevice(deviceId)
-  const transfer = await device.push(src, dest)
+  const transfer = await device.push(src, tmpFilePath || dest)
 
   return new Promise((resolve, reject) => {
-    transfer.on('end', () => resolve(null))
+    transfer.on('end', async () => {
+      if (tmpFilePath) {
+        await fileShell(deviceId, 'cp', tmpFilePath, dest)
+        deleteFile(deviceId, tmpFilePath)
+      }
+      resolve(null)
+    })
     transfer.on('error', reject)
   })
 }
 
 async function moveFile(deviceId: string, src: string, dest: string) {
-  await shell(deviceId, `mv "${src}" "${dest}"`)
+  await fileShell(deviceId, 'mv', src, dest)
 }
 
 async function readDir(deviceId: string, path: string) {
+  if (startWith(path, '/data/') && !startWith(path, '/data/local/tmp/')) {
+    if (!(await isRooted(deviceId))) {
+      return readDataDir(deviceId, path)
+    }
+  }
+
   const device = await client.getDevice(deviceId)
   const files: any[] = await device.readdir(path)
 
@@ -99,7 +141,172 @@ async function readDir(deviceId: string, path: string) {
   return ret
 }
 
+async function readDataDir(deviceId: string, path: string) {
+  if (startWith(path, '/data/app/')) {
+    return readDataAppDir(deviceId, path)
+  } else if (startWith(path, '/data/data/')) {
+    return readDataDataDir(deviceId, path)
+  }
+
+  const stat = await statFile(deviceId, '/data')
+
+  if (path === '/data/local/') {
+    return [
+      {
+        name: 'tmp',
+        directory: true,
+        mtime: stat.mtime,
+        mode: stat.mode,
+        size: stat.size,
+      },
+    ]
+  }
+
+  return map(['data', 'app', 'local'], (name) => {
+    return {
+      name,
+      directory: true,
+      mtime: stat.mtime,
+      mode: stat.mode,
+      size: stat.size,
+    }
+  })
+}
+
+async function readDataAppDir(deviceId: string, path: string) {
+  const packages = await shell(deviceId, 'pm list packages -f')
+  const prefix = `package:${path}`
+  const lines = filter(
+    packages.split('\n'),
+    (line) => trim(line) !== '' && contain(line, prefix)
+  )
+  const paths = map(lines, (line) => line.slice(prefix.length).split('/'))
+  const stat = await statFile(deviceId, '/data')
+  const ret: any[] = []
+  for (let i = 0, len = paths.length; i < len; i++) {
+    const segments = paths[i]
+    if (segments.length > 1) {
+      ret.push({
+        name: segments[0],
+        directory: true,
+        mtime: stat.mtime,
+        mode: stat.mode,
+        size: stat.size,
+      })
+    } else {
+      if (contain(segments[0], '.apk')) {
+        const name = segments[0].split('.apk')[0] + '.apk'
+        const stat = await statFile(deviceId, path + name)
+        ret.push({
+          name,
+          directory: false,
+          mtime: stat.mtime,
+          mode: stat.mode,
+          size: stat.size,
+        })
+      }
+    }
+  }
+
+  return ret
+}
+
+async function readDataDataDir(deviceId: string, path: string) {
+  const stat = await statFile(deviceId, '/data')
+  if (path === '/data/data/') {
+    const packages = await getPackages(deviceId)
+    return map(packages, (pkg) => {
+      return {
+        name: pkg,
+        directory: true,
+        mtime: stat.mtime,
+        mode: stat.mode,
+        size: stat.size,
+      }
+    })
+  }
+
+  const ls = await fileShell(deviceId, `ls -al`, path)
+  if (!contain(ls, 'not debuggable')) {
+    const ret: any[] = []
+    each(ls.split('\n'), (line) => {
+      const item = parseLsLine(line)
+      if (item) {
+        ret.push(item)
+      }
+    })
+    return ret
+  }
+
+  return []
+}
+
+const regLsLine =
+  /^([drwxs-]+)\s+(\d+)\s+(\S+)\s+(\S+)\s+(\d+)\s+(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})\s+(.+)$/
+function parseLsLine(line: string) {
+  line = trim(line)
+  const match = line.match(regLsLine)
+  if (!match) {
+    return null
+  }
+  const name = match[8]
+  if (name === '.' || name === '..') {
+    return
+  }
+  return {
+    name,
+    directory: match[1][0] === 'd',
+    mtime: new Date(`${match[6]} ${match[7]}`),
+    mode: match[1],
+    size: parseInt(match[5], 10),
+  }
+}
+
+async function fileShell(
+  deviceId: string,
+  cmd: string,
+  path: string,
+  dest?: string
+) {
+  if (
+    startWith(path, '/data/data/') ||
+    (dest && startWith(dest, '/data/data/'))
+  ) {
+    if (!(await isRooted(deviceId))) {
+      let segments: string[] = []
+      if (dest && startWith(dest, '/data/data/')) {
+        segments = dest.replace('/data/data/', '').split('/')
+      } else {
+        segments = path.replace('/data/data/', '').split('/')
+      }
+      const pkg = segments[0]
+      return shell(
+        deviceId,
+        `run-as ${pkg} ${cmd} "${path}"${dest ? ` "${dest}"` : ''}`
+      )
+    }
+  }
+
+  return shell(deviceId, `${cmd} "${path}"`)
+}
+
 async function statFile(deviceId: string, path: string) {
+  if (startWith(path, '/data/data/')) {
+    if (!(await isRooted(deviceId))) {
+      const ls = await fileShell(deviceId, 'ls -ld', path)
+      const item = parseLsLine(trim(ls))
+      if (!item) {
+        throw new Error(`Failed to stat file: ${path}`)
+      }
+      return {
+        size: item.size,
+        mtime: item.mtime,
+        directory: item.directory,
+        mode: item.mode,
+      }
+    }
+  }
+
   const device = await client.getDevice(deviceId)
   const stat = await device.stat(path)
 
@@ -107,6 +314,7 @@ async function statFile(deviceId: string, path: string) {
     size: stat.size,
     mtime: new Date(stat.mtimeMs),
     directory: !stat.isFile(),
+    mode: stat.mode,
   }
 }
 

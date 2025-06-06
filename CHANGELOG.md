@@ -1,3 +1,10 @@
+## v1.12.0 (7 Jun 2025)
+
+* feat: show enabled status in application list mode [#90](https://github.com/liriliri/aya/issues/90)
+* feat: support viewing the /data/ directory [#89](https://github.com/liriliri/aya/issues/89)
+* feat: support ANDROID_AVD_HOME env variable [#87](https://github.com/liriliri/aya/issues/87)
+* fix: android 15 fps not working
+
 ## v1.11.0 (27 May 2025)
 
 * feat: avd manager stop avd

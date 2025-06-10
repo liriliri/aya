@@ -29,7 +29,6 @@ app.on('ready', () => {
   theme.init()
   adb.init()
   ipc.init()
-  main.init()
   main.showWin()
   menu.init()
   updater.init()

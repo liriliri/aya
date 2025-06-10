@@ -25,6 +25,7 @@ export function showWin() {
     return
   }
 
+  init()
   initIpc()
 
   win = window.create({
@@ -51,7 +52,7 @@ export function showWin() {
   window.loadPage(win)
 }
 
-export function init() {
+const init = once(() => {
   session.defaultSession.webRequest.onBeforeSendHeaders(
     {
       urls: ['ws://*/*'],
@@ -61,7 +62,7 @@ export function init() {
       callback({ requestHeaders: details.requestHeaders })
     }
   )
-}
+})
 
 const initIpc = once(() => {
   handleEvent('setMainStore', <IpcSetStore>(

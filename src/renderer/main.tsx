@@ -1,9 +1,11 @@
 import { lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import { t, i18n } from '../common/util'
-import { isDev, getPlatform } from 'share/common/util'
-import hotKey from 'licia/hotkey'
 import getUrlParam from 'licia/getUrlParam'
+import LunaModal from 'luna-modal'
+import LunaFileList from 'luna-file-list'
+import log from 'share/common/log'
+import 'share/renderer/main'
 import 'luna-toolbar/css'
 import 'luna-tab/css'
 import 'luna-modal/css'
@@ -19,13 +21,11 @@ import 'luna-command-palette/css'
 import 'luna-virtual-list/css'
 import 'luna-dom-viewer/css'
 import 'luna-otp-input/css'
+import 'share/renderer/luna.scss'
 import './luna.scss'
-import './icon.css'
 import 'share/renderer/main.scss'
 import './main.scss'
-import LunaModal from 'luna-modal'
-import LunaFileList from 'luna-file-list'
-import log from 'share/common/log'
+import './icon.css'
 
 const logger = log('renderer')
 logger.info('start')
@@ -62,11 +62,6 @@ function renderApp() {
   createRoot(container).render(<App />)
 }
 
-if (isDev()) {
-  hotKey.on('f5', () => location.reload())
-  hotKey.on('f12', () => main.toggleDevTools())
-}
-
 ;(async function () {
   const language = await main.getLanguage()
   i18n.locale(language)
@@ -86,8 +81,6 @@ if (isDev()) {
     file: t('file'),
     permissions: t('permissions'),
   })
-
-  document.body.classList.add(`platform-${getPlatform()}`)
 
   renderApp()
 })()

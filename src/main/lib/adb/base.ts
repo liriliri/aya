@@ -221,7 +221,6 @@ export function spawnAdb(args: string[]): Promise<{
 }
 
 export async function isRooted(deviceId: string): Promise<boolean> {
-  const device = await client.getDevice(deviceId)
-  const id = await device.shell('id')
+  const id = await shell(deviceId, 'id')
   return contain(id, 'uid=0')
 }

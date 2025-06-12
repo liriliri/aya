@@ -1,3 +1,8 @@
+## v1.12.1 (12 Jun 2025)
+
+* fix: stay awake when screencasting [#95](https://github.com/liriliri/aya/issues/95)
+* fix: root detection
+
 ## v1.12.0 (7 Jun 2025)
 
 * feat: show enabled status in application list mode [#90](https://github.com/liriliri/aya/issues/90)

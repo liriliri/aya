@@ -70,6 +70,7 @@ class Store extends BaseStore {
           videoBitRate: settings.videoBitRate,
           maxSize: settings.maxSize,
           clipboardAutosync: true,
+          stayAwake: true,
         })
       )
       this.scrcpyClient.on('close', () => {

@@ -16,7 +16,7 @@ import store from '../../store'
 import { PannelLoading } from '../common/loading'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import { installPackages } from '../../../lib/util'
-import { notify, isFileDrop, getWindowHeight } from 'share/renderer/lib/util'
+import { notify, isFileDrop } from 'share/renderer/lib/util'
 import { t } from '../../../../common/util'
 import className from 'licia/className'
 import endWith from 'licia/endWith'
@@ -33,6 +33,8 @@ import defaultIcon from '../../../assets/default-icon.png'
 import contextMenu from 'share/renderer/lib/contextMenu'
 import dateFormat from 'licia/dateFormat'
 import toEl from 'licia/toEl'
+import DataGrid from 'luna-data-grid'
+import { useWindowResize } from 'share/renderer/lib/hooks'
 
 export default observer(function Application() {
   const [isLoading, setIsLoading] = useState(false)
@@ -40,7 +42,7 @@ export default observer(function Application() {
   const [packageInfos, setPackageInfos] = useState<IPackageInfo[]>([])
   const [filter, setFilter] = useState('')
   const [dropHighlight, setDropHighlight] = useState(false)
-  const [listHeight, setListHeight] = useState(0)
+  const dataGridRef = useRef<DataGrid>(null)
   const [packageInfoModalVisible, setPackageInfoModalVisible] = useState(false)
   const [isOpenEffectAnimating, setIsOpenEffectAnimating] = useState(false)
   const [openEffectStyle, setOpenEffectStyle] = useState({
@@ -56,20 +58,8 @@ export default observer(function Application() {
 
   useEffect(() => {
     refresh()
-
-    async function resize() {
-      const windowHeight = await getWindowHeight()
-      const height = windowHeight - 61
-      setListHeight(height)
-    }
-    resize()
-
-    window.addEventListener('resize', resize)
-
-    return () => {
-      window.removeEventListener('resize', resize)
-    }
   }, [])
+  useWindowResize(() => dataGridRef.current?.fit())
 
   async function refresh(packageName?: string) {
     if (!device || isLoading) {
@@ -341,10 +331,12 @@ export default observer(function Application() {
               ),
             }
           })}
-          minHeight={listHeight}
-          maxHeight={listHeight}
           selectable={true}
           uniqueId="packageName"
+          onCreate={(dataGrid) => {
+            dataGridRef.current = dataGrid
+            dataGrid.fit()
+          }}
         />
       ) : (
         <LunaIconList

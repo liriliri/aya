@@ -4,25 +4,26 @@ import Style from './DeviceManager.module.scss'
 import { t } from '../../../common/util'
 import map from 'licia/map'
 import concat from 'licia/concat'
-import clamp from 'licia/clamp'
 import store from '../store'
-import { useEffect, useState } from 'react'
-import { getWindowHeight } from 'share/renderer/lib/util'
+import { useEffect, useRef } from 'react'
+import DataGrid from 'luna-data-grid'
+import ResizeSensor from 'licia/ResizeSensor'
 
 export default observer(function DeviceManager() {
-  const [height, setHeight] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const dataGridRef = useRef<DataGrid>(null)
+  const resizeSensorRef = useRef<ResizeSensor>(null)
 
   useEffect(() => {
-    async function resize() {
-      const windowHeight = await getWindowHeight()
-      const height = windowHeight - 31
-      setHeight(height)
-    }
-    resize()
-    window.addEventListener('resize', resize)
+    const resizeSensor = new ResizeSensor(containerRef.current!)
+    resizeSensor.addListener(() => {
+      dataGridRef.current?.fit()
+    })
+    resizeSensorRef.current = resizeSensor
 
     return () => {
-      window.removeEventListener('resize', resize)
+      resizeSensor.destroy()
+      resizeSensorRef.current = null
     }
   }, [])
 
@@ -37,12 +38,8 @@ export default observer(function DeviceManager() {
     }
   })
 
-  const maxScreenshotHeight = window.innerHeight - 202
-  const minHeight = height - maxScreenshotHeight
-  const listHeight = clamp(height - store.screenshotHeight, minHeight, height)
-
   return (
-    <div className={Style.container}>
+    <div ref={containerRef} className={Style.container}>
       <LunaDataGrid
         className={Style.devices}
         onSelect={(node) => store.selectDevice(node.data.id as string)}
@@ -51,14 +48,16 @@ export default observer(function DeviceManager() {
         data={devices}
         selectable={true}
         filter={store.filter}
-        minHeight={listHeight}
-        maxHeight={listHeight}
         onDoubleClick={(e, node) => {
           if (node.data.type !== 'offline') {
             main.sendToWindow('main', 'selectDevice', node.data.id)
           }
         }}
         uniqueId="id"
+        onCreate={(dataGrid) => {
+          dataGridRef.current = dataGrid
+          dataGrid.fit()
+        }}
       />
     </div>
   )

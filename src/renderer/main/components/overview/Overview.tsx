@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite'
 import Style from './Overview.module.scss'
-import { useEffect, useState } from 'react'
+import { JSX, useEffect, useState } from 'react'
 import isEmpty from 'licia/isEmpty'
 import fileSize from 'licia/fileSize'
 import types from 'licia/types'

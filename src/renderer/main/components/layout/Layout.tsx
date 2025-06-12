@@ -37,8 +37,8 @@ export default observer(function Layout() {
     width: 0,
     height: 0,
   })
-  const imageViewerRef = useRef<ImageViewer>()
-  const domViewerRef = useRef<DomViewer>()
+  const imageViewerRef = useRef<ImageViewer>(null)
+  const domViewerRef = useRef<DomViewer>(null)
   const windowHierarchyRef = useRef('')
   const [hierarchy, setHierarchy] = useState<any>(null)
   const [selected, setSelected] = useState<Element | null>(null)

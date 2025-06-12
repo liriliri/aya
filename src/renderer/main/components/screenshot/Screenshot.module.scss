@@ -1,4 +1,5 @@
 .container {
+  height: 100%;
   :global(.panel-body) {
     background-color: var(--color-bg-container-darker);
   }

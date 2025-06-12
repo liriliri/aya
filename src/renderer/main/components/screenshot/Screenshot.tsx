@@ -32,7 +32,7 @@ export default observer(function Screenshot() {
     height: number
     size: number
   } | null>(null)
-  const imageViewerRef = useRef<ImageViewer>()
+  const imageViewerRef = useRef<ImageViewer>(null)
 
   useEffect(() => {
     recapture()

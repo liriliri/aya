@@ -1,30 +1,18 @@
 import { observer } from 'mobx-react-lite'
 import Style from './AvdManager.module.scss'
 import LunaDataGrid from 'luna-data-grid/react'
+import DataGrid from 'luna-data-grid'
 import { t } from '../../../common/util'
-import { useEffect, useState } from 'react'
-import { getWindowHeight } from 'share/renderer/lib/util'
+import { useRef } from 'react'
 import store from '../store'
 import map from 'licia/map'
 import fileSize from 'licia/fileSize'
+import { useWindowResize } from 'share/renderer/lib/hooks'
 
 export default observer(function AvdManager() {
-  const [listHeight, setListHeight] = useState(0)
+  const dataGridRef = useRef<DataGrid>()
 
-  useEffect(() => {
-    async function resize() {
-      const windowHeight = await getWindowHeight()
-      const height = windowHeight - 31
-      setListHeight(height)
-    }
-    resize()
-
-    window.addEventListener('resize', resize)
-
-    return () => {
-      window.removeEventListener('resize', resize)
-    }
-  }, [])
+  useWindowResize(() => dataGridRef.current?.fit())
 
   const avds = map(store.avds, (avd) => {
     return {
@@ -49,11 +37,13 @@ export default observer(function AvdManager() {
         }}
         data={avds}
         columns={columns}
-        minHeight={listHeight}
-        maxHeight={listHeight}
         selectable={true}
         filter={store.filter}
         uniqueId="name"
+        onCreate={(dataGrid) => {
+          dataGridRef.current = dataGrid
+          dataGrid.fit()
+        }}
       />
     </div>
   )

@@ -29,8 +29,8 @@ interface ITermProps {
 
 export default observer(function Term(props: ITermProps) {
   const terminalRef = useRef<HTMLDivElement>(null)
-  const termRef = useRef<Terminal>()
-  const fitAddonRef = useRef<FitAddon>()
+  const termRef = useRef<Terminal>(null)
+  const fitAddonRef = useRef<FitAddon>(null)
   const sessionIdRef = useRef('')
 
   const { device } = store

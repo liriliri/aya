@@ -16,7 +16,7 @@ class Store extends BaseStore {
   port = ''
   devices: IDevice[] = []
   remoteDevices: IDevice[] = []
-  screenshotHeight = 200
+  screenshotWeight = 40
   device: IDevice | null = null
   screenshot: string | null = null
   constructor() {
@@ -28,7 +28,7 @@ class Store extends BaseStore {
       device: observable,
       remoteDevices: observable,
       filter: observable,
-      screenshotHeight: observable,
+      screenshotWeight: observable,
       screenshot: observable,
       setIp: action,
       setPort: action,
@@ -36,7 +36,7 @@ class Store extends BaseStore {
       selectDevice: action,
       updateDevices: action,
       removeRemoteDevice: action,
-      setScreenshotHeight: action,
+      setScreenshotWeight: action,
     })
 
     this.init()
@@ -44,15 +44,15 @@ class Store extends BaseStore {
   }
   async init() {
     const remoteDevices: IDevice[] = await main.getDevicesStore('remoteDevices')
-    const screenshotHeight: number = await main.getDevicesStore(
-      'screenshotHeight'
+    const screenshotWeight: number = await main.getDevicesStore(
+      'screenshotWeight'
     )
     runInAction(() => {
       if (remoteDevices) {
         this.remoteDevices = remoteDevices
       }
-      if (screenshotHeight) {
-        this.screenshotHeight = screenshotHeight
+      if (screenshotWeight) {
+        this.screenshotWeight = screenshotWeight
       }
     })
 
@@ -123,9 +123,9 @@ class Store extends BaseStore {
     })
     main.setDevicesStore('remoteDevices', toJS(this.remoteDevices))
   }
-  setScreenshotHeight(height: number) {
-    this.screenshotHeight = height
-    main.setDevicesStore('screenshotHeight', height)
+  setScreenshotWeight(weight: number) {
+    this.screenshotWeight = weight
+    main.setDevicesStore('screenshotWeight', weight)
   }
   private bindEvent() {
     main.on('changeMemStore', (name, val) => {

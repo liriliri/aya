@@ -30,7 +30,7 @@ export default observer(function Logcat() {
     package?: string
     tag?: string
   }>({})
-  const logcatRef = useRef<Logcat>()
+  const logcatRef = useRef<Logcat>(null)
   const entriesRef = useRef<any[]>([])
   const logcatIdRef = useRef('')
 

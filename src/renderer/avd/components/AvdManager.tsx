@@ -10,7 +10,7 @@ import fileSize from 'licia/fileSize'
 import { useWindowResize } from 'share/renderer/lib/hooks'
 
 export default observer(function AvdManager() {
-  const dataGridRef = useRef<DataGrid>()
+  const dataGridRef = useRef<DataGrid>(null)
 
   useWindowResize(() => dataGridRef.current?.fit())
 

@@ -14,6 +14,7 @@ import filter from 'licia/filter'
 import LunaCommandPalette from 'luna-command-palette/react'
 import find from 'licia/find'
 import idxOf from 'licia/idxOf'
+import truncate from 'licia/truncate'
 import { Terminal } from '@xterm/xterm'
 
 interface IShell {
@@ -90,7 +91,7 @@ export default observer(function Shell() {
 
   const commands = map(getCommands(), ([title, command]) => {
     return {
-      title: `${title} (${command})`,
+      title: `${title} (${truncate(command, 95 - title.length)})`,
       handler: () => {
         main.writeShell(selectedShell.sessionId, command)
         setTimeout(() => {
@@ -148,15 +149,24 @@ export default observer(function Shell() {
 })
 
 function getCommands() {
-  return [
+  const commands = [
     [t('reboot'), 'reboot\n'],
     [t('rebootRecovery'), 'reboot recovery\n'],
     [t('rebootBootloader'), 'reboot bootloader\n'],
+    [t('memInfo'), 'dumpsys meminfo\n'],
+    [t('batteryInfo'), 'dumpsys battery\n'],
     [
       `${t('start')} shizuku`,
       'sh /sdcard/Android/data/moe.shizuku.privileged.api/start.sh\n',
     ],
-    [t('memInfo'), 'dumpsys meminfo\n'],
-    [t('batteryInfo'), 'dumpsys battery\n'],
   ]
+
+  if (store.language === 'zh-CN') {
+    commands.push([
+      '授权 GKD',
+      'pm grant li.songe.gkd android.permission.WRITE_SECURE_SETTINGS; appops set li.songe.gkd ACCESS_RESTRICTED_SETTINGS allow\n',
+    ])
+  }
+
+  return commands
 }

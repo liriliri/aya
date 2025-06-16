@@ -60,7 +60,7 @@
     "globals": "^15.11.0",
     "licia": "^1.48.0",
     "luna-command-palette": "^0.3.1",
-    "luna-data-grid": "^1.6.3",
+    "luna-data-grid": "^1.6.4",
     "luna-dom-viewer": "^1.8.3",
     "luna-file-list": "^0.5.1",
     "luna-icon-list": "^0.2.5",

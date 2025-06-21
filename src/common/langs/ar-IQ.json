@@ -115,5 +115,7 @@
   "deviceRefreshed": "تم تحديث الجهاو",
   "ipAddress": "IP عوان الـ",
   "macAddress": "MAC عنوان الـ",
-  "signature": "التوقيع"
+  "signature": "التوقيع",
+  "enableAudio": "مزامنة الصوت",
+  "audioSyncDesc": "نقل صوت الجهاز إلى الكمبيوتر"
 }

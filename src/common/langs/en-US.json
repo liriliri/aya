@@ -170,6 +170,8 @@
   "appSize": "App Size",
   "videoBitRate": "Video Bit Rate",
   "maxSize": "Max Size",
+  "enableAudio": "Sync Device Audio",
+  "audioSyncDesc": "Stream device audio to computer",
   "alwaysOnTop": "Always on Top",
   "documentation": "Documentation",
   "donate": "Donate",

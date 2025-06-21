@@ -170,6 +170,8 @@
   "appSize": "Taille de l'application",
   "videoBitRate": "Débit binaire vidéo",
   "maxSize": "Taille maximale",
+  "enableAudio": "Synchroniser l'audio",
+  "audioSyncDesc": "Diffuser l'audio de l'appareil vers l'ordinateur",
   "alwaysOnTop": "Toujours au-dessus",
   "documentation": "Documentation",
   "donate": "Faire un don",

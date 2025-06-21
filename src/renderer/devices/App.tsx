@@ -16,10 +16,7 @@ export default observer(function App() {
         onResize={(weights) => {
           const [deviceManagerWeight, screenshotWeight] = weights
           store.setScreenshotWeight(
-            Math.round(
-              (screenshotWeight / (deviceManagerWeight + screenshotWeight)) *
-                100
-            )
+            (screenshotWeight / (deviceManagerWeight + screenshotWeight)) * 100
           )
         }}
       >

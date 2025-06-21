@@ -5,27 +5,17 @@ import { t } from '../../../common/util'
 import map from 'licia/map'
 import concat from 'licia/concat'
 import store from '../store'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import DataGrid from 'luna-data-grid'
-import ResizeSensor from 'licia/ResizeSensor'
+import { useResizeSensor } from 'share/renderer/lib/hooks'
 
 export default observer(function DeviceManager() {
   const containerRef = useRef<HTMLDivElement>(null)
   const dataGridRef = useRef<DataGrid>(null)
-  const resizeSensorRef = useRef<ResizeSensor>(null)
 
-  useEffect(() => {
-    const resizeSensor = new ResizeSensor(containerRef.current!)
-    resizeSensor.addListener(() => {
-      dataGridRef.current?.fit()
-    })
-    resizeSensorRef.current = resizeSensor
-
-    return () => {
-      resizeSensor.destroy()
-      resizeSensorRef.current = null
-    }
-  }, [])
+  useResizeSensor(containerRef, () => {
+    dataGridRef.current?.fit()
+  })
 
   const devices = map(concat(store.devices, store.remoteDevices), (device) => {
     return {

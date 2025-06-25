@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite'
 import { createPortal } from 'react-dom'
 import LunaSetting, {
   LunaSettingButton,
+  LunaSettingCheckbox,
   LunaSettingNumber,
   LunaSettingSelect,
 } from 'luna-setting/react'
@@ -31,6 +32,11 @@ export default observer(function SettingsModal(props: IModalProps) {
       onClose={props.onClose}
     >
       <LunaSetting className={Style.settings} onChange={onChange}>
+        <LunaSettingCheckbox
+          keyName="audio"
+          value={store.settings.audio}
+          description={`${t('enableAudio')} - ${t('audioSyncDesc')}`}
+        />
         <LunaSettingNumber
           keyName="videoBitRate"
           range={true}

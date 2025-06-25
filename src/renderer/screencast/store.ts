@@ -66,7 +66,7 @@ class Store extends BaseStore {
       this.scrcpyClient = new ScrcpyClient(
         device.id,
         new ScrcpyOptions3_1({
-          audio: true,
+          audio: settings.audio,
           videoBitRate: settings.videoBitRate,
           maxSize: settings.maxSize,
           clipboardAutosync: true,
@@ -117,6 +117,7 @@ class Store extends BaseStore {
 const defaultSettings = {
   videoBitRate: 8000000,
   maxSize: 0,
+  audio: true,
 }
 
 export default new Store()

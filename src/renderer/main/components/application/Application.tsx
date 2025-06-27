@@ -35,6 +35,7 @@ import dateFormat from 'licia/dateFormat'
 import toEl from 'licia/toEl'
 import DataGrid from 'luna-data-grid'
 import { useWindowResize } from 'share/renderer/lib/hooks'
+import fileSize from 'licia/fileSize'
 
 export default observer(function Application() {
   const [isLoading, setIsLoading] = useState(false)
@@ -323,6 +324,10 @@ export default observer(function Application() {
               packageName: info.packageName,
               versionName: info.versionName,
               minSdkVersion: info.minSdkVersion,
+              apkSize: fileSize(info.apkSize),
+              appSize: fileSize(info.appSize || 0),
+              dataSize: fileSize(info.dataSize || 0),
+              cacheSize: fileSize(info.cacheSize || 0),
               targetSdkVersion: info.targetSdkVersion,
               enabled: info.enabled ? t('enabled') : t('disabled'),
               lastUpdateTime: dateFormat(
@@ -522,5 +527,29 @@ const columns = [
     title: t('lastUpdateTime'),
     sortable: true,
     weight: 15,
+  },
+  {
+    id: 'apkSize',
+    title: t('apkSize'),
+    sortable: true,
+    weight: 10,
+  },
+  {
+    id: 'appSize',
+    title: t('appSize'),
+    sortable: true,
+    weight: 10,
+  },
+  {
+    id: 'dataSize',
+    title: t('dataSize'),
+    sortable: true,
+    weight: 10,
+  },
+  {
+    id: 'cacheSize',
+    title: t('cacheSize'),
+    sortable: true,
+    weight: 10,
   },
 ]

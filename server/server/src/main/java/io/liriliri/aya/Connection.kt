@@ -73,14 +73,76 @@ class Connection(private val client: LocalSocket) : Thread() {
     private fun getVersion(): String {
         return BuildConfig.VERSION_NAME
     }
+        
+    data class AppSizeInfo(
+        val appSize: Long,
+        val dataSize: Long,
+        val cacheSize: Long
+    )
+    
+    fun getAppSizesFromDiskStats(): Map<String, AppSizeInfo> {
+        val process = Runtime.getRuntime().exec("dumpsys diskstats")
+        val lines = process.inputStream.bufferedReader().readLines()
+
+        var packageNames = listOf<String>()
+        var appSizes = listOf<Long>()
+        var dataSizes = listOf<Long>()
+        var cacheSizes = listOf<Long>()
+
+        // Parse lines from command adb dumpsys diskstats
+        for (line in lines) {
+            when {
+                line.startsWith("Package Names:") -> {
+                    val listText = line.substringAfter("Package Names: [").substringBefore("]")
+                    packageNames = listText.split(",").map { it.trim().trim('"') }
+                }
+                line.startsWith("App Sizes:") -> {
+                    val listText = line.substringAfter("App Sizes: [").substringBefore("]")
+                    appSizes = listText.split(",").map { it.trim().toLong() }
+                }
+                line.startsWith("App Data Sizes:") -> {
+                    val listText = line.substringAfter("App Data Sizes: [").substringBefore("]")
+                    dataSizes = listText.split(",").map { it.trim().toLong() }
+                }
+                line.startsWith("Cache Sizes:") -> {
+                    val listText = line.substringAfter("Cache Sizes: [").substringBefore("]")
+                    cacheSizes = listText.split(",").map { it.trim().toLong() }
+                }
+            }
+        }
+
+        // Put app, cache, data sizes into a map
+        val result = mutableMapOf<String, AppSizeInfo>()
+        for (i in packageNames.indices) {
+            val appSize = appSizes.getOrNull(i) ?: 0L
+            val dataSize = dataSizes.getOrNull(i) ?: 0L
+            val cacheSize = cacheSizes.getOrNull(i) ?: 0L
+
+            result[packageNames[i]] = AppSizeInfo(appSize, dataSize, cacheSize)
+        }
+
+        return result
+    }
 
     private fun getPackageInfos(params: JSONObject): JSONArray {
         val packageNames = Util.jsonArrayToStringArray(params.getJSONArray("packageNames"))
         val result = JSONArray()
 
+        val packagesDiskStats = getAppSizesFromDiskStats()
+
         packageNames.forEach {
             try {
-                result.put(getPackageInfo(it))
+                val info = getPackageInfo(it)
+
+                // Overwrite app, data, cache sizes from adb dumpsys diskstats call
+                val packageDiskStats = packagesDiskStats[it]
+                if (packageDiskStats != null) {
+                    info.put("appSize", packageDiskStats.appSize)
+                    info.put("dataSize", packageDiskStats.dataSize)
+                    info.put("cacheSize", packageDiskStats.cacheSize)
+                } 
+
+                result.put(info)
             } catch (e: Exception) {
                 Log.e(TAG, "Fail to get package info", e)
             }
@@ -180,6 +242,8 @@ class Connection(private val client: LocalSocket) : Thread() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
+                // ServiceManager is an Android internal class (android.os.ServiceManager).
+                // It's not imported or accessible in Kotlin server module because it's not an Android app environment.
                 val stats = ServiceManager.storageStatsManager.queryStatsForPackage(
                     packageName
                 )

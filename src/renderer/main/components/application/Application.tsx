@@ -533,23 +533,27 @@ const columns = [
     title: t('apkSize'),
     sortable: true,
     weight: 10,
+    comparator: (a: string, b: string) => fileSize(a) - fileSize(b),
   },
   {
     id: 'appSize',
     title: t('appSize'),
     sortable: true,
     weight: 10,
+    comparator: (a: string, b: string) => fileSize(a) - fileSize(b),
   },
   {
     id: 'dataSize',
     title: t('dataSize'),
     sortable: true,
     weight: 10,
+    comparator: (a: string, b: string) => fileSize(a) - fileSize(b),
   },
   {
     id: 'cacheSize',
     title: t('cacheSize'),
     sortable: true,
     weight: 10,
+    comparator: (a: string, b: string) => fileSize(a) - fileSize(b),
   },
 ]

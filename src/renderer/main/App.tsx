@@ -10,18 +10,13 @@ import Application from './components/application/Application'
 import File from './components/file/File'
 import Layout from './components/layout/Layout'
 import Style from './App.module.scss'
-import LunaModal from 'luna-modal/react'
 import Modal from 'luna-modal'
 import { t } from '../../common/util'
 import { useState, useEffect, PropsWithChildren, FC } from 'react'
-import { createPortal } from 'react-dom'
 import store from './store'
 import { observer } from 'mobx-react-lite'
-import icon from '../assets/icon.png'
 
 export default observer(function App() {
-  const [aboutVisible, setAboutVisible] = useState(false)
-
   useEffect(() => {
     const offUpdateError = main.on('updateError', () => {
       Modal.alert(t('updateErr'))

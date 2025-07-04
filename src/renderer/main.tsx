@@ -59,7 +59,7 @@ function renderApp() {
     case 'about':
       App = lazy(() => import('share/renderer/about/App.js') as Promise<any>)
       title = t('aboutAya')
-      break  
+      break
   }
 
   preload.setTitle(title)

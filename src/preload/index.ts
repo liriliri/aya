@@ -11,5 +11,4 @@ declare global {
   const main: typeof mainObj
   const preload: typeof preloadObj
   const node: typeof nodeObj
-  const AYA_VERSION: string
 }

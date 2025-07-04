@@ -33,7 +33,8 @@ export default defineConfig(async (): Promise<UserConfig> => {
       port: 8080,
     },
     define: {
-      AYA_VERSION: JSON.stringify(pkg.version),
+      PRODUCT_NAME: JSON.stringify(pkg.productName),
+      VERSION: JSON.stringify(pkg.version),
     },
     optimizeDeps: {
       exclude: ['@yume-chan/pcm-player'],

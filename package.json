@@ -14,7 +14,6 @@
     "build:renderer": "vite build",
     "build": "zx script/build.mjs",
     "pack": "zx script/pack.mjs",
-    "upload": "zx script/upload.mjs",
     "adb": "zx script/adb.mjs",
     "scrcpy": "zx script/scrcpy.mjs",
     "server": "zx script/server.mjs",

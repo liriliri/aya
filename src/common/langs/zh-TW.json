@@ -170,6 +170,8 @@
   "appSize": "應用程式大小",
   "videoBitRate": "影片比特率",
   "maxSize": "最大尺寸",
+  "enableAudio": "同步裝置音訊",
+  "audioSyncDesc": "將裝置音訊傳輸到電腦播放",
   "alwaysOnTop": "置頂",
   "documentation": "文件",
   "donate": "捐贈",

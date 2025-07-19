@@ -119,5 +119,7 @@
   "terminal": "Terminal",
   "tools": "Araçlar",
   "ok": "Tamam",
-  "cancel": "Iptal"
+  "cancel": "Iptal",
+  "enableAudio": "Ses Senkronizasyonu",
+  "audioSyncDesc": "Cihaz sesini bilgisayara aktar"
 }

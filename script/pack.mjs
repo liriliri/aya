@@ -11,6 +11,7 @@ if (isMac && process.arch !== 'arm64') {
 }
 
 const config = {
+  appId: pkg.appId,
   directories: {
     output: `../release/${pkg.version}`,
   },

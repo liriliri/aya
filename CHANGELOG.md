@@ -1,3 +1,7 @@
+## v1.12.2 (30 Jul 2025)
+
+* fix: macOS app is damaged
+
 ## v1.12.1 (12 Jun 2025)
 
 * fix: stay awake when screencasting [#95](https://github.com/liriliri/aya/issues/95)

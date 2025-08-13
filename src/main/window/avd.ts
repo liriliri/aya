@@ -1,5 +1,5 @@
 import { BrowserWindow } from 'electron'
-import { getAvdStore, getSettingsStore } from '../lib/store'
+import { getSettingsStore } from '../lib/store'
 import * as window from 'share/main/lib/window'
 import once from 'licia/once'
 import { IpcGetAvds, IpcStartAvd, IpcStopAvd } from 'common/types'
@@ -24,7 +24,6 @@ import log from 'share/common/log'
 
 const logger = log('avd')
 
-const store = getAvdStore()
 const settingsStore = getSettingsStore()
 
 let win: BrowserWindow | null = null
@@ -41,10 +40,9 @@ export function showWin() {
     name: 'avd',
     minWidth: 720,
     minHeight: 480,
-    menu: false,
+    width: 720,
+    height: 480,
     customTitlebar: !settingsStore.get('useNativeTitlebar'),
-    ...store.get('bounds'),
-    onSavePos: () => window.savePos(win, store),
   })
 
   win.on('close', () => {

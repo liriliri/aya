@@ -3,20 +3,11 @@ import FileStore from 'licia/FileStore'
 import { getUserDataPath } from 'share/main/lib/util'
 
 export const getMainStore = memoize(function () {
-  return new FileStore(getUserDataPath('data/main.json'), {
-    bounds: {
-      width: 960,
-      height: 640,
-    },
-  })
+  return new FileStore(getUserDataPath('data/main.json'), {})
 })
 
 export const getScreencastStore = memoize(function () {
   return new FileStore(getUserDataPath('data/screencast.json'), {
-    bounds: {
-      width: 430,
-      height: 640,
-    },
     settings: {},
     alwaysOnTop: false,
   })
@@ -24,20 +15,7 @@ export const getScreencastStore = memoize(function () {
 
 export const getDevicesStore = memoize(function () {
   return new FileStore(getUserDataPath('data/devices.json'), {
-    bounds: {
-      width: 960,
-      height: 640,
-    },
     remoteDevices: [],
-  })
-})
-
-export const getAvdStore = memoize(function () {
-  return new FileStore(getUserDataPath('data/avd.json'), {
-    bounds: {
-      width: 720,
-      height: 480,
-    },
   })
 })
 

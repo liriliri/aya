@@ -23,10 +23,9 @@ export function showWin() {
     name: 'screencast',
     minWidth: 430,
     minHeight: 640,
+    width: 430,
+    height: 640,
     customTitlebar: !settingsStore.get('useNativeTitlebar'),
-    menu: false,
-    ...store.get('bounds'),
-    onSavePos: () => window.savePos(win, store),
   })
 
   win.on('close', () => {

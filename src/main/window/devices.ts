@@ -22,10 +22,9 @@ export function showWin() {
     name: 'devices',
     minWidth: 960,
     minHeight: 640,
-    menu: false,
+    width: 960,
+    height: 640,
     customTitlebar: !settingsStore.get('useNativeTitlebar'),
-    ...store.get('bounds'),
-    onSavePos: () => window.savePos(win, store),
   })
 
   win.on('close', () => {

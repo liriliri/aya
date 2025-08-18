@@ -3,7 +3,7 @@ import isMac from 'licia/isMac.js'
 import normalizePath from 'licia/normalizePath.js'
 import path from 'path'
 
-const adbDir = resolve(__dirname, '../adb')
+const adbDir = resolve(__dirname, '../resources/adb')
 
 await fs.ensureDir(adbDir)
 

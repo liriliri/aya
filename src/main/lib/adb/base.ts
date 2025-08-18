@@ -10,7 +10,7 @@ import toNum from 'licia/toNum'
 import types from 'licia/types'
 import isStr from 'licia/isStr'
 import log from 'share/common/log'
-import { handleEvent, resolveUnpack } from 'share/main/lib/util'
+import { handleEvent, resolveResources } from 'share/main/lib/util'
 import isWindows from 'licia/isWindows'
 import isStrBlank from 'licia/isStrBlank'
 import fs from 'fs-extra'
@@ -178,7 +178,9 @@ export function setDeviceStore(deviceId: string, key: string, value: any) {
 }
 
 export function getAdbPath() {
-  let bin = isWindows ? resolveUnpack('adb/adb.exe') : resolveUnpack('adb/adb')
+  let bin = isWindows
+    ? resolveResources('adb/adb.exe')
+    : resolveResources('adb/adb')
   const adbPath = settingsStore.get('adbPath')
   if (adbPath === 'adb' || (!isStrBlank(adbPath) && fs.existsSync(adbPath))) {
     bin = adbPath

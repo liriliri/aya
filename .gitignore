@@ -1,12 +1,10 @@
 node_modules/
 dist/
 release/
-/adb
+resources/
 package-lock.json
 
 .gradle/
 .idea/
 server/**/build/
 local.properties
-aya.dex
-scrcpy.jar

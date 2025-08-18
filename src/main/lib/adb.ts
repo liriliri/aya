@@ -1,7 +1,7 @@
 import { app } from 'electron'
 import Adb, { Client, Device } from '@devicefarmer/adbkit'
 import androidDeviceList from 'android-device-list'
-import { resolveUnpack, handleEvent } from 'share/main/lib/util'
+import { resolveResources, handleEvent } from 'share/main/lib/util'
 import map from 'licia/map'
 import types from 'licia/types'
 import filter from 'licia/filter'
@@ -307,7 +307,7 @@ async function inputKey(deviceId: string, keyCode: number) {
 }
 
 async function openAdbCli() {
-  let cwd = resolveUnpack('adb')
+  let cwd = resolveResources('adb')
   const adbPath = settingsStore.get('adbPath')
   if (!isStrBlank(adbPath) && fs.existsSync(adbPath)) {
     cwd = path.dirname(adbPath)

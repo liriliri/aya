@@ -1,5 +1,5 @@
 import { Client } from '@devicefarmer/adbkit'
-import { handleEvent, resolveUnpack } from 'share/main/lib/util'
+import { handleEvent, resolveResources } from 'share/main/lib/util'
 import { getDeviceStore, setDeviceStore } from './base'
 import log from 'share/common/log'
 
@@ -35,7 +35,7 @@ class ScrcpyClient {
 
     const device = client.getDevice(this.deviceId)
     await device.push(
-      resolveUnpack('server/scrcpy.jar'),
+      resolveResources('scrcpy.jar'),
       '/data/local/tmp/aya/scrcpy.jar'
     )
   }

@@ -1,7 +1,7 @@
 import types from 'licia/types'
 import uuid from 'licia/uuid'
 import { Client } from '@devicefarmer/adbkit'
-import { handleEvent, resolveUnpack } from 'share/main/lib/util'
+import { handleEvent, resolveResources } from 'share/main/lib/util'
 import singleton from 'licia/singleton'
 import wire from '../wire'
 import waitUntil from 'licia/waitUntil'
@@ -83,7 +83,7 @@ class AyaClient {
     logger.info('push')
     const device = client.getDevice(this.deviceId)
     await device.push(
-      resolveUnpack('server/aya.dex'),
+      resolveResources('aya.dex'),
       '/data/local/tmp/aya/aya.dex'
     )
   }

@@ -5,7 +5,7 @@ import { useState } from 'react'
 import SettingsModal from './SettingsModal'
 
 export default function Settings() {
-  const [settingsModalVisiable, setSettingsModalVisiable] = useState(false)
+  const [settingsModalVisible, setSettingsModalVisible] = useState(false)
 
   return (
     <>
@@ -13,12 +13,12 @@ export default function Settings() {
         <ToolbarIcon
           icon="setting"
           title={t('settings')}
-          onClick={() => setSettingsModalVisiable(true)}
+          onClick={() => setSettingsModalVisible(true)}
         />
       </LunaToolbar>
       <SettingsModal
-        visible={settingsModalVisiable}
-        onClose={() => setSettingsModalVisiable(false)}
+        visible={settingsModalVisible}
+        onClose={() => setSettingsModalVisible(false)}
       />
     </>
   )

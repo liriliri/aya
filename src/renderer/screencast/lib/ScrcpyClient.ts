@@ -12,6 +12,8 @@ import {
   AndroidMotionEventAction,
   AndroidMotionEventButton,
   AndroidScreenPowerMode,
+  AndroidKeyEventAction,
+  AndroidKeyCode,
   ScrcpyMediaStreamDataPacket,
 } from '@yume-chan/scrcpy'
 import {
@@ -247,16 +249,54 @@ export default class ScrcpyClient extends Emitter {
 
     el.addEventListener('pointerdown', (e) => {
       el.focus()
-      this.injectTouch(el, e)
+      if (e.button === 0) { // Left button
+        this.injectTouch(el, e)
+      } else {
+        this.injectKeyCode(el, e)
+      }
     })
     el.addEventListener('pointermove', (e) => this.injectTouch(el, e))
-    el.addEventListener('pointerup', (e) => this.injectTouch(el, e))
+    el.addEventListener('pointerup', (e) => {
+      if (e.button === 0) { // Left button
+        this.injectTouch(el, e)
+      } else {
+        this.injectKeyCode(el, e)
+      }
+    })
 
     el.addEventListener('wheel', (e) => this.injectScroll(el, e))
 
     el.setAttribute('tabindex', '0')
     el.addEventListener('keydown', this.keyboard.down)
     el.addEventListener('keyup', this.keyboard.up)
+  }
+  private injectKeyCode(el: HTMLVideoElement, e: PointerEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const { type, button } = e
+
+    let action: AndroidKeyEventAction
+    switch (type) {
+      case 'pointerdown':
+        action = AndroidKeyEventAction.Down
+        break
+      case 'pointerup':
+        action = AndroidKeyEventAction.Up
+        break
+      default:
+        throw new Error(`Unsupported event type: ${type}`)
+    }
+
+    if (this.control) {
+      const controller: ScrcpyControlMessageWriter = this.control.controller
+      controller.injectKeyCode({
+        action,
+        keyCode: MouseEventButtonToAndroidButton[button - 1],
+        repeat: 0,
+        metaState: 0,
+      })
+    }
   }
   private injectScroll(el: HTMLVideoElement, e: WheelEvent) {
     e.preventDefault()
@@ -466,4 +506,10 @@ const PointerEventButtonToAndroidButton = [
   AndroidMotionEventButton.Secondary,
   AndroidMotionEventButton.Back,
   AndroidMotionEventButton.Forward,
+]
+
+
+const MouseEventButtonToAndroidButton = [
+  AndroidKeyCode.AndroidHome,//Middle button
+  AndroidKeyCode.AndroidBack,//Right button
 ]

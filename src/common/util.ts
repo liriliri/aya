@@ -8,6 +8,7 @@ import zhCN from './langs/zh-CN.json'
 import trTR from './langs/tr-TR.json'
 import zhTW from './langs/zh-TW.json'
 import frFR from './langs/fr-FR.json'
+import ptBR from './langs/pt-BR.json'
 
 const langs = {
   'en-US': enUS,
@@ -17,6 +18,7 @@ const langs = {
   'tr-TR': defaults(trTR, enUS),
   'zh-TW': defaults(zhTW, enUS),
   'fr-FR': defaults(frFR, enUS),
+  'pt-BR': defaults(ptBR, enUS),
 }
 
 export const i18n = new I18n('en-US', langs)

@@ -41,6 +41,7 @@ import convertBin from 'licia/convertBin'
 import dateFormat from 'licia/dateFormat'
 import noop from 'licia/noop'
 import Keyboard from './Keyboard'
+import isUndef from 'licia/isUndef'
 
 const logger = log('ScrcpyClient')
 
@@ -249,18 +250,18 @@ export default class ScrcpyClient extends Emitter {
 
     el.addEventListener('pointerdown', (e) => {
       el.focus()
-      if (e.button === 0) { // Left button
+      if (e.button === 0) {
         this.injectTouch(el, e)
       } else {
-        this.injectKeyCode(el, e)
+        this.injectKeyCode(e)
       }
     })
     el.addEventListener('pointermove', (e) => this.injectTouch(el, e))
     el.addEventListener('pointerup', (e) => {
-      if (e.button === 0) { // Left button
+      if (e.button === 0) {
         this.injectTouch(el, e)
       } else {
-        this.injectKeyCode(el, e)
+        this.injectKeyCode(e)
       }
     })
 
@@ -270,29 +271,24 @@ export default class ScrcpyClient extends Emitter {
     el.addEventListener('keydown', this.keyboard.down)
     el.addEventListener('keyup', this.keyboard.up)
   }
-  private injectKeyCode(el: HTMLVideoElement, e: PointerEvent) {
+  private injectKeyCode(e: PointerEvent) {
     e.preventDefault()
     e.stopPropagation()
 
-    const { type, button } = e
-
-    let action: AndroidKeyEventAction
-    switch (type) {
-      case 'pointerdown':
-        action = AndroidKeyEventAction.Down
-        break
-      case 'pointerup':
-        action = AndroidKeyEventAction.Up
-        break
-      default:
-        throw new Error(`Unsupported event type: ${type}`)
+    const actionMap = {
+      pointerdown: AndroidKeyEventAction.Down,
+      pointerup: AndroidKeyEventAction.Up,
+    }
+    const action = actionMap[e.type]
+    if (isUndef(action)) {
+      return
     }
 
     if (this.control) {
       const controller: ScrcpyControlMessageWriter = this.control.controller
       controller.injectKeyCode({
         action,
-        keyCode: MouseEventButtonToAndroidButton[button - 1],
+        keyCode: MouseEventButtonToAndroidButton[e.button - 1],
         repeat: 0,
         metaState: 0,
       })
@@ -508,8 +504,7 @@ const PointerEventButtonToAndroidButton = [
   AndroidMotionEventButton.Forward,
 ]
 
-
 const MouseEventButtonToAndroidButton = [
-  AndroidKeyCode.AndroidHome,//Middle button
-  AndroidKeyCode.AndroidBack,//Right button
+  AndroidKeyCode.AndroidHome,
+  AndroidKeyCode.AndroidBack,
 ]

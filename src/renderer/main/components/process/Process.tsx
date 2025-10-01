@@ -169,7 +169,7 @@ export default observer(function Process() {
         />
       </LunaToolbar>
       <LunaDataGrid
-        onSelect={async (node) => setSelected(node.data)}
+        onSelect={(node) => setSelected(node.data)}
         onDeselect={() => setSelected(null)}
         filter={filter}
         className={Style.processes}

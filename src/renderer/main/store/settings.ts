@@ -5,7 +5,7 @@ export class Settings {
   language = 'en-US'
   theme = 'light'
   adbPath = ''
-  killAdbWhenExit = true
+  killAdbWhenExit = false
   useNativeTitlebar = false
   constructor() {
     makeObservable(this, {

@@ -113,7 +113,7 @@ export default observer(function Webview() {
               url = 'devtools://devtools/bundled/inspector.html'
               url += `?ws=${selected.webSocketDebuggerUrl.replace('ws://', '')}`
             }
-            main.openWindow(url)
+            main.openWindow(url, 'devtools')
           }}
         />
         <LunaToolbarSeparator />

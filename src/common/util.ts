@@ -7,7 +7,7 @@ import trTR from './langs/tr-TR.json'
 import zhTW from './langs/zh-TW.json'
 import frFR from './langs/fr-FR.json'
 import ptBR from './langs/pt-BR.json'
-export { t, i18n, hasLocale } from 'share/common/i18n'
+export { t, i18n } from 'share/common/i18n'
 import { init as initI18n } from 'share/common/i18n'
 
 const langs = {

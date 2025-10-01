@@ -25,6 +25,6 @@ export const getSettingsStore = memoize(function () {
     theme: 'system',
     useNativeTitlebar: false,
     adbPath: '',
-    killAdbWhenExit: true,
+    killAdbWhenExit: false,
   })
 })

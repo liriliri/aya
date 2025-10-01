@@ -4,6 +4,7 @@ import * as terminal from 'share/main/window/terminal'
 import * as process from 'share/main/window/process'
 import * as about from 'share/main/window/about'
 import * as avd from '../window/avd'
+import * as devices from '../window/devices'
 import isMac from 'licia/isMac'
 import { t } from '../../common/util'
 import upperCase from 'licia/upperCase'
@@ -92,6 +93,12 @@ function getTemplate(): MenuItemConstructorOptions[] {
   const tools = {
     label: t('tools'),
     submenu: [
+      {
+        label: t('deviceManager'),
+        click() {
+          devices.showWin()
+        },
+      },
       {
         label: t('avdManager'),
         click() {

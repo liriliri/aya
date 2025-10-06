@@ -1,8 +1,11 @@
-.path {
+.path-container {
   flex-grow: 1;
-  input {
-    width: 100%;
-  }
+}
+
+.path {
+  width: 100%;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
 .file-list {

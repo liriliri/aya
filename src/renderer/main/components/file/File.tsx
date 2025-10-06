@@ -19,6 +19,7 @@ import contextMenu from 'share/renderer/lib/contextMenu'
 import LunaModal from 'luna-modal'
 import endWith from 'licia/endWith'
 import normalizePath from 'licia/normalizePath'
+import LunaPathBar from 'luna-path-bar/react'
 
 export default observer(function File() {
   const [fileList, setFileList] = useState<any[]>([])
@@ -233,8 +234,7 @@ export default observer(function File() {
     await getFiles(path)
   }
 
-  async function goCustomPath() {
-    let p = customPath
+  async function goCustomPath(p: string) {
     if (!endWith(p, '/')) {
       p = p + '/'
     }
@@ -244,6 +244,7 @@ export default observer(function File() {
       const stat = await main.statFile(device!.id, customPath)
       if (stat.directory) {
         go(p)
+        setCustomPath(p)
       }
     } catch {
       notify(t('folderNotExistErr'), { icon: 'error' })
@@ -277,19 +278,12 @@ export default observer(function File() {
           onClick={() => getFiles(path)}
           disabled={!device}
         />
-        <LunaToolbarHtml
-          className={className(Style.path, 'luna-toolbar-item-input')}
-          disabled={!device}
-        >
-          <input
-            value={customPath}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setCustomPath(e.target.value)
-            }}
-            onKeyDown={async (e: React.KeyboardEvent) => {
-              if (e.key === 'Enter') {
-                goCustomPath()
-              }
+        <LunaToolbarHtml className={Style.pathContainer} disabled={!device}>
+          <LunaPathBar
+            className={Style.path}
+            path={'root' + customPath}
+            onChange={(path) => {
+              goCustomPath(path.replace('root', ''))
             }}
           />
         </LunaToolbarHtml>

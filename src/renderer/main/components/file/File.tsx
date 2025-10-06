@@ -239,14 +239,21 @@ export default observer(function File() {
       p = p + '/'
     }
     p = normalizePath(p)
+    if (p === customPath) {
+      return
+    }
+
+    setCustomPath(p)
 
     try {
-      const stat = await main.statFile(device!.id, customPath)
+      const stat = await main.statFile(device!.id, p)
       if (stat.directory) {
         go(p)
-        setCustomPath(p)
+      } else {
+        setCustomPath(customPath)
       }
     } catch {
+      setCustomPath(customPath)
       notify(t('folderNotExistErr'), { icon: 'error' })
     }
   }
@@ -281,10 +288,9 @@ export default observer(function File() {
         <LunaToolbarHtml className={Style.pathContainer} disabled={!device}>
           <LunaPathBar
             className={Style.path}
-            path={'root' + customPath}
-            onChange={(path) => {
-              goCustomPath(path.replace('root', ''))
-            }}
+            rootLabel="root"
+            path={customPath}
+            onChange={(path) => goCustomPath(path)}
           />
         </LunaToolbarHtml>
         <LunaToolbarInput

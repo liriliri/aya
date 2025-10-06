@@ -271,6 +271,12 @@ export default observer(function File() {
           onClick={up}
           disabled={path === '/' || !device}
         />
+        <ToolbarIcon
+          icon="refresh"
+          title={t('refresh')}
+          onClick={() => getFiles(path)}
+          disabled={!device}
+        />
         <LunaToolbarHtml
           className={className(Style.path, 'luna-toolbar-item-input')}
           disabled={!device}
@@ -287,24 +293,11 @@ export default observer(function File() {
             }}
           />
         </LunaToolbarHtml>
-        <ToolbarIcon
-          icon="refresh"
-          title={t('refresh')}
-          onClick={() => getFiles(path)}
-          disabled={!device}
-        />
         <LunaToolbarInput
           keyName="filter"
           value={filter}
           placeholder={t('filter')}
           onChange={(val) => setFilter(val)}
-        />
-        <LunaToolbarSeparator />
-        <ToolbarIcon
-          icon="upload"
-          title={t('upload')}
-          onClick={() => uploadFiles()}
-          disabled={!device}
         />
         <LunaToolbarSeparator />
         <ToolbarIcon

@@ -1,3 +1,10 @@
+## v1.13.0 (9 Oct 2025)
+
+* feat: show storage usage in application list view [#73](https://github.com/liriliri/aya/issues/73)
+* feat: optimize file path bar
+* feat: add more mouse action to screencast [#124](https://github.com/liriliri/aya/pull/124)
+* feat: support brazilian portuguese [#118](https://github.com/liriliri/aya/pull/118)
+
 ## v1.12.2 (30 Jul 2025)
 
 * fix: macOS app is damaged

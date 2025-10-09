@@ -9,6 +9,12 @@ import { getDeviceStore, setDeviceStore, shell } from './base'
 import contain from 'licia/contain'
 import log from 'share/common/log'
 import { IpcGetPackageInfos } from '../../../common/types'
+import isEmpty from 'licia/isEmpty'
+import isUndef from 'licia/isUndef'
+import each from 'licia/each'
+import startWith from 'licia/startWith'
+import extend from 'licia/extend'
+import toNum from 'licia/toNum'
 
 const logger = log('server')
 
@@ -113,8 +119,59 @@ const getPackageInfos: IpcGetPackageInfos = singleton(async function (
   const result: any = await client.sendMessage('getPackageInfos', {
     packageNames,
   })
-  return result.packageInfos
+  const { packageInfos } = result
+  if (!isEmpty(packageInfos) && isUndef(packageInfos[0].appSize)) {
+    const packageDiskStats = await getPackageDiskStats(deviceId)
+    each(packageInfos, (info: any) => {
+      if (info.packageName && packageDiskStats[info.packageName]) {
+        extend(info, packageDiskStats[info.packageName])
+      } else {
+        info.appSize = 0
+        info.dataSize = 0
+        info.cacheSize = 0
+      }
+    })
+  }
+  return packageInfos
 })
+
+const getPackageDiskStats = async function (deviceId: string) {
+  const diskStats = await shell(deviceId, 'dumpsys diskstats')
+  const packageDiskStats: types.PlainObj<{
+    appSize: number
+    dataSize: number
+    cacheSize: number
+  }> = {}
+
+  const packageNames: string[] = []
+  const appSizes: string[] = []
+  const dataSizes: string[] = []
+  const cacheSizes: string[] = []
+
+  function parseLine(line: string, prefix: string, arr: string[]) {
+    if (!startWith(line, prefix)) {
+      return
+    }
+    line = line.slice(prefix.length)
+    arr.push(...JSON.parse(line))
+  }
+  each(diskStats.split('\n'), (line) => {
+    parseLine(line, 'Package Names:', packageNames)
+    parseLine(line, 'App Sizes:', appSizes)
+    parseLine(line, 'App Data Sizes:', dataSizes)
+    parseLine(line, 'Cache Sizes:', cacheSizes)
+  })
+  for (let i = 0, len = packageNames.length; i < len; i++) {
+    const name = packageNames[i]
+    packageDiskStats[name] = {
+      appSize: toNum(appSizes[i]),
+      dataSize: toNum(dataSizes[i]),
+      cacheSize: toNum(cacheSizes[i]),
+    }
+  }
+
+  return packageDiskStats
+}
 
 export async function init(c: Client) {
   client = c

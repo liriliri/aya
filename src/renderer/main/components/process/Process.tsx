@@ -197,26 +197,31 @@ const columns = [
     id: '%cpu',
     title: '% CPU',
     sortable: true,
+    weight: 10,
   },
   {
     id: 'time+',
     title: t('cpuTime'),
     sortable: true,
+    weight: 10,
   },
   {
     id: 'res',
     title: t('memory'),
     sortable: true,
     comparator: (a: string, b: string) => fileSize(a) - fileSize(b),
+    weight: 10,
   },
   {
     id: 'pid',
     title: 'PID',
     sortable: true,
+    weight: 10,
   },
   {
     id: 'user',
     title: t('user'),
     sortable: true,
+    weight: 10,
   },
 ]

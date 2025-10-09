@@ -32,9 +32,9 @@ export interface IPackageInfo {
   lastUpdateTime: number
   minSdkVersion?: number
   targetSdkVersion?: number
-  dataSize?: number
-  cacheSize?: number
-  appSize?: number
+  dataSize: number
+  cacheSize: number
+  appSize: number
   signatures: string[]
 }
 

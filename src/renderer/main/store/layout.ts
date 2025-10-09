@@ -17,7 +17,7 @@ export class Layout {
   async init() {
     const layout = await main.getMainStore('layout')
     if (layout) {
-      extend(this, layout)
+      runInAction(() => extend(this, layout))
     }
   }
   async set(key: string, val: any) {

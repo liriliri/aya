@@ -13,7 +13,7 @@ export class Process {
   async init() {
     const process = await main.getMainStore('process')
     if (process) {
-      extend(this, process)
+      runInAction(() => extend(this, process))
     }
   }
   async set(key: string, val: any) {

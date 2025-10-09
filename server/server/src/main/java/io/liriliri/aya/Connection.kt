@@ -178,7 +178,7 @@ class Connection(private val client: LocalSocket) : Thread() {
             info.put("targetSdkVersion", applicationInfo.targetSdkVersion)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             try {
                 val stats = ServiceManager.storageStatsManager.queryStatsForPackage(
                     packageName
@@ -187,7 +187,7 @@ class Connection(private val client: LocalSocket) : Thread() {
                 info.put("dataSize", stats.dataBytes)
                 info.put("cacheSize", stats.cacheBytes)
             } catch (e: Exception) {
-                Log.e(TAG, "Failed to get storage stats for $packageName")
+                Log.e(TAG, "Failed to get storage stats for $packageName", e)
             }
         }
 

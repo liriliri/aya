@@ -11,7 +11,7 @@ dependencies {
 android {
     namespace 'io.liriliri.aya'
 
-    compileSdk = 33
+    compileSdk = 34
 
     def pkgFilePath = "$rootDir/../package.json"
     def pkgFile = new File(pkgFilePath)

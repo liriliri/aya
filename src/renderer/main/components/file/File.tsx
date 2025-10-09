@@ -288,9 +288,9 @@ export default observer(function File() {
         <LunaToolbarHtml className={Style.pathContainer} disabled={!device}>
           <LunaPathBar
             className={Style.path}
-            rootLabel="root"
+            rootLabel={t('storage')}
             path={customPath}
-            onChange={(path) => goCustomPath(path)}
+            onChange={(path) => goCustomPath('/' + path)}
           />
         </LunaToolbarHtml>
         <LunaToolbarInput

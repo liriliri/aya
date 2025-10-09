@@ -175,5 +175,6 @@
   "pairDevice": "Pair new devices over Wi-Fi",
   "pairingCode": "Pairing Code",
   "enabled": "Enabled",
-  "disabled": "Disabled"
+  "disabled": "Disabled",
+  "storageUsage": "Storage Usage"
 }

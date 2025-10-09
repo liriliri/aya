@@ -58,11 +58,9 @@ export default function PackageInfoModal(props: IProps) {
         dateFormat(new Date(packageInfo.lastUpdateTime), 'yyyy-mm-dd HH:MM:ss')
       )}
       {item(t('apkSize'), fileSize(packageInfo.apkSize))}
-      {packageInfo.appSize && item(t('appSize'), fileSize(packageInfo.appSize))}
-      {packageInfo.dataSize &&
-        item(t('dataSize'), fileSize(packageInfo.dataSize))}
-      {packageInfo.cacheSize &&
-        item(t('cacheSize'), fileSize(packageInfo.cacheSize))}
+      {item(t('appSize'), fileSize(packageInfo.appSize))}
+      {item(t('dataSize'), fileSize(packageInfo.dataSize))}
+      {item(t('cacheSize'), fileSize(packageInfo.cacheSize))}
       {signature &&
         item(t('signature') + ' MD5', md5(convertBin(signature, 'Unit8Array')))}
     </LunaModal>,

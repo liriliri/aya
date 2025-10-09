@@ -13,7 +13,7 @@ export class File {
   async init() {
     const file = await main.getMainStore('file')
     if (file) {
-      extend(this, file)
+      runInAction(() => extend(this, file))
     }
   }
   async set(key: string, val: any) {

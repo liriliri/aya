@@ -13,7 +13,7 @@ export class Webview {
   async init() {
     const webview = await main.getMainStore('webview')
     if (webview) {
-      extend(this, webview)
+      runInAction(() => extend(this, webview))
     }
   }
   async set(key: string, val: any) {

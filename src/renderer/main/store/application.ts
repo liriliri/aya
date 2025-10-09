@@ -5,6 +5,7 @@ export class Application {
   itemSize = 48
   sysPackage = true
   listView = false
+  dataGridColumns: any[] = []
   constructor() {
     makeObservable(this, {
       itemSize: observable,
@@ -17,7 +18,7 @@ export class Application {
   async init() {
     const application = await main.getMainStore('application')
     if (application) {
-      extend(this, application)
+      runInAction(() => extend(this, application))
     }
   }
   async set(key: string, val: any) {
@@ -28,6 +29,7 @@ export class Application {
       itemSize: this.itemSize,
       sysPackage: this.sysPackage,
       listView: this.listView,
+      dataGridColumns: this.dataGridColumns,
     })
   }
 }

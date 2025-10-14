@@ -1,0 +1,13 @@
+name: Publish release to WinGet
+on:
+  release:
+    types: [released]
+jobs:
+  publish:
+    runs-on: windows-latest
+    steps:
+      - uses: vedantmgoyal9/winget-releaser@main
+        with:
+          identifier: LiriLiri.AYA
+          installers-regex: 'AYA-*-win-x64\.exe'
+          token: ${{ secrets.WINGET_ACC_TOKEN }}

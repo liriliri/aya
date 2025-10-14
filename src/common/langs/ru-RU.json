@@ -200,7 +200,7 @@
   "useLocalInspector": "Использовать локальный инспектор",
   "inputText": "Ввод текста",
   "useNativeTitlebar": "Использовать системную рамку окна",
-  "screenRecordeing": "Запись экрана",
+  "screenRecording": "Запись экрана",
   "wirelessMode": "Беспроводной режим",
   "deviceNotSelected": "Устройство не выбрано",
   "avdManager": "AVD Менеджер",

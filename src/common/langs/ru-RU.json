@@ -200,5 +200,20 @@
   "useLocalInspector": "Использовать локальный инспектор",
   "inputText": "Ввод текста",
   "useNativeTitlebar": "Использовать системную рамку окна",
-  "screenRecordeing": "Запись экрана"
+  "screenRecordeing": "Запись экрана",
+  "wirelessMode": "Беспроводной режим",
+  "deviceNotSelected": "Устройство не выбрано",
+  "avdManager": "AVD Менеджер",
+  "sdkVersion": "SDK Версия",
+  "openDir": "Открытый каталог",
+  "wipeDate": "Очистить данные",
+  "wipeDataConfirm": "Вы уверены, что хотите стереть файлы пользователя с {{name}}?",
+  "restartAdbServer": "Перезапустите ADB сервер",
+  "adbServerRestarted": "ADB Сервер перезапущен",
+  "pair": "Сопряжение",
+  "pairDevice": "Подключите новые устройства по Wi-Fi",
+  "pairingCode": "Код сопряжения",
+  "enabled": "Включено",
+  "disabled": "Отключено",
+  "storageUsage": "Использование хранилища"
 }

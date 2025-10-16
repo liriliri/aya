@@ -7,6 +7,7 @@ import trTR from './langs/tr-TR.json'
 import zhTW from './langs/zh-TW.json'
 import frFR from './langs/fr-FR.json'
 import ptBR from './langs/pt-BR.json'
+import esES from './langs/es-ES.json'
 export { t, i18n } from 'share/common/i18n'
 import { init as initI18n } from 'share/common/i18n'
 
@@ -19,6 +20,7 @@ const langs = {
   'zh-TW': defaults(zhTW, enUS),
   'fr-FR': defaults(frFR, enUS),
   'pt-BR': defaults(ptBR, enUS),
+  'es-ES': defaults(esES, enUS),
 }
 
 initI18n(langs)

@@ -58,6 +58,7 @@ export default observer(function SettingsModal(props: IModalProps) {
             English: 'en-US',
             ['Français']: 'fr-FR',
             ['Português (Brasil)']: 'pt-BR',
+            ['Español (España)']: 'es-ES',
             ['Русский']: 'ru-RU',
             ['Türkçe']: 'tr-TR',
             ['中文']: 'zh-CN',

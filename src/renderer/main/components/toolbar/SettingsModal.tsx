@@ -54,13 +54,13 @@ export default observer(function SettingsModal(props: IModalProps) {
           title={t('language')}
           options={{
             [t('sysPreference')]: 'system',
-            ['العربية']: 'ar-IQ',
+            ['العربية']: 'ar',
             English: 'en-US',
-            ['Français']: 'fr-FR',
-            ['Português (Brasil)']: 'pt-BR',
-            ['Español (España)']: 'es-ES',
-            ['Русский']: 'ru-RU',
-            ['Türkçe']: 'tr-TR',
+            ['Français']: 'fr',
+            ['Português']: 'pt',
+            ['Español']: 'es',
+            ['Русский']: 'ru',
+            ['Türkçe']: 'tr',
             ['中文']: 'zh-CN',
             ['繁體中文']: 'zh-TW',
           }}

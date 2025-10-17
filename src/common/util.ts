@@ -1,26 +1,26 @@
 import defaults from 'licia/defaults'
 import enUS from './langs/en-US.json'
-import arIQ from './langs/ar-IQ.json'
-import ruRU from './langs/ru-RU.json'
+import ar from './langs/ar.json'
+import ru from './langs/ru.json'
 import zhCN from './langs/zh-CN.json'
-import trTR from './langs/tr-TR.json'
+import tr from './langs/tr.json'
 import zhTW from './langs/zh-TW.json'
-import frFR from './langs/fr-FR.json'
-import ptBR from './langs/pt-BR.json'
-import esES from './langs/es-ES.json'
+import fr from './langs/fr.json'
+import pt from './langs/pt.json'
+import es from './langs/es.json'
 export { t, i18n } from 'share/common/i18n'
 import { init as initI18n } from 'share/common/i18n'
 
 const langs = {
   'en-US': enUS,
-  'ar-IQ': defaults(arIQ, enUS),
-  'ru-RU': defaults(ruRU, enUS),
+  ar: defaults(ar, enUS),
+  ru: defaults(ru, enUS),
   'zh-CN': defaults(zhCN, enUS),
-  'tr-TR': defaults(trTR, enUS),
+  tr: defaults(tr, enUS),
   'zh-TW': defaults(zhTW, enUS),
-  'fr-FR': defaults(frFR, enUS),
-  'pt-BR': defaults(ptBR, enUS),
-  'es-ES': defaults(esES, enUS),
+  fr: defaults(fr, enUS),
+  pt: defaults(pt, enUS),
+  es: defaults(es, enUS),
 }
 
 initI18n(langs)

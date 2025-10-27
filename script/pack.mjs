@@ -41,12 +41,45 @@ const config = {
         target: 'dmg',
       },
     ],
+    icon: 'build/icon.icns',
   },
   publish: {
     provider: 'generic',
     url: 'https://release.liriliri.io/',
     channel: publishChannel,
   },
+}
+
+if (isMac) {
+  const args = process.argv.slice(2)
+  const entitlements = {
+    entitlements: 'build/entitlements.mas.plist',
+    entitlementsInherit: 'build/entitlements.mas.inherit.plist',
+  }
+  if (args.includes('--mas-dev')) {
+    config.mac.target = [
+      {
+        target: 'mas-dev',
+      },
+    ]
+    config.masDev = {
+      ...entitlements,
+      provisioningProfile: 'build/mas-dev.provisionprofile',
+    }
+  } else if (args.includes('--mas')) {
+    config.mac.target = [
+      {
+        target: 'mas',
+      },
+    ]
+    config.mac.extendInfo = {
+      LSMinimumSystemVersion: '12.0',
+    }
+    config.mas = {
+      ...entitlements,
+      provisioningProfile: 'build/mas.provisionprofile',
+    }
+  }
 }
 
 await builder.build({

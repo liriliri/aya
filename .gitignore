@@ -8,3 +8,5 @@ package-lock.json
 .idea/
 server/**/build/
 local.properties
+
+build/*.provisionprofile

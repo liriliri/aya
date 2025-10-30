@@ -10,23 +10,28 @@ export default observer(function App() {
   return (
     <>
       <Toolbar />
-      <LunaSplitPane
-        direction="vertical"
-        className={Style.splitPane}
-        onResize={(weights) => {
-          const [deviceManagerWeight, screenshotWeight] = weights
-          store.setScreenshotWeight(
-            (screenshotWeight / (deviceManagerWeight + screenshotWeight)) * 100
-          )
-        }}
-      >
-        <LunaSplitPaneItem minSize={200} weight={100 - store.screenshotWeight}>
-          <DeviceManager />
-        </LunaSplitPaneItem>
-        <LunaSplitPaneItem minSize={200} weight={store.screenshotWeight}>
-          <Screenshot />
-        </LunaSplitPaneItem>
-      </LunaSplitPane>
+      <div className={Style.splitPane}>
+        <LunaSplitPane
+          direction="vertical"
+          onResize={(weights) => {
+            const [deviceManagerWeight, screenshotWeight] = weights
+            store.setScreenshotWeight(
+              (screenshotWeight / (deviceManagerWeight + screenshotWeight)) *
+                100
+            )
+          }}
+        >
+          <LunaSplitPaneItem
+            minSize={200}
+            weight={100 - store.screenshotWeight}
+          >
+            <DeviceManager />
+          </LunaSplitPaneItem>
+          <LunaSplitPaneItem minSize={200} weight={store.screenshotWeight}>
+            <Screenshot />
+          </LunaSplitPaneItem>
+        </LunaSplitPane>
+      </div>
     </>
   )
 })

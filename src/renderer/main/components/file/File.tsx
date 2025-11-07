@@ -20,6 +20,8 @@ import LunaModal from 'luna-modal'
 import endWith from 'licia/endWith'
 import normalizePath from 'licia/normalizePath'
 import LunaPathBar from 'luna-path-bar/react'
+import mime from 'licia/mime'
+import startWith from 'licia/startWith'
 
 export default observer(function File() {
   const [fileList, setFileList] = useState<any[]>([])
@@ -40,6 +42,20 @@ export default observer(function File() {
   async function getFiles(path: string) {
     if (device) {
       const files = await main.readDir(device.id, path)
+      for (let i = 0, len = files.length; i < len; i++) {
+        const file = files[i]
+        const ext = splitPath(file.name).ext
+        const type = mime(ext.slice(1))
+        if (
+          !type ||
+          (!startWith(type, 'image') &&
+            !startWith(type, 'text') &&
+            !startWith(type, 'video') &&
+            !startWith(type, 'audio'))
+        ) {
+          file.thumbnail = await main.getFileIcon(ext)
+        }
+      }
       setPath(path)
       setCustomPath(path)
       setFileList(files)

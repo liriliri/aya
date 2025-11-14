@@ -2,7 +2,7 @@ import { FC, PropsWithChildren, useRef } from 'react'
 import Style from './Copyable.module.scss'
 import copy from 'licia/copy'
 import { notify } from 'share/renderer/lib/util'
-import { t } from '../../../../common/util'
+import { t } from 'common/util'
 import className from 'licia/className'
 
 interface IProps {

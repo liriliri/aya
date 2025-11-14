@@ -17,7 +17,7 @@ import store from '../../store'
 import copy from 'licia/copy'
 import download from 'licia/download'
 import toStr from 'licia/toStr'
-import { t } from '../../../../common/util'
+import { t } from 'common/util'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import contextMenu from 'share/renderer/lib/contextMenu'
 

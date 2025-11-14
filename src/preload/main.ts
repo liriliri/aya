@@ -1,18 +1,22 @@
 import {
+  IpcCreateShell,
   IpcDumpWindowHierarchy,
   IpcForward,
   IpcGetAvds,
   IpcGetDevices,
   IpcGetFps,
   IpcGetPackageInfos,
+  IpcKillShell,
   IpcListForwards,
   IpcListReverses,
   IpcPairDevice,
+  IpcResizeShell,
   IpcReverse,
   IpcSetScreencastAlwaysOnTop,
   IpcStartAvd,
   IpcStopAvd,
   IpcWipeAvdData,
+  IpcWriteShell,
 } from '../common/types'
 import { ipcRenderer } from 'electron'
 import { IpcGetStore, IpcSetStore } from 'share/common/types'
@@ -41,10 +45,10 @@ export default Object.assign(mainObj, {
   getPerformance: invoke('getPerformance'),
   getUptime: invoke('getUptime'),
   getFps: invoke<IpcGetFps>('getFps'),
-  createShell: invoke('createShell'),
-  writeShell: invoke('writeShell'),
-  resizeShell: invoke('resizeShell'),
-  killShell: (sessionId: string) => ipcRenderer.invoke('killShell', sessionId),
+  createShell: invoke<IpcCreateShell>('createShell'),
+  writeShell: invoke<IpcWriteShell>('writeShell'),
+  resizeShell: invoke<IpcResizeShell>('resizeShell'),
+  killShell: invoke<IpcKillShell>('killShell'),
   screencap: (deviceId: string) => ipcRenderer.invoke('screencap', deviceId),
   openLogcat: (deviceId: string) => ipcRenderer.invoke('openLogcat', deviceId),
   closeLogcat: (logcatId: string) => {

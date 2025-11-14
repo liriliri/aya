@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite'
 import Style from './Detail.module.scss'
 import { Element } from '@xmldom/xmldom'
-import { t } from '../../../../common/util'
+import { t } from 'common/util'
 import { Copyable } from '../common/Copyable'
 import toNum from 'licia/toNum'
 import map from 'licia/map'

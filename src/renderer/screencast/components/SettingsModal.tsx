@@ -6,7 +6,7 @@ import LunaSetting, {
   LunaSettingNumber,
   LunaSettingSelect,
 } from 'luna-setting/react'
-import { t } from '../../../common/util'
+import { t } from 'common/util'
 import Style from './SettingsModal.module.scss'
 import toStr from 'licia/toStr'
 import toNum from 'licia/toNum'

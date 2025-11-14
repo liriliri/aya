@@ -69,3 +69,11 @@ export type IpcPairDevice = (
   port: number,
   password: string
 ) => Promise<void>
+export type IpcCreateShell = (deviceId: string) => Promise<string>
+export type IpcWriteShell = (sessionId: string, data: string) => void
+export type IpcResizeShell = (
+  sessionId: string,
+  cols: number,
+  rows: number
+) => void
+export type IpcKillShell = (sessionId: string) => void

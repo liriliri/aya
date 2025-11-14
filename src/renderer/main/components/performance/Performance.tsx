@@ -11,8 +11,8 @@ import {
   orange6Dark,
   purple6,
   purple6Dark,
-} from '../../../../common/theme'
-import { t } from '../../../../common/util'
+} from 'common/theme'
+import { t } from 'common/util'
 import sum from 'licia/sum'
 import Style from './Performance.module.scss'
 import durationFormat from 'licia/durationFormat'

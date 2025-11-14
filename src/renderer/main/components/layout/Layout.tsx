@@ -7,7 +7,7 @@ import LunaToolbar, {
 } from 'luna-toolbar/react'
 import { observer } from 'mobx-react-lite'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
-import { t } from '../../../../common/util'
+import { t } from 'common/util'
 import Style from './Layout.module.scss'
 import Tree from './Tree'
 import Detail from './Detail'

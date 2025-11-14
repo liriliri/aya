@@ -1,7 +1,7 @@
 import LunaModal from 'luna-modal/react'
 import { observer } from 'mobx-react-lite'
 import { createPortal } from 'react-dom'
-import { t } from '../../../../common/util'
+import { t } from 'common/util'
 import { IModalProps } from 'share/common/types'
 import Style from './RemoteControllerModal.module.scss'
 import className from 'licia/className'

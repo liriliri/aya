@@ -1,7 +1,7 @@
 import LunaDataGrid from 'luna-data-grid/react'
 import { observer } from 'mobx-react-lite'
 import Style from './DeviceManager.module.scss'
-import { t } from '../../../common/util'
+import { t } from 'common/util'
 import map from 'licia/map'
 import concat from 'licia/concat'
 import store from '../store'

@@ -5,7 +5,7 @@ import LunaToolbar, {
   LunaToolbarSpace,
 } from 'luna-toolbar/react'
 import Style from './Toolbar.module.scss'
-import { t } from '../../../common/util'
+import { t } from 'common/util'
 import store from '../store'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import { notify } from 'share/renderer/lib/util'

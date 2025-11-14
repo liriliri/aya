@@ -1,6 +1,6 @@
 import LunaModal from 'luna-modal/react'
 import { createPortal } from 'react-dom'
-import { t } from '../../../../common/util'
+import { t } from 'common/util'
 import Style from './PackageInfoModal.module.scss'
 import defaultIcon from '../../../assets/default-icon.png'
 import fileSize from 'licia/fileSize'
@@ -9,7 +9,7 @@ import convertBin from 'licia/convertBin'
 import dateFormat from 'licia/dateFormat'
 import { IModalProps } from 'share/common/types'
 import { Copyable } from '../common/Copyable'
-import { IPackageInfo } from '../../../../common/types'
+import { IPackageInfo } from 'common/types'
 
 interface IProps extends IModalProps {
   packageInfo: IPackageInfo

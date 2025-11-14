@@ -1,7 +1,7 @@
 import LunaTab, { LunaTabItem } from 'luna-tab/react'
 import { observer } from 'mobx-react-lite'
 import map from 'licia/map'
-import { t } from '../../../../common/util'
+import { t } from 'common/util'
 import Style from './Tabs.module.scss'
 import store from '../../store'
 

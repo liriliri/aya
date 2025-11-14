@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import { builtinModules } from 'node:module'
+import { alias } from './vite.config'
 
 const builtins = builtinModules.filter((e) => !e.startsWith('_'))
 builtins.push('electron', ...builtins.map((m) => `node:${m}`))
@@ -19,8 +20,6 @@ export default defineConfig({
     },
   },
   resolve: {
-    alias: {
-      share: resolve(__dirname, 'src/share'),
-    },
+    alias,
   },
 })

@@ -1,5 +1,5 @@
 import BaseStore from 'share/renderer/store/BaseStore'
-import { IDevice } from '../../common/types'
+import { IDevice } from 'common/types'
 import { action, makeObservable, observable, runInAction, toJS } from 'mobx'
 import ScrcpyClient from './lib/ScrcpyClient'
 import { ScrcpyOptions3_1 } from '@yume-chan/scrcpy'

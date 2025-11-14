@@ -7,7 +7,7 @@ import Style from './Device.module.scss'
 import { observer } from 'mobx-react-lite'
 import isEmpty from 'licia/isEmpty'
 import store from '../../store'
-import { t } from '../../../../common/util'
+import { t } from 'common/util'
 import each from 'licia/each'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 

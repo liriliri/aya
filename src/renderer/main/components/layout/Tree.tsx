@@ -9,7 +9,7 @@ import uuid from 'licia/uuid'
 import xpath from 'licia/xpath'
 import copy from 'licia/copy'
 import { Document, Element } from '@xmldom/xmldom'
-import { t } from '../../../../common/util'
+import { t } from 'common/util'
 import CopyButton from 'share/renderer/components/CopyButton'
 import { PannelLoading } from '../common/loading'
 

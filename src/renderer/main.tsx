@@ -1,6 +1,6 @@
 import { lazy } from 'react'
 import { createRoot } from 'react-dom/client'
-import { t, i18n } from '../common/util'
+import { t, i18n } from 'common/util'
 import getUrlParam from 'licia/getUrlParam'
 import LunaModal from 'luna-modal'
 import LunaFileList from 'luna-file-list'

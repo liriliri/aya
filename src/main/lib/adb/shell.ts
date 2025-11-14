@@ -4,6 +4,12 @@ import uniqId from 'licia/uniqId'
 import * as window from 'share/main/lib/window'
 import { Client } from '@devicefarmer/adbkit'
 import { handleEvent } from 'share/main/lib/util'
+import {
+  IpcCreateShell,
+  IpcKillShell,
+  IpcResizeShell,
+  IpcWriteShell,
+} from '../../../common/types'
 
 let client: Client
 
@@ -128,7 +134,7 @@ class AdbPty extends Emitter {
 
 const ptys: types.PlainObj<AdbPty> = {}
 
-async function createShell(deviceId: string) {
+const createShell: IpcCreateShell = async function (deviceId) {
   const device = await client.getDevice(deviceId)
 
   const transport = await device.transport()
@@ -150,15 +156,15 @@ async function createShell(deviceId: string) {
   return sessionId
 }
 
-async function writeShell(sessionId: string, data: string) {
+const writeShell: IpcWriteShell = async function (sessionId, data) {
   ptys[sessionId].write(data)
 }
 
-async function resizeShell(sessionId: string, cols: number, rows: number) {
+const resizeShell: IpcResizeShell = async function (sessionId, cols, rows) {
   ptys[sessionId].resize(cols, rows)
 }
 
-async function killShell(sessionId: string) {
+const killShell: IpcKillShell = async function (sessionId) {
   ptys[sessionId].kill()
   delete ptys[sessionId]
 }

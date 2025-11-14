@@ -1,4 +1,4 @@
-import { IAvd } from '../../common/types'
+import { IAvd } from 'common/types'
 import { action, makeObservable, observable } from 'mobx'
 import BaseStore from 'share/renderer/store/BaseStore'
 import isStr from 'licia/isStr'

@@ -3,7 +3,7 @@ import store from '../store'
 import Style from './Screenshot.module.scss'
 import { JSX, useRef } from 'react'
 import LunaImageViewer from 'luna-image-viewer/react'
-import { t } from '../../../common/util'
+import { t } from 'common/util'
 import { LoadingBar } from 'share/renderer/components/loading'
 
 export default observer(function Screenshot() {

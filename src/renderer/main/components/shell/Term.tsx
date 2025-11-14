@@ -13,11 +13,11 @@ import {
   colorText,
   colorTextDark,
   fontFamilyCode,
-} from '../../../../common/theme'
+} from 'common/theme'
 import copy from 'licia/copy'
 import Style from './Term.module.scss'
 import '@xterm/xterm/css/xterm.css'
-import { t } from '../../../../common/util'
+import { t } from 'common/util'
 import contextMenu from 'share/renderer/lib/contextMenu'
 import isHidden from 'licia/isHidden'
 

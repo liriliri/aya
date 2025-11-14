@@ -1,4 +1,4 @@
-import { t } from '../../../common/util'
+import { t } from 'common/util'
 import LunaModal from 'luna-modal/react'
 import { createPortal } from 'react-dom'
 import { IModalProps } from 'share/common/types'

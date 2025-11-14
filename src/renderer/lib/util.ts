@@ -1,6 +1,6 @@
 import isEmpty from 'licia/isEmpty'
 import { isObservable, toJS } from 'mobx'
-import { t } from '../../common/util'
+import { t } from 'common/util'
 import { notify } from 'share/renderer/lib/util'
 
 export async function setMainStore(name: string, val: any) {

@@ -1,6 +1,6 @@
 import { action, makeObservable, observable, runInAction, toJS } from 'mobx'
 import BaseStore from 'share/renderer/store/BaseStore'
-import { IDevice } from '../../common/types'
+import { IDevice } from 'common/types'
 import each from 'licia/each'
 import filter from 'licia/filter'
 import concat from 'licia/concat'

@@ -1,4 +1,4 @@
-import { t } from '../../../../common/util'
+import { t } from 'common/util'
 import LunaModal from 'luna-modal/react'
 import { observer } from 'mobx-react-lite'
 import { createPortal } from 'react-dom'

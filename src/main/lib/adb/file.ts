@@ -13,10 +13,21 @@ import trim from 'licia/trim'
 import each from 'licia/each'
 import uuid from 'licia/uuid'
 import { getPackages } from './package'
+import {
+  IpcCreateDir,
+  IpcDeleteDir,
+  IpcDeleteFile,
+  IpcMoveFile,
+  IpcOpenFile,
+  IpcPullFile,
+  IpcPushFile,
+  IpcReadDir,
+  IpcStatFile,
+} from 'common/types'
 
 let client: Client
 
-async function pullFile(deviceId: string, path: string, dest: string) {
+const pullFile: IpcPullFile = async function (deviceId, path, dest) {
   let tmpFilePath = ''
   if (startWith(path, '/data/data/')) {
     if (!(await isRooted(deviceId))) {
@@ -37,7 +48,7 @@ async function pullFile(deviceId: string, path: string, dest: string) {
         if (tmpFilePath) {
           deleteFile(deviceId, tmpFilePath)
         }
-        resolve(null)
+        resolve()
       })
       transfer.on('error', reject)
       transfer.pipe(writable)
@@ -66,25 +77,29 @@ export async function pullFileData(
   })
 }
 
-async function openFile(deviceId: string, p: string) {
+const openFile: IpcOpenFile = async function (deviceId, p) {
   const dest = path.join(os.tmpdir(), path.basename(p))
   await pullFile(deviceId, p, dest)
   electronShell.openPath(dest)
 }
 
-async function deleteFile(deviceId: string, path: string) {
+const deleteFile: IpcDeleteFile = async function (deviceId, path) {
   await fileShell(deviceId, 'rm', path)
 }
 
-async function deleteDir(deviceId: string, path: string) {
+const deleteDir: IpcDeleteDir = async function (deviceId, path) {
   await fileShell(deviceId, 'rm -rf', path)
 }
 
-async function createDir(deviceId: string, path: string) {
+const createDir: IpcCreateDir = async function (deviceId, path) {
   await fileShell(deviceId, 'mkdir -p', path)
 }
 
-async function pushFile(deviceId: string, src: string, dest: string) {
+const pushFile: IpcPushFile = async function (
+  deviceId: string,
+  src: string,
+  dest: string
+) {
   let tmpFilePath = ''
   if (startWith(dest, '/data/data/')) {
     if (!(await isRooted(deviceId))) {
@@ -101,17 +116,17 @@ async function pushFile(deviceId: string, src: string, dest: string) {
         await fileShell(deviceId, 'cp', tmpFilePath, dest)
         deleteFile(deviceId, tmpFilePath)
       }
-      resolve(null)
+      resolve()
     })
     transfer.on('error', reject)
   })
 }
 
-async function moveFile(deviceId: string, src: string, dest: string) {
+const moveFile: IpcMoveFile = async function (deviceId, src, dest) {
   await fileShell(deviceId, 'mv', src, dest)
 }
 
-async function readDir(deviceId: string, path: string) {
+const readDir: IpcReadDir = async function (deviceId, path) {
   if (startWith(path, '/data/') && !startWith(path, '/data/local/tmp/')) {
     if (!(await isRooted(deviceId))) {
       return readDataDir(deviceId, path)
@@ -290,7 +305,7 @@ async function fileShell(
   return shell(deviceId, `${cmd} "${path}"`)
 }
 
-async function statFile(deviceId: string, path: string) {
+const statFile: IpcStatFile = async function (deviceId, path) {
   if (startWith(path, '/data/data/')) {
     if (!(await isRooted(deviceId))) {
       const ls = await fileShell(deviceId, 'ls -ld', path)

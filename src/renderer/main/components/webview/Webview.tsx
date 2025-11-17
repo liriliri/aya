@@ -17,10 +17,11 @@ import store from '../../store'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import DataGrid from 'luna-data-grid'
 import { useWindowResize } from 'share/renderer/lib/hooks'
+import { IWebview } from 'common/types'
 
 export default observer(function Webview() {
-  const [webviews, setWebviews] = useState<any[]>([])
-  const [selected, setSelected] = useState<any>(null)
+  const [webviews, setWebviews] = useState<IWebview[]>([])
+  const [selected, setSelected] = useState<IWebview | null>(null)
   const [topPackage, setTopPackage] = useState({
     name: '',
     label: '',
@@ -108,10 +109,13 @@ export default observer(function Webview() {
           icon="debug"
           title={t('inspect')}
           onClick={() => {
-            let url = selected.devtoolsFrontendUrl
+            let url = selected!.devtoolsFrontendUrl
             if (store.webview.useLocalInspector) {
               url = 'devtools://devtools/bundled/inspector.html'
-              url += `?ws=${selected.webSocketDebuggerUrl.replace('ws://', '')}`
+              url += `?ws=${selected!.webSocketDebuggerUrl.replace(
+                'ws://',
+                ''
+              )}`
             }
             main.openWindow(url, 'devtools')
           }}
@@ -121,11 +125,11 @@ export default observer(function Webview() {
           disabled={selected === null}
           icon="browser"
           title={t('openWithBrowser')}
-          onClick={() => main.openExternal(selected.url)}
+          onClick={() => main.openExternal(selected!.url)}
         />
       </LunaToolbar>
       <LunaDataGrid
-        onSelect={async (node) => setSelected(node.data)}
+        onSelect={async (node) => setSelected(node.data as any)}
         onDeselect={() => setSelected(null)}
         className={Style.webviews}
         filter={filter}

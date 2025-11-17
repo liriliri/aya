@@ -2,6 +2,7 @@ import { Client } from '@devicefarmer/adbkit'
 import { handleEvent, resolveResources } from 'share/main/lib/util'
 import { getDeviceStore, setDeviceStore } from './base'
 import log from 'share/common/log'
+import { IpcStartScrcpy } from 'common/types'
 
 const logger = log('scrcpy')
 
@@ -50,7 +51,7 @@ async function getScrcpyClient(deviceId: string): Promise<ScrcpyClient> {
   return scrcpyClient
 }
 
-async function startScrcpy(deviceId: string, args: string[]) {
+const startScrcpy: IpcStartScrcpy = async function (deviceId, args) {
   const client = await getScrcpyClient(deviceId)
   await client.start(args)
 }

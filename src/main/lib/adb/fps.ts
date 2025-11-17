@@ -10,7 +10,7 @@ import max from 'licia/max'
 import last from 'licia/last'
 import trim from 'licia/trim'
 import { handleEvent } from 'share/main/lib/util'
-import { IpcGetFps } from '../../../common/types'
+import { IpcGetFps } from 'common/types'
 import startWith from 'licia/startWith'
 import endWith from 'licia/endWith'
 

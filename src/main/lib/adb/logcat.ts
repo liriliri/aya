@@ -5,6 +5,12 @@ import { getDeviceStore, getPidNames, setDeviceStore } from './base'
 import uniqId from 'licia/uniqId'
 import * as window from 'share/main/lib/window'
 import { handleEvent } from 'share/main/lib/util'
+import {
+  IpcCloseLogcat,
+  IpcOpenLogcat,
+  IpcPauseLogcat,
+  IpcResumeLogcat,
+} from 'common/types'
 
 let client: Client
 
@@ -47,7 +53,7 @@ class Logcat extends Emitter {
 
 const logcats: types.PlainObj<Logcat> = {}
 
-async function openLogcat(deviceId: string) {
+const openLogcat: IpcOpenLogcat = async function (deviceId) {
   const device = await client.getDevice(deviceId)
   const reader = await device.openLogcat({
     clear: true,
@@ -63,15 +69,15 @@ async function openLogcat(deviceId: string) {
   return logcatId
 }
 
-async function pauseLogcat(logcatId: string) {
+const pauseLogcat: IpcPauseLogcat = async function (logcatId) {
   logcats[logcatId].pause()
 }
 
-async function resumeLogcat(logcatId: string) {
+const resumeLogcat: IpcResumeLogcat = async function (logcatId) {
   logcats[logcatId].resume()
 }
 
-async function closeLogcat(logcatId: string) {
+const closeLogcat: IpcCloseLogcat = async function (logcatId) {
   logcats[logcatId].close()
   delete logcats[logcatId]
 }

@@ -17,6 +17,7 @@ import fs from 'fs-extra'
 import { getSettingsStore } from '../store'
 import childProcess from 'node:child_process'
 import contain from 'licia/contain'
+import { IpcGetProcesses, IpcReverseTcp, IProcess } from 'common/types'
 
 const logger = log('adbBase')
 
@@ -33,7 +34,9 @@ export const getPidNames = singleton(async (deviceId: string) => {
   return pidNames
 })
 
-export const getProcesses = singleton(async (deviceId: string) => {
+export const getProcesses = singleton(<IpcGetProcesses>(async (
+  deviceId: string
+) => {
   let columns = ['pid', '%cpu', 'time+', 'res', 'user', 'name', 'args']
   let command = 'top -b -n 1'
   each(columns, (column) => {
@@ -76,7 +79,7 @@ export const getProcesses = singleton(async (deviceId: string) => {
   }
 
   lines = lines.slice(start)
-  const processes: any[] = []
+  const processes: IProcess[] = []
   each(lines, (line) => {
     line = trim(line)
     if (!line) {
@@ -98,7 +101,7 @@ export const getProcesses = singleton(async (deviceId: string) => {
   })
 
   return processes
-})
+}))
 
 export async function init(c: Client) {
   client = c
@@ -146,7 +149,7 @@ export async function forwardTcp(deviceId: string, remote: string) {
   return port
 }
 
-export async function reverseTcp(deviceId: string, remote: string) {
+export const reverseTcp: IpcReverseTcp = async function (deviceId, remote) {
   const device = await client.getDevice(deviceId)
   const reverses = await device.listReverses()
 

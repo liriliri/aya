@@ -1,24 +1,53 @@
 import {
+  IpcClearPackage,
+  IpcCloseLogcat,
+  IpcConnectDevice,
+  IpcCreateDir,
   IpcCreateShell,
+  IpcDeleteDir,
+  IpcDeleteFile,
+  IpcDisablePackage,
+  IpcDisconnectDevice,
   IpcDumpWindowHierarchy,
+  IpcEnablePackage,
   IpcForward,
   IpcGetAvds,
   IpcGetDevices,
   IpcGetFps,
   IpcGetPackageInfos,
+  IpcGetPackages,
+  IpcGetProcesses,
+  IpcGetTopPackage,
+  IpcGetWebviews,
+  IpcInputKey,
+  IpcInstallPackage,
   IpcKillShell,
   IpcListForwards,
   IpcListReverses,
+  IpcMoveFile,
+  IpcOpenFile,
+  IpcOpenLogcat,
   IpcPairDevice,
+  IpcPauseLogcat,
+  IpcPullFile,
+  IpcPushFile,
+  IpcReadDir,
   IpcResizeShell,
+  IpcResumeLogcat,
   IpcReverse,
+  IpcReverseTcp,
+  IpcScreencap,
   IpcSetScreencastAlwaysOnTop,
   IpcStartAvd,
+  IpcStartPackage,
+  IpcStartScrcpy,
+  IpcStatFile,
   IpcStopAvd,
+  IpcStopPackage,
+  IpcUninstallPackage,
   IpcWipeAvdData,
   IpcWriteShell,
-} from '../common/types'
-import { ipcRenderer } from 'electron'
+} from 'common/types'
 import { IpcGetStore, IpcSetStore } from 'share/common/types'
 import mainObj from 'share/preload/main'
 import { invoke } from 'share/preload/util'
@@ -49,93 +78,37 @@ export default Object.assign(mainObj, {
   writeShell: invoke<IpcWriteShell>('writeShell'),
   resizeShell: invoke<IpcResizeShell>('resizeShell'),
   killShell: invoke<IpcKillShell>('killShell'),
-  screencap: (deviceId: string) => ipcRenderer.invoke('screencap', deviceId),
-  openLogcat: (deviceId: string) => ipcRenderer.invoke('openLogcat', deviceId),
-  closeLogcat: (logcatId: string) => {
-    return ipcRenderer.invoke('closeLogcat', logcatId)
-  },
-  pauseLogcat: (logcatId: string) => {
-    return ipcRenderer.invoke('pauseLogcat', logcatId)
-  },
-  resumeLogcat: (logcatId: string) => {
-    return ipcRenderer.invoke('resumeLogcat', logcatId)
-  },
-  getProcesses: (deviceId: string) => {
-    return ipcRenderer.invoke('getProcesses', deviceId)
-  },
-  getWebviews: (deviceId: string, pid: number) => {
-    return ipcRenderer.invoke('getWebviews', deviceId, pid)
-  },
-  getTopPackage: (deviceId: string) => {
-    return ipcRenderer.invoke('getTopPackage', deviceId)
-  },
-  stopPackage: (deviceId: string, pkg: string) => {
-    return ipcRenderer.invoke('stopPackage', deviceId, pkg)
-  },
-  clearPackage: (deviceId: string, pkg: string) => {
-    return ipcRenderer.invoke('clearPackage', deviceId, pkg)
-  },
-  startPackage: (deviceId: string, pkg: string) => {
-    return ipcRenderer.invoke('startPackage', deviceId, pkg)
-  },
-  installPackage: (deviceId: string, apkPath: string) => {
-    return ipcRenderer.invoke('installPackage', deviceId, apkPath)
-  },
-  uninstallPackage: (deviceId: string, pkg: string) => {
-    return ipcRenderer.invoke('uninstallPackage', deviceId, pkg)
-  },
-  getPackages: (deviceId: string, system?: boolean) => {
-    return ipcRenderer.invoke('getPackages', deviceId, system)
-  },
+  screencap: invoke<IpcScreencap>('screencap'),
+  openLogcat: invoke<IpcOpenLogcat>('openLogcat'),
+  closeLogcat: invoke<IpcCloseLogcat>('closeLogcat'),
+  pauseLogcat: invoke<IpcPauseLogcat>('pauseLogcat'),
+  resumeLogcat: invoke<IpcResumeLogcat>('resumeLogcat'),
+  getProcesses: invoke<IpcGetProcesses>('getProcesses'),
+  getWebviews: invoke<IpcGetWebviews>('getWebviews'),
+  getTopPackage: invoke<IpcGetTopPackage>('getTopPackage'),
+  stopPackage: invoke<IpcStopPackage>('stopPackage'),
+  clearPackage: invoke<IpcClearPackage>('clearPackage'),
+  startPackage: invoke<IpcStartPackage>('startPackage'),
+  installPackage: invoke<IpcInstallPackage>('installPackage'),
+  uninstallPackage: invoke<IpcUninstallPackage>('uninstallPackage'),
+  getPackages: invoke<IpcGetPackages>('getPackages'),
   getPackageInfos: invoke<IpcGetPackageInfos>('getPackageInfos'),
-  disablePackage: (deviceId: string, pkg: string) => {
-    return ipcRenderer.invoke('disablePackage', deviceId, pkg)
-  },
-  enablePackage: (deviceId: string, pkg: string) => {
-    return ipcRenderer.invoke('enablePackage', deviceId, pkg)
-  },
-  pullFile: (deviceId: string, path: string, dest: string) => {
-    return ipcRenderer.invoke('pullFile', deviceId, path, dest)
-  },
-  pushFile: (deviceId: string, src: string, dest: string) => {
-    return ipcRenderer.invoke('pushFile', deviceId, src, dest)
-  },
-  openFile: (deviceId: string, path: string) => {
-    return ipcRenderer.invoke('openFile', deviceId, path)
-  },
-  deleteFile: (deviceId: string, path: string) => {
-    return ipcRenderer.invoke('deleteFile', deviceId, path)
-  },
-  deleteDir: (deviceId: string, path: string) => {
-    return ipcRenderer.invoke('deleteDir', deviceId, path)
-  },
-  createDir: (deviceId: string, path: string) => {
-    return ipcRenderer.invoke('createDir', deviceId, path)
-  },
-  readDir: (deviceId: string, path: string) => {
-    return ipcRenderer.invoke('readDir', deviceId, path)
-  },
-  statFile: (deviceId: string, path: string) => {
-    return ipcRenderer.invoke('statFile', deviceId, path)
-  },
-  moveFile: (deviceId: string, src: string, dest: string) => {
-    return ipcRenderer.invoke('moveFile', deviceId, src, dest)
-  },
-  connectDevice: (host: string, port?: number) => {
-    return ipcRenderer.invoke('connectDevice', host, port)
-  },
-  disconnectDevice: (host: string, port?: number) => {
-    return ipcRenderer.invoke('disconnectDevice', host, port)
-  },
-  startScrcpy: (deviceId: string, args: string[]) => {
-    return ipcRenderer.invoke('startScrcpy', deviceId, args)
-  },
-  reverseTcp: (deviceId: string, remote: string) => {
-    return ipcRenderer.invoke('reverseTcp', deviceId, remote)
-  },
-  inputKey: (deviceId: string, keyCode: number) => {
-    return ipcRenderer.invoke('inputKey', deviceId, keyCode)
-  },
+  disablePackage: invoke<IpcDisablePackage>('disablePackage'),
+  enablePackage: invoke<IpcEnablePackage>('enablePackage'),
+  pullFile: invoke<IpcPullFile>('pullFile'),
+  pushFile: invoke<IpcPushFile>('pushFile'),
+  openFile: invoke<IpcOpenFile>('openFile'),
+  deleteFile: invoke<IpcDeleteFile>('deleteFile'),
+  deleteDir: invoke<IpcDeleteDir>('deleteDir'),
+  createDir: invoke<IpcCreateDir>('createDir'),
+  readDir: invoke<IpcReadDir>('readDir'),
+  statFile: invoke<IpcStatFile>('statFile'),
+  moveFile: invoke<IpcMoveFile>('moveFile'),
+  connectDevice: invoke<IpcConnectDevice>('connectDevice'),
+  disconnectDevice: invoke<IpcDisconnectDevice>('disconnectDevice'),
+  startScrcpy: invoke<IpcStartScrcpy>('startScrcpy'),
+  reverseTcp: invoke<IpcReverseTcp>('reverseTcp'),
+  inputKey: invoke<IpcInputKey>('inputKey'),
   listForwards: invoke<IpcListForwards>('listForwards'),
   listReverses: invoke<IpcListReverses>('listReverses'),
   forward: invoke<IpcForward>('forward'),

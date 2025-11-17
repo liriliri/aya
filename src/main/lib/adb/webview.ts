@@ -5,9 +5,13 @@ import singleton from 'licia/singleton'
 import axios from 'axios'
 import { shell, forwardTcp } from './base'
 import { handleEvent } from 'share/main/lib/util'
+import { IpcGetWebviews, IWebview } from 'common/types'
 
-const getWebviews = singleton(async (deviceId: string, pid: number) => {
-  const webviews: any[] = []
+const getWebviews = singleton(<IpcGetWebviews>(async (
+  deviceId: string,
+  pid: number
+) => {
+  const webviews: IWebview[] = []
 
   const result: string = await shell(deviceId, `cat /proc/net/unix`)
 
@@ -36,7 +40,7 @@ const getWebviews = singleton(async (deviceId: string, pid: number) => {
   each(data, (item: any) => webviews.push(item))
 
   return webviews
-})
+}))
 
 export function init() {
   handleEvent('getWebviews', getWebviews)

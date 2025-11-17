@@ -9,7 +9,7 @@ import {
   IpcKillShell,
   IpcResizeShell,
   IpcWriteShell,
-} from '../../../common/types'
+} from 'common/types'
 
 let client: Client
 

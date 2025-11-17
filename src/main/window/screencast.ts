@@ -4,7 +4,7 @@ import { getScreencastStore, getSettingsStore } from '../lib/store'
 import once from 'licia/once'
 import { handleEvent } from 'share/main/lib/util'
 import { IpcGetStore, IpcSetStore } from 'share/common/types'
-import { IpcSetScreencastAlwaysOnTop } from '../../common/types'
+import { IpcSetScreencastAlwaysOnTop } from 'common/types'
 
 const store = getScreencastStore()
 const settingsStore = getSettingsStore()

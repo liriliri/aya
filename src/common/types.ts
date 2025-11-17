@@ -38,6 +38,30 @@ export interface IPackageInfo {
   signatures: string[]
 }
 
+export interface IFileStat {
+  size?: number
+  mtime: Date
+  directory: boolean
+  mode: string
+}
+
+export interface IFile extends IFileStat {
+  name: string
+}
+
+export interface IWebview {
+  title: string
+  url: string
+  devtoolsFrontendUrl: string
+  webSocketDebuggerUrl: string
+  faviconUrl?: string
+}
+
+export interface IProcess {
+  name: string
+  pid: string
+}
+
 export type IpcGetFps = (deviceId: string, pkg: string) => Promise<number>
 export type IpcGetDevices = () => Promise<IDevice[]>
 export type IpcSetScreencastAlwaysOnTop = (alwaysOnTop: boolean) => void
@@ -77,3 +101,63 @@ export type IpcResizeShell = (
   rows: number
 ) => void
 export type IpcKillShell = (sessionId: string) => void
+export type IpcScreencap = (deviceId: string) => Promise<string>
+export type IpcOpenLogcat = (deviceId: string) => Promise<string>
+export type IpcCloseLogcat = (logcatId: string) => Promise<void>
+export type IpcPauseLogcat = IpcCloseLogcat
+export type IpcResumeLogcat = IpcCloseLogcat
+export type IpcInputKey = (deviceId: string, keyCode: number) => Promise<void>
+export type IpcReverseTcp = (
+  deviceId: string,
+  remote: string
+) => Promise<number>
+export type IpcStartScrcpy = (deviceId: string, args: string[]) => Promise<void>
+export type IpcConnectDevice = (host: string, port?: number) => Promise<void>
+export type IpcDisconnectDevice = IpcConnectDevice
+export type IpcMoveFile = (
+  deviceId: string,
+  src: string,
+  dest: string
+) => Promise<void>
+export type IpcStatFile = (deviceId: string, path: string) => Promise<IFileStat>
+export type IpcReadDir = (deviceId: string, path: string) => Promise<IFile[]>
+export type IpcCreateDir = (deviceId: string, path: string) => Promise<void>
+export type IpcDeleteDir = IpcCreateDir
+export type IpcDeleteFile = IpcCreateDir
+export type IpcOpenFile = IpcCreateDir
+export type IpcPushFile = (
+  deviceId: string,
+  src: string,
+  dest: string
+) => Promise<void>
+export type IpcPullFile = (
+  deviceId: string,
+  path: string,
+  dest: string
+) => Promise<void>
+export type IpcEnablePackage = (deviceId: string, pkg: string) => Promise<void>
+export type IpcDisablePackage = IpcEnablePackage
+export type IpcGetPackages = (
+  deviceId: string,
+  system?: boolean
+) => Promise<string[]>
+export type IpcInstallPackage = (
+  deviceId: string,
+  apkPath: string
+) => Promise<void>
+export type IpcUninstallPackage = (
+  deviceId: string,
+  pkg: string
+) => Promise<void>
+export type IpcStartPackage = (deviceId: string, pkg: string) => Promise<void>
+export type IpcStopPackage = IpcStartPackage
+export type IpcClearPackage = IpcStartPackage
+export type IpcGetTopPackage = (deviceId: string) => Promise<{
+  name: string
+  pid: number
+}>
+export type IpcGetWebviews = (
+  deviceId: string,
+  pid: number
+) => Promise<IWebview[]>
+export type IpcGetProcesses = (deviceId: string) => Promise<IProcess[]>

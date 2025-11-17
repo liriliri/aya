@@ -29,10 +29,14 @@ import * as port from './adb/port'
 import { getCpuLoads, getCpus } from './adb/cpu'
 import log from 'share/common/log'
 import {
+  IpcConnectDevice,
+  IpcDisconnectDevice,
   IpcDumpWindowHierarchy,
   IpcGetDevices,
+  IpcInputKey,
   IpcPairDevice,
-} from '../../common/types'
+  IpcScreencap,
+} from 'common/types'
 import path from 'node:path'
 import childProcess from 'node:child_process'
 import isMac from 'licia/isMac'
@@ -199,7 +203,7 @@ async function getBattery(deviceId: string) {
   }
 }
 
-async function screencap(deviceId: string) {
+const screencap: IpcScreencap = async function (deviceId) {
   const device = await client.getDevice(deviceId)
   const data = await device.screencap()
   const buf = await Adb.util.readAll(data)
@@ -287,11 +291,11 @@ function getPropValue(key: string, str: string) {
   return ''
 }
 
-async function connectDevice(host: string, port?: number) {
+const connectDevice: IpcConnectDevice = async function (host, port) {
   await client.connect(host, port)
 }
 
-async function disconnectDevice(host: string, port?: number) {
+const disconnectDevice: IpcDisconnectDevice = async function (host, port) {
   await client.disconnect(host, port)
 }
 
@@ -302,7 +306,7 @@ const pairDevice: IpcPairDevice = async function (host, port, password) {
   }
 }
 
-async function inputKey(deviceId: string, keyCode: number) {
+const inputKey: IpcInputKey = async function (deviceId, keyCode) {
   await base.shell(deviceId, `input keyevent ${keyCode}`)
 }
 

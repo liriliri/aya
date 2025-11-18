@@ -1,0 +1,9 @@
+.container {
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg-container);
+  :global(.luna-data-grid) {
+    border: none !important;
+    background: transparent;
+  }
+}

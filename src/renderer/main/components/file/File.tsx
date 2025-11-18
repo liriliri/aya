@@ -22,9 +22,11 @@ import normalizePath from 'licia/normalizePath'
 import LunaPathBar from 'luna-path-bar/react'
 import mime from 'licia/mime'
 import startWith from 'licia/startWith'
+import LunaSplitPane, { LunaSplitPaneItem } from 'luna-split-pane/react'
+import Transfer from './Transfer'
 
 export default observer(function File() {
-  const [fileList, setFileList] = useState<any[]>([])
+  const [fileList, setFileList] = useState<IFile[]>([])
   const [path, setPath] = useState('')
   const [customPath, setCustomPath] = useState('')
   const [filter, setFilter] = useState('')
@@ -41,7 +43,7 @@ export default observer(function File() {
 
   async function getFiles(path: string) {
     if (device) {
-      const files = await main.readDir(device.id, path)
+      const files: IFile[] = await main.readDir(device.id, path)
       for (let i = 0, len = files.length; i < len; i++) {
         const file = files[i]
         const ext = splitPath(file.name).ext
@@ -337,40 +339,51 @@ export default observer(function File() {
           }}
         />
       </LunaToolbar>
-      <div
-        onDrop={onDrop}
-        onDragEnter={() => {
-          draggingRef.current++
-        }}
-        onDragLeave={() => {
-          draggingRef.current--
-          if (draggingRef.current === 0) {
-            setDropHighlight(false)
-          }
-        }}
-        onDragOver={(e) => {
-          if (!isFileDrop(e)) {
-            return
-          }
-          e.preventDefault()
-          if (device) {
-            setDropHighlight(true)
-          }
-        }}
-        className={className('panel-body', {
-          [Style.highlight]: dropHighlight,
-        })}
-      >
-        <LunaFileList
-          className={Style.fileList}
-          files={fileList}
-          filter={filter}
-          columns={['name', 'mode', 'mtime', 'type', 'size']}
-          listView={store.file.listView}
-          onDoubleClick={(e: MouseEvent, file: IFile) => open(file)}
-          onContextMenu={onContextMenu}
-        />
-      </div>
+      <LunaSplitPane direction="vertical">
+        <LunaSplitPaneItem minSize={200}>
+          <div
+            onDrop={onDrop}
+            onDragEnter={() => {
+              draggingRef.current++
+            }}
+            onDragLeave={() => {
+              draggingRef.current--
+              if (draggingRef.current === 0) {
+                setDropHighlight(false)
+              }
+            }}
+            onDragOver={(e) => {
+              if (!isFileDrop(e)) {
+                return
+              }
+              e.preventDefault()
+              if (device) {
+                setDropHighlight(true)
+              }
+            }}
+            className={className('panel-body', {
+              [Style.highlight]: dropHighlight,
+            })}
+          >
+            <LunaFileList
+              className={Style.fileList}
+              files={fileList}
+              filter={filter}
+              columns={['name', 'mode', 'mtime', 'type', 'size']}
+              listView={store.file.listView}
+              onDoubleClick={(e: MouseEvent, file: IFile) => open(file)}
+              onContextMenu={onContextMenu}
+            />
+          </div>
+        </LunaSplitPaneItem>
+        <LunaSplitPaneItem
+          className={Style.transfer}
+          minSize={150}
+          visible={false}
+        >
+          <Transfer />
+        </LunaSplitPaneItem>
+      </LunaSplitPane>
     </div>
   )
 })

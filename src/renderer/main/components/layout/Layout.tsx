@@ -176,7 +176,7 @@ export default observer(function Layout() {
           text={image.url ? `${image.width}x${image.height}` : ''}
         />
       </LunaToolbar>
-      <div className={className('panel-body', Style.container)}>
+      <div className={className('panel-body', Style.body)}>
         <Tree
           hierarchy={hierarchy}
           isLoading={isLoading}

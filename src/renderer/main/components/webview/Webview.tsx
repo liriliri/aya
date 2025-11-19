@@ -12,7 +12,6 @@ import { t } from 'common/util'
 import toEl from 'licia/toEl'
 import LunaDataGrid from 'luna-data-grid/react'
 import map from 'licia/map'
-import className from 'licia/className'
 import store from '../../store'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import DataGrid from 'luna-data-grid'
@@ -86,7 +85,7 @@ export default observer(function Webview() {
   useWindowResize(() => dataGridRef.current?.fit())
 
   return (
-    <div className={className('panel-with-toolbar', Style.conatiner)}>
+    <div className="panel-with-toolbar">
       <LunaToolbar className="panel-toolbar">
         <LunaToolbarInput
           keyName="filter"

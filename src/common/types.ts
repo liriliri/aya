@@ -62,6 +62,11 @@ export interface IProcess {
   pid: string
 }
 
+export enum TransferType {
+  Upload,
+  Download,
+}
+
 export type IpcGetFps = (deviceId: string, pkg: string) => Promise<number>
 export type IpcGetDevices = () => Promise<IDevice[]>
 export type IpcSetScreencastAlwaysOnTop = (alwaysOnTop: boolean) => void

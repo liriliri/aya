@@ -1,5 +1,5 @@
 import { Client } from '@devicefarmer/adbkit'
-import fs from 'node:fs'
+import fs from 'fs-extra'
 import os from 'node:os'
 import path from 'node:path'
 import { handleEvent } from 'share/main/lib/util'
@@ -23,7 +23,10 @@ import {
   IpcPushFile,
   IpcReadDir,
   IpcStatFile,
+  TransferType,
 } from 'common/types'
+import * as window from 'share/main/lib/window'
+import throttle from 'licia/throttle'
 
 let client: Client
 
@@ -41,6 +44,18 @@ const pullFile: IpcPullFile = async function (deviceId, path, dest) {
   const device = await client.getDevice(deviceId)
   const transfer = await device.pull(path)
 
+  const id = uuid()
+  const stat = await statFile(deviceId, path)
+  window.sendTo(
+    'main',
+    'startTransfer',
+    id,
+    TransferType.Download,
+    path,
+    dest,
+    stat.size
+  )
+
   return new Promise((resolve, reject) => {
     try {
       const writable = fs.createWriteStream(dest)
@@ -48,8 +63,15 @@ const pullFile: IpcPullFile = async function (deviceId, path, dest) {
         if (tmpFilePath) {
           deleteFile(deviceId, tmpFilePath)
         }
+        window.sendTo('main', 'finishTransfer', id)
         resolve()
       })
+      transfer.on(
+        'progress',
+        throttle(({ bytesTransferred }) => {
+          window.sendTo('main', 'updateTransfer', id, bytesTransferred)
+        }, 500)
+      )
       transfer.on('error', reject)
       transfer.pipe(writable)
     } catch (err) {
@@ -110,14 +132,33 @@ const pushFile: IpcPushFile = async function (
   const device = await client.getDevice(deviceId)
   const transfer = await device.push(src, tmpFilePath || dest)
 
+  const id = uuid()
+  const stat = await fs.stat(src)
+  window.sendTo(
+    'main',
+    'startTransfer',
+    id,
+    TransferType.Upload,
+    src,
+    dest,
+    stat.size
+  )
+
   return new Promise((resolve, reject) => {
     transfer.on('end', async () => {
       if (tmpFilePath) {
         await fileShell(deviceId, 'cp', tmpFilePath, dest)
         deleteFile(deviceId, tmpFilePath)
       }
+      window.sendTo('main', 'finishTransfer', id)
       resolve()
     })
+    transfer.on(
+      'progress',
+      throttle(({ bytesTransferred }) => {
+        window.sendTo('main', 'updateTransfer', id, bytesTransferred)
+      }, 500)
+    )
     transfer.on('error', reject)
   })
 }

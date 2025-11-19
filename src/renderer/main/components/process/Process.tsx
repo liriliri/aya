@@ -12,7 +12,6 @@ import LunaToolbar, {
 } from 'luna-toolbar/react'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import fileSize from 'licia/fileSize'
-import className from 'licia/className'
 import has from 'licia/has'
 import isEmpty from 'licia/isEmpty'
 import { t } from 'common/util'
@@ -139,7 +138,7 @@ export default observer(function Process() {
   }
 
   return (
-    <div className={className('panel-with-toolbar', Style.container)}>
+    <div className="panel-with-toolbar">
       <LunaToolbar className="panel-toolbar">
         <LunaToolbarInput
           keyName="filter"

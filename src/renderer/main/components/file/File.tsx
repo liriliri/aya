@@ -280,6 +280,18 @@ export default observer(function File() {
     <div className="panel-with-toolbar">
       <LunaToolbar className="panel-toolbar">
         <ToolbarIcon
+          icon="bidirection"
+          title={t('transfer')}
+          className={className({
+            [Style.blink]: !isEmpty(store.file.transfers),
+          })}
+          state={store.file.showTransfer ? 'hover' : ''}
+          onClick={() => {
+            store.file.set('showTransfer', !store.file.showTransfer)
+          }}
+        />
+        <LunaToolbarSeparator />
+        <ToolbarIcon
           icon="arrow-left"
           title={t('back')}
           onClick={back}
@@ -340,7 +352,10 @@ export default observer(function File() {
         />
       </LunaToolbar>
       <LunaSplitPane direction="vertical">
-        <LunaSplitPaneItem minSize={200}>
+        <LunaSplitPaneItem
+          minSize={200}
+          weight={100 - store.file.transferWeight}
+        >
           <div
             onDrop={onDrop}
             onDragEnter={() => {
@@ -379,7 +394,8 @@ export default observer(function File() {
         <LunaSplitPaneItem
           className={Style.transfer}
           minSize={150}
-          visible={false}
+          weight={store.file.transferWeight}
+          visible={store.file.showTransfer}
         >
           <Transfer />
         </LunaSplitPaneItem>

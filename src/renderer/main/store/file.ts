@@ -1,14 +1,24 @@
-import { makeObservable, observable, runInAction } from 'mobx'
+import { action, makeObservable, observable, runInAction } from 'mobx'
 import extend from 'licia/extend'
+import { TransferType } from 'common/types'
+import filter from 'licia/filter'
+import now from 'licia/now'
 
 export class File {
   listView = false
+  showTransfer = true
+  transferWeight = 30
+  transfers: Transfer[] = []
   constructor() {
     makeObservable(this, {
       listView: observable,
+      showTransfer: observable,
+      transferWeight: observable,
+      transfers: observable,
     })
 
     this.init()
+    this.bindEvent()
   }
   async init() {
     const file = await main.getMainStore('file')
@@ -22,6 +32,59 @@ export class File {
     })
     await main.setMainStore('file', {
       listView: this.listView,
+      showTransfer: this.showTransfer,
+      transferWeight: this.transferWeight,
     })
+  }
+  private bindEvent() {
+    main.on('startTransfer', (id, type, src, dest, size) => {
+      this.transfers.push(new Transfer(id, type, src, dest, size))
+    })
+    main.on('updateTransfer', (id, transferred) => {
+      const transfer = this.transfers.find((t) => t.id === id)
+      if (transfer) {
+        transfer.update(transferred)
+      }
+    })
+    main.on('finishTransfer', (id) => {
+      this.transfers = filter(this.transfers, (t) => t.id !== id)
+    })
+  }
+}
+
+class Transfer {
+  id: string
+  type: TransferType
+  src: string
+  dest: string
+  startTime = new Date()
+  duration = 0
+  size = 0
+  transferred = 0
+  speed = 0
+  constructor(
+    id: string,
+    type: TransferType,
+    src: string,
+    dest: string,
+    size: number
+  ) {
+    this.id = id
+    this.type = type
+    this.src = src
+    this.dest = dest
+    this.size = size
+
+    makeObservable(this, {
+      transferred: observable,
+      duration: observable,
+      speed: observable,
+      update: action,
+    })
+  }
+  update(transferred: number) {
+    this.duration = now() - this.startTime.getTime()
+    this.speed = Math.round((transferred / this.duration) * 1000)
+    this.transferred = transferred
   }
 }

@@ -176,5 +176,11 @@
   "pairingCode": "Pairing Code",
   "enabled": "Enabled",
   "disabled": "Disabled",
-  "storageUsage": "Storage Usage"
+  "storageUsage": "Storage Usage",
+  "transfer": "Transfer",
+  "source": "Source",
+  "destination": "Destination",
+  "startTime": "Start Time",
+  "duration": "Duration",
+  "speed": "Speed"
 }

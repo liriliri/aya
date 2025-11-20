@@ -27,57 +27,91 @@ import {
 } from 'common/types'
 import * as window from 'share/main/lib/window'
 import throttle from 'licia/throttle'
+import Semaphore from 'licia/Semaphore'
 
 let client: Client
 
-const pullFile: IpcPullFile = async function (deviceId, path, dest) {
-  let tmpFilePath = ''
-  if (startWith(path, '/data/data/')) {
-    if (!(await isRooted(deviceId))) {
-      tmpFilePath = '/data/local/tmp/' + uuid()
-      await shell(deviceId, `touch "${tmpFilePath}"`)
-      await fileShell(deviceId, 'cp', path, tmpFilePath)
-      path = tmpFilePath
-    }
-  }
-
-  const device = await client.getDevice(deviceId)
-  const transfer = await device.pull(path)
-
-  const id = uuid()
-  const stat = await statFile(deviceId, path)
-  window.sendTo(
-    'main',
-    'startTransfer',
-    id,
-    TransferType.Download,
-    path,
-    dest,
-    stat.size
-  )
-
-  return new Promise((resolve, reject) => {
-    try {
-      const writable = fs.createWriteStream(dest)
-      writable.on('finish', () => {
-        if (tmpFilePath) {
-          deleteFile(deviceId, tmpFilePath)
-        }
-        window.sendTo('main', 'finishTransfer', id)
-        resolve()
-      })
-      transfer.on(
-        'progress',
-        throttle(({ bytesTransferred }) => {
-          window.sendTo('main', 'updateTransfer', id, bytesTransferred)
-        }, 500)
-      )
-      transfer.on('error', reject)
-      transfer.pipe(writable)
-    } catch (err) {
-      reject(err)
-    }
+const fileSemaphore = new Semaphore(5)
+const waitFileSemaphore = function (): Promise<void> {
+  return new Promise((resolve) => {
+    fileSemaphore.wait(() => resolve())
   })
+}
+
+const pullFile: IpcPullFile = async function (deviceId, src, dest) {
+  const stat = await statFile(deviceId, src)
+
+  if (stat.directory) {
+    await fs.ensureDir(dest)
+    const files = await readDir(deviceId, src)
+    const pulls: Promise<void>[] = []
+    for (let i = 0, len = files.length; i < len; i++) {
+      const file = files[i]
+      pulls.push(
+        pullFile(
+          deviceId,
+          path.join(src, file.name),
+          path.join(dest, file.name)
+        )
+      )
+    }
+    await Promise.all(pulls)
+  } else {
+    await waitFileSemaphore()
+
+    let tmpFilePath = ''
+    if (startWith(src, '/data/data/')) {
+      if (!(await isRooted(deviceId))) {
+        tmpFilePath = '/data/local/tmp/' + uuid()
+        await shell(deviceId, `touch "${tmpFilePath}"`)
+        await fileShell(deviceId, 'cp', src, tmpFilePath)
+        src = tmpFilePath
+      }
+    }
+
+    const device = await client.getDevice(deviceId)
+    const transfer = await device.pull(src)
+
+    const id = uuid()
+    window.sendTo(
+      'main',
+      'startTransfer',
+      id,
+      TransferType.Download,
+      src,
+      dest,
+      stat.size
+    )
+
+    return new Promise((resolve, reject) => {
+      const clearnup = (err?: any) => {
+        if (tmpFilePath) {
+          deleteFile(deviceId, tmpFilePath).catch(() => {})
+        }
+        fileSemaphore.signal()
+        window.sendTo('main', 'finishTransfer', id)
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      }
+      try {
+        const writable = fs.createWriteStream(dest)
+        writable.on('finish', () => clearnup())
+        transfer.on(
+          'progress',
+          throttle(({ bytesTransferred }) => {
+            window.sendTo('main', 'updateTransfer', id, bytesTransferred)
+          }, 500)
+        )
+        transfer.on('error', (err) => clearnup(err))
+        transfer.pipe(writable)
+      } catch (err) {
+        clearnup(err)
+      }
+    })
+  }
 }
 
 export async function pullFileData(
@@ -122,45 +156,67 @@ const pushFile: IpcPushFile = async function (
   src: string,
   dest: string
 ) {
-  let tmpFilePath = ''
-  if (startWith(dest, '/data/data/')) {
-    if (!(await isRooted(deviceId))) {
-      tmpFilePath = '/data/local/tmp/' + uuid()
-    }
-  }
-
-  const device = await client.getDevice(deviceId)
-  const transfer = await device.push(src, tmpFilePath || dest)
-
-  const id = uuid()
   const stat = await fs.stat(src)
-  window.sendTo(
-    'main',
-    'startTransfer',
-    id,
-    TransferType.Upload,
-    src,
-    dest,
-    stat.size
-  )
 
-  return new Promise((resolve, reject) => {
-    transfer.on('end', async () => {
-      if (tmpFilePath) {
-        await fileShell(deviceId, 'cp', tmpFilePath, dest)
-        deleteFile(deviceId, tmpFilePath)
+  if (stat.isDirectory()) {
+    await createDir(deviceId, dest)
+    const files = await fs.readdir(src)
+    const pushes: Promise<void>[] = []
+    for (let i = 0, len = files.length; i < len; i++) {
+      const name = files[i]
+      pushes.push(
+        pushFile(deviceId, path.join(src, name), path.join(dest, name))
+      )
+    }
+    await Promise.all(pushes)
+  } else {
+    await waitFileSemaphore()
+
+    let tmpFilePath = ''
+    if (startWith(dest, '/data/data/')) {
+      if (!(await isRooted(deviceId))) {
+        tmpFilePath = '/data/local/tmp/' + uuid()
       }
-      window.sendTo('main', 'finishTransfer', id)
-      resolve()
-    })
-    transfer.on(
-      'progress',
-      throttle(({ bytesTransferred }) => {
-        window.sendTo('main', 'updateTransfer', id, bytesTransferred)
-      }, 500)
+    }
+
+    const device = await client.getDevice(deviceId)
+    const transfer = await device.push(src, tmpFilePath || dest)
+
+    const id = uuid()
+    window.sendTo(
+      'main',
+      'startTransfer',
+      id,
+      TransferType.Upload,
+      src,
+      dest,
+      stat.size
     )
-    transfer.on('error', reject)
-  })
+
+    return new Promise((resolve, reject) => {
+      const cleanup = async (err?: any) => {
+        if (tmpFilePath) {
+          await fileShell(deviceId, 'cp', tmpFilePath, dest)
+          deleteFile(deviceId, tmpFilePath)
+        }
+        fileSemaphore.signal()
+        window.sendTo('main', 'finishTransfer', id)
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      }
+      transfer.on('end', () => cleanup())
+      transfer.on(
+        'progress',
+        throttle(({ bytesTransferred }) => {
+          window.sendTo('main', 'updateTransfer', id, bytesTransferred)
+        }, 500)
+      )
+      transfer.on('error', (err) => cleanup(err))
+    })
+  }
 }
 
 const moveFile: IpcMoveFile = async function (deviceId, src, dest) {

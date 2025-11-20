@@ -137,7 +137,7 @@ export type IpcPushFile = (
 ) => Promise<void>
 export type IpcPullFile = (
   deviceId: string,
-  path: string,
+  src: string,
   dest: string
 ) => Promise<void>
 export type IpcEnablePackage = (deviceId: string, pkg: string) => Promise<void>

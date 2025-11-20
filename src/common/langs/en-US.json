@@ -180,7 +180,5 @@
   "transfer": "Transfer",
   "source": "Source",
   "destination": "Destination",
-  "startTime": "Start Time",
-  "duration": "Duration",
-  "speed": "Speed"
+  "duration": "Duration"
 }

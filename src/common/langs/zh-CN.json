@@ -180,7 +180,5 @@
   "transfer": "传输",
   "source": "源",
   "destination": "目标",
-  "startTime": "开始时间",
-  "duration": "时长",
-  "speed": "速度"
+  "duration": "时长"
 }

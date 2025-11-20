@@ -3,6 +3,7 @@ import extend from 'licia/extend'
 import { TransferType } from 'common/types'
 import filter from 'licia/filter'
 import now from 'licia/now'
+import splitPath from 'licia/splitPath'
 
 export class File {
   listView = false
@@ -41,9 +42,11 @@ export class File {
       this.transfers.push(new Transfer(id, type, src, dest, size))
     })
     main.on('updateTransfer', (id, transferred) => {
-      const transfer = this.transfers.find((t) => t.id === id)
-      if (transfer) {
-        transfer.update(transferred)
+      if (this.showTransfer) {
+        const transfer = this.transfers.find((t) => t.id === id)
+        if (transfer) {
+          transfer.update(transferred)
+        }
       }
     })
     main.on('finishTransfer', (id) => {
@@ -53,6 +56,7 @@ export class File {
 }
 
 class Transfer {
+  name: string
   id: string
   type: TransferType
   src: string
@@ -61,7 +65,6 @@ class Transfer {
   duration = 0
   size = 0
   transferred = 0
-  speed = 0
   constructor(
     id: string,
     type: TransferType,
@@ -69,6 +72,7 @@ class Transfer {
     dest: string,
     size: number
   ) {
+    this.name = splitPath(src).name
     this.id = id
     this.type = type
     this.src = src
@@ -78,13 +82,11 @@ class Transfer {
     makeObservable(this, {
       transferred: observable,
       duration: observable,
-      speed: observable,
       update: action,
     })
   }
   update(transferred: number) {
     this.duration = now() - this.startTime.getTime()
-    this.speed = Math.round((transferred / this.duration) * 1000)
     this.transferred = transferred
   }
 }

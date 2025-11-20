@@ -46,16 +46,18 @@ export default observer(function File() {
       const files: IFile[] = await main.readDir(device.id, path)
       for (let i = 0, len = files.length; i < len; i++) {
         const file = files[i]
-        const ext = splitPath(file.name).ext
-        const type = mime(ext.slice(1))
-        if (
-          !type ||
-          (!startWith(type, 'image') &&
-            !startWith(type, 'text') &&
-            !startWith(type, 'video') &&
-            !startWith(type, 'audio'))
-        ) {
-          file.thumbnail = await main.getFileIcon(ext)
+        if (!file.directory) {
+          const ext = splitPath(file.name).ext
+          const type = mime(ext.slice(1))
+          if (
+            !type ||
+            (!startWith(type, 'image') &&
+              !startWith(type, 'text') &&
+              !startWith(type, 'video') &&
+              !startWith(type, 'audio'))
+          ) {
+            file.thumbnail = await main.getFileIcon(ext)
+          }
         }
       }
       setPath(path)
@@ -125,29 +127,26 @@ export default observer(function File() {
           label: t('open'),
           click: () => open(file),
         },
-      ]
-      if (!file.directory) {
-        template.push({
+        {
           label: t('download'),
           click: async () => {
-            const { canceled, filePath } = await main.showSaveDialog({
-              defaultPath: file.name,
+            const { canceled, filePaths } = await main.showOpenDialog({
+              properties: ['openDirectory'],
             })
             if (canceled) {
               return
             }
+            const dest = filePaths[0] + '/' + file.name
             notify(t('fileDownloading', { path: path + file.name }), {
               icon: 'info',
             })
-            await main.pullFile(device.id, path + file.name, filePath)
-            notify(t('fileDownloaded', { path: filePath }), {
+            await main.pullFile(device.id, path + file.name, dest)
+            notify(t('fileDownloaded', { path: dest }), {
               icon: 'success',
               duration: 5000,
             })
           },
-        })
-      }
-      template.push(
+        },
         {
           type: 'separator',
         },
@@ -167,25 +166,25 @@ export default observer(function File() {
               getFiles(path)
             }
           },
-        }
-      )
-      template.push({
-        label: t('rename'),
-        click: async () => {
-          const name = await LunaModal.prompt(
-            t(file.directory ? 'newFolderName' : 'newFileName'),
-            file.name
-          )
-          if (name && name !== file.name) {
-            if (fileExist(name)) {
-              notify(t('fileExistErr', { name }), { icon: 'error' })
-              return
-            }
-            await main.moveFile(device.id, path + file.name, path + name)
-            getFiles(path)
-          }
         },
-      })
+        {
+          label: t('rename'),
+          click: async () => {
+            const name = await LunaModal.prompt(
+              t(file.directory ? 'newFolderName' : 'newFileName'),
+              file.name
+            )
+            if (name && name !== file.name) {
+              if (fileExist(name)) {
+                notify(t('fileExistErr', { name }), { icon: 'error' })
+                return
+              }
+              await main.moveFile(device.id, path + file.name, path + name)
+              getFiles(path)
+            }
+          },
+        },
+      ]
       contextMenu(e, template)
     } else {
       const template: any[] = [
@@ -351,7 +350,16 @@ export default observer(function File() {
           }}
         />
       </LunaToolbar>
-      <LunaSplitPane direction="vertical">
+      <LunaSplitPane
+        direction="vertical"
+        onResize={(weights) => {
+          const [fileListWeight, transferWeight] = weights
+          store.file.set(
+            'transferWeight',
+            (transferWeight / (fileListWeight + transferWeight)) * 100
+          )
+        }}
+      >
         <LunaSplitPaneItem
           minSize={200}
           weight={100 - store.file.transferWeight}

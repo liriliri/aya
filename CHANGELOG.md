@@ -1,3 +1,11 @@
+## v1.14.0 (21 Nov 2025)
+
+* feat: show file transfer
+* feat: download and upload folder
+* feat: file preview
+* feat: support spanish [#135](https://github.com/liriliri/aya/pull/135)
+* perf: faster loading of application list
+
 ## v1.13.0 (9 Oct 2025)
 
 * feat: show storage usage in application list view [#73](https://github.com/liriliri/aya/issues/73)

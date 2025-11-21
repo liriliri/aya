@@ -1,5 +1,6 @@
 import defaults from 'licia/defaults'
 import enUS from './langs/en-US.json'
+import enUSShare from 'share/common/langs/en-US.json'
 import ar from './langs/ar.json'
 import ru from './langs/ru.json'
 import zhCN from './langs/zh-CN.json'
@@ -11,16 +12,22 @@ import es from './langs/es.json'
 export { t, i18n } from 'share/common/i18n'
 import { init as initI18n } from 'share/common/i18n'
 
+function lang(langObj: any) {
+  return defaults(langObj, enUS, enUSShare)
+}
+
 const langs = {
   'en-US': enUS,
-  ar: defaults(ar, enUS),
-  ru: defaults(ru, enUS),
-  'zh-CN': defaults(zhCN, enUS),
-  tr: defaults(tr, enUS),
-  'zh-TW': defaults(zhTW, enUS),
-  fr: defaults(fr, enUS),
-  pt: defaults(pt, enUS),
-  es: defaults(es, enUS),
+  ar: lang(ar),
+  ru: lang(ru),
+  'zh-CN': zhCN,
+  tr: lang(tr),
+  'zh-TW': lang(zhTW),
+  fr: lang(fr),
+  pt: lang(pt),
+  es: lang(es),
 }
+
+console.log(defaults(es, enUS).appearance)
 
 initI18n(langs)

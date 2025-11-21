@@ -23,6 +23,10 @@ import 'luna-dom-viewer/css'
 import 'luna-otp-input/css'
 import 'luna-split-pane/css'
 import 'luna-path-bar/css'
+import 'luna-video-player/css'
+import 'luna-text-viewer/css'
+import 'luna-music-player/css'
+import 'luna-music-visualizer/css'
 import 'share/renderer/luna.scss'
 import './luna.scss'
 import 'share/renderer/main.scss'
@@ -64,6 +68,9 @@ function renderApp() {
     case 'about':
       App = lazy(() => import('share/renderer/about/App.js') as Promise<any>)
       title = t('aboutAya')
+      break
+    case 'video':
+      App = lazy(() => import('share/renderer/video/App.js') as Promise<any>)
       break
   }
 

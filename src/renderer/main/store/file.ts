@@ -1,4 +1,4 @@
-import { action, makeObservable, observable, runInAction } from 'mobx'
+import { action, makeObservable, observable, runInAction, toJS } from 'mobx'
 import extend from 'licia/extend'
 import { TransferType } from 'common/types'
 import filter from 'licia/filter'
@@ -7,15 +7,19 @@ import splitPath from 'licia/splitPath'
 
 export class File {
   listView = false
-  showTransfer = true
+  showTransfer = false
+  showPreview = true
+  weights = [70, 30]
   transferWeight = 30
   transfers: Transfer[] = []
   constructor() {
     makeObservable(this, {
       listView: observable,
       showTransfer: observable,
+      showPreview: observable,
       transferWeight: observable,
       transfers: observable,
+      weights: observable,
     })
 
     this.init()
@@ -35,6 +39,8 @@ export class File {
       listView: this.listView,
       showTransfer: this.showTransfer,
       transferWeight: this.transferWeight,
+      showPreview: this.showPreview,
+      weights: toJS(this.weights),
     })
   }
   private bindEvent() {

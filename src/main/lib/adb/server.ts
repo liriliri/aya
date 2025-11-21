@@ -5,10 +5,10 @@ import { handleEvent, resolveResources } from 'share/main/lib/util'
 import singleton from 'licia/singleton'
 import wire from '../wire'
 import waitUntil from 'licia/waitUntil'
-import { getDeviceStore, setDeviceStore, shell } from './base'
+import { forwardTcp, getDeviceStore, setDeviceStore, shell } from './base'
 import contain from 'licia/contain'
 import log from 'share/common/log'
-import { IpcGetPackageInfos } from 'common/types'
+import { IPackageInfo, IpcGetFileUrl, IpcGetPackageInfos } from 'common/types'
 import isEmpty from 'licia/isEmpty'
 import isUndef from 'licia/isUndef'
 import each from 'licia/each'
@@ -27,7 +27,10 @@ class AyaClient {
   constructor(deviceId: string) {
     this.deviceId = deviceId
   }
-  async sendMessage(method: string, params: types.PlainObj<any> = {}) {
+  async sendMessage(
+    method: string,
+    params: types.PlainObj<any> = {}
+  ): Promise<any> {
     if (!this.socket) {
       await this.connect()
     }
@@ -116,13 +119,18 @@ const getPackageInfos: IpcGetPackageInfos = singleton(async function (
   packageNames
 ) {
   const client = await getAyaClient(deviceId)
-  const result: any = await client.sendMessage('getPackageInfos', {
+  const result = await client.sendMessage('getPackageInfos', {
     packageNames,
   })
   const { packageInfos } = result
+  const serverPort = await getFileServerPort(deviceId)
   if (!isEmpty(packageInfos) && isUndef(packageInfos[0].appSize)) {
     const packageDiskStats = await getPackageDiskStats(deviceId)
-    each(packageInfos, (info: any) => {
+    for (let i = 0, len = packageInfos.length; i < len; i++) {
+      const info: IPackageInfo = packageInfos[i]
+      if (info.icon) {
+        info.icon = await getFileUrl(deviceId, info.icon, serverPort)
+      }
       if (info.packageName && packageDiskStats[info.packageName]) {
         extend(info, packageDiskStats[info.packageName])
       } else {
@@ -130,7 +138,7 @@ const getPackageInfos: IpcGetPackageInfos = singleton(async function (
         info.dataSize = 0
         info.cacheSize = 0
       }
-    })
+    }
   }
   return packageInfos
 })
@@ -173,8 +181,32 @@ const getPackageDiskStats = async function (deviceId: string) {
   return packageDiskStats
 }
 
+const getFileServerPort = singleton(async function (deviceId): Promise<number> {
+  const client = await getAyaClient(deviceId)
+  let port = getDeviceStore(deviceId, 'fileServerPort')
+  if (port) {
+    const { running } = await client.sendMessage('isFileServerRunning')
+    if (running) {
+      return port
+    }
+  }
+  const result = await client.sendMessage('startFileServer')
+  port = await forwardTcp(deviceId, `tcp:${result.port}`)
+  setDeviceStore(deviceId, 'fileServerPort', port)
+  return port
+})
+
+const getFileUrl: IpcGetFileUrl = async function (deviceId, path, port) {
+  if (!port) {
+    port = await getFileServerPort(deviceId)
+  }
+
+  return `http://127.0.0.1:${port}${encodeURI(path)}`
+}
+
 export async function init(c: Client) {
   client = c
 
   handleEvent('getPackageInfos', getPackageInfos)
+  handleEvent('getFileUrl', getFileUrl)
 }

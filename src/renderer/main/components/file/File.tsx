@@ -20,10 +20,10 @@ import LunaModal from 'luna-modal'
 import endWith from 'licia/endWith'
 import normalizePath from 'licia/normalizePath'
 import LunaPathBar from 'luna-path-bar/react'
-import mime from 'licia/mime'
 import startWith from 'licia/startWith'
 import LunaSplitPane, { LunaSplitPaneItem } from 'luna-split-pane/react'
 import Transfer from './Transfer'
+import FilePreview from 'share/renderer/components/FilePreview'
 
 export default observer(function File() {
   const [fileList, setFileList] = useState<IFile[]>([])
@@ -33,9 +33,12 @@ export default observer(function File() {
   const [dropHighlight, setDropHighlight] = useState(false)
   const [history, setHistory] = useState<string[]>([])
   const [historyIdx, setHistoryIdx] = useState(-1)
+  const [selected, setSelected] = useState<IFile | undefined>()
+  const [selectedUrl, setSelectedUrl] = useState<string>('')
   const draggingRef = useRef(0)
 
   const { device } = store
+  const { file } = store
 
   useEffect(() => {
     go('/')
@@ -48,7 +51,7 @@ export default observer(function File() {
         const file = files[i]
         if (!file.directory) {
           const ext = splitPath(file.name).ext
-          const type = mime(ext.slice(1))
+          const type = file.mime
           if (
             !type ||
             (!startWith(type, 'image') &&
@@ -103,17 +106,34 @@ export default observer(function File() {
     await go(path.split('/').slice(0, -2).join('/') + '/')
   }
 
-  function open(file: IFile) {
+  async function open(file: IFile) {
     if (!device) {
       return
     }
 
     if (file.directory) {
       go(path + file.name + '/')
-    } else {
-      notify(t('fileDownloading', { path: path + file.name }), { icon: 'info' })
-      main.openFile(device.id, path + file.name)
+      return
     }
+
+    if (file.mime) {
+      const url = await main.getFileUrl(device.id, path + file.name)
+      if (file.mime === 'application/pdf') {
+        main.openWindow(url, 'pdf', {
+          minHeight: 640,
+          minWidth: 450,
+          width: 450,
+          height: 640,
+        })
+        return
+      } else if (startWith(file.mime, 'video')) {
+        main.showVideo(url)
+        return
+      }
+    }
+
+    notify(t('fileDownloading', { path: path + file.name }), { icon: 'info' })
+    main.openFile(device.id, path + file.name)
   }
 
   function onContextMenu(e: MouseEvent, file?: IFile) {
@@ -282,11 +302,11 @@ export default observer(function File() {
           icon="bidirection"
           title={t('transfer')}
           className={className({
-            [Style.blink]: !isEmpty(store.file.transfers),
+            [Style.blink]: !isEmpty(file.transfers),
           })}
-          state={store.file.showTransfer ? 'hover' : ''}
+          state={file.showTransfer ? 'hover' : ''}
           onClick={() => {
-            store.file.set('showTransfer', !store.file.showTransfer)
+            file.set('showTransfer', !file.showTransfer)
           }}
         />
         <LunaToolbarSeparator />
@@ -332,21 +352,30 @@ export default observer(function File() {
         <ToolbarIcon
           icon="grid"
           title={t('iconView')}
-          state={store.file.listView ? '' : 'hover'}
+          state={file.listView ? '' : 'hover'}
           onClick={() => {
-            if (store.file.listView) {
-              store.file.set('listView', false)
+            if (file.listView) {
+              file.set('listView', false)
             }
           }}
         />
         <ToolbarIcon
           icon="list"
           title={t('listView')}
-          state={store.file.listView ? 'hover' : ''}
+          state={file.listView ? 'hover' : ''}
           onClick={() => {
-            if (!store.file.listView) {
-              store.file.set('listView', true)
+            if (!file.listView) {
+              file.set('listView', true)
             }
+          }}
+        />
+        <LunaToolbarSeparator />
+        <ToolbarIcon
+          icon="eye"
+          title={t('preview')}
+          state={file.showPreview ? 'hover' : ''}
+          onClick={() => {
+            file.set('showPreview', !file.showPreview)
           }}
         />
       </LunaToolbar>
@@ -354,56 +383,79 @@ export default observer(function File() {
         direction="vertical"
         onResize={(weights) => {
           const [fileListWeight, transferWeight] = weights
-          store.file.set(
+          file.set(
             'transferWeight',
             (transferWeight / (fileListWeight + transferWeight)) * 100
           )
         }}
       >
-        <LunaSplitPaneItem
-          minSize={200}
-          weight={100 - store.file.transferWeight}
-        >
-          <div
-            onDrop={onDrop}
-            onDragEnter={() => {
-              draggingRef.current++
-            }}
-            onDragLeave={() => {
-              draggingRef.current--
-              if (draggingRef.current === 0) {
-                setDropHighlight(false)
-              }
-            }}
-            onDragOver={(e) => {
-              if (!isFileDrop(e)) {
-                return
-              }
-              e.preventDefault()
-              if (device) {
-                setDropHighlight(true)
-              }
-            }}
-            className={className('panel-body', {
-              [Style.highlight]: dropHighlight,
-            })}
-          >
-            <LunaFileList
-              className={Style.fileList}
-              files={fileList}
-              filter={filter}
-              columns={['name', 'mode', 'mtime', 'type', 'size']}
-              listView={store.file.listView}
-              onDoubleClick={(e: MouseEvent, file: IFile) => open(file)}
-              onContextMenu={onContextMenu}
-            />
-          </div>
+        <LunaSplitPaneItem minSize={200} weight={100 - file.transferWeight}>
+          <LunaSplitPane onResize={(weights) => file.set('weights', weights)}>
+            <LunaSplitPaneItem minSize={400} weight={file.weights[0]}>
+              <div
+                onDrop={onDrop}
+                onDragEnter={() => {
+                  draggingRef.current++
+                }}
+                onDragLeave={() => {
+                  draggingRef.current--
+                  if (draggingRef.current === 0) {
+                    setDropHighlight(false)
+                  }
+                }}
+                onDragOver={(e) => {
+                  if (!isFileDrop(e)) {
+                    return
+                  }
+                  e.preventDefault()
+                  if (device) {
+                    setDropHighlight(true)
+                  }
+                }}
+                className={className('panel-body', {
+                  [Style.highlight]: dropHighlight,
+                })}
+              >
+                <LunaFileList
+                  className={Style.fileList}
+                  files={fileList}
+                  filter={filter}
+                  columns={['name', 'mode', 'mtime', 'type', 'size']}
+                  listView={file.listView}
+                  onDoubleClick={(e: MouseEvent, file: IFile) => open(file)}
+                  onContextMenu={onContextMenu}
+                  onSelect={async (file: IFile) => {
+                    const url = await main.getFileUrl(
+                      device!.id,
+                      path + file.name
+                    )
+                    setSelectedUrl(url)
+                    setSelected(file)
+                  }}
+                  onDeselect={() => {
+                    setSelectedUrl('')
+                    setSelected(undefined)
+                  }}
+                />
+              </div>
+            </LunaSplitPaneItem>
+            <LunaSplitPaneItem
+              minSize={180}
+              weight={file.weights[1]}
+              visible={file.showPreview}
+            >
+              <FilePreview
+                file={file.showPreview ? selected : undefined}
+                url={selectedUrl}
+              />
+            </LunaSplitPaneItem>
+          </LunaSplitPane>
         </LunaSplitPaneItem>
         <LunaSplitPaneItem
           className={Style.transfer}
           minSize={150}
-          weight={store.file.transferWeight}
-          visible={store.file.showTransfer}
+          weight={file.transferWeight}
+          visible={file.showTransfer}
         >
           <Transfer />
         </LunaSplitPaneItem>

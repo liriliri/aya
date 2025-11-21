@@ -14,6 +14,7 @@ import each from 'licia/each'
 import uuid from 'licia/uuid'
 import { getPackages } from './package'
 import {
+  IFile,
   IpcCreateDir,
   IpcDeleteDir,
   IpcDeleteFile,
@@ -28,6 +29,8 @@ import {
 import * as window from 'share/main/lib/window'
 import throttle from 'licia/throttle'
 import Semaphore from 'licia/Semaphore'
+import splitPath from 'licia/splitPath'
+import mime from 'licia/mime'
 
 let client: Client
 
@@ -236,7 +239,7 @@ const readDir: IpcReadDir = async function (deviceId, path) {
   const ret: any[] = []
   for (let i = 0, len = files.length; i < len; i++) {
     const file = files[i]
-    const item: any = {
+    const item: IFile = {
       name: file.name,
       directory: !file.isFile(),
       mtime: new Date(file.mtimeMs),
@@ -245,6 +248,8 @@ const readDir: IpcReadDir = async function (deviceId, path) {
 
     if (!item.directory) {
       item.size = file.size
+      const ext = splitPath(file.name).ext
+      item.mime = mime(ext.slice(1))
     }
 
     ret.push(item)

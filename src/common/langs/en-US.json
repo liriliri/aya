@@ -144,7 +144,6 @@
   "portReversing": "Port Reversing",
   "local": "Local",
   "remote": "Remote",
-  "commonErr": "Something went wrong",
   "adbCli": "ADB Command Line Interface",
   "remoteController": "Remote Controller",
   "layout": "Layout",
@@ -180,5 +179,6 @@
   "transfer": "Transfer",
   "source": "Source",
   "destination": "Destination",
-  "duration": "Duration"
+  "duration": "Duration",
+  "preview": "Preview"
 }

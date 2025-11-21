@@ -60,6 +60,16 @@ class Connection(private val client: LocalSocket) : Thread() {
                 result.put("packageInfos", getPackageInfos(JSONObject(params)))
             }
 
+            "startFileServer" -> {
+                val port = HttpFileServerManager.start()
+                result.put("port", port)
+            }
+
+            "isFileServerRunning" -> {
+                val running = HttpFileServerManager.isRunning()
+                result.put("running", running)
+            }
+
             else -> {
                 Log.e(TAG, "Unknown method: $method")
             }
@@ -122,9 +132,9 @@ class Connection(private val client: LocalSocket) : Thread() {
         info.put("system", system)
 
         var label = packageName
-        var icon = ""
 
         val cacheKey = "$packageName.$apkSize"
+        var icon = ""
 
         if (packageCache.has(cacheKey)) {
             val cacheInfo = packageCache.getJSONObject(cacheKey)
@@ -143,22 +153,12 @@ class Connection(private val client: LocalSocket) : Thread() {
 
             if (applicationInfo.icon != 0) {
                 try {
-                    val iconCachePath = "$ICON_CACHE_DIR/$cacheKey.png"
-                    val file = File(iconCachePath)
-                    if (file.exists()) {
-                        icon = "data:image/png;base64,${
-                            Base64.encodeToString(file.readBytes(), Base64.NO_WRAP)
-                        }"
-                    } else {
+                    icon = "$ICON_CACHE_DIR/$cacheKey.png"
+                    val file = File(icon)
+                    if (!file.exists()) {
                         val resIcon = resources.getDrawable(applicationInfo.icon)
                         val bitmapIcon = Util.drawableToBitmap(resIcon)
                         val pngIcon = Util.bitMapToPng(bitmapIcon, 20)
-                        icon = "data:image/png;base64,${
-                            Base64.encodeToString(
-                                pngIcon,
-                                Base64.NO_WRAP
-                            )
-                        }"
                         file.writeBytes(pngIcon)
                     }
                 } catch (e: Exception) {

@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
     implementation 'com.google.protobuf:protobuf-java:3.22.3'
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
 }
 
 android {

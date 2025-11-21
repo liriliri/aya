@@ -13,6 +13,7 @@ import {
   IpcForward,
   IpcGetAvds,
   IpcGetDevices,
+  IpcGetFileUrl,
   IpcGetFps,
   IpcGetPackageInfos,
   IpcGetPackages,
@@ -123,4 +124,5 @@ export default Object.assign(mainObj, {
   wipeAvdData: invoke<IpcWipeAvdData>('wipeAvdData'),
   restartAdbServer: invoke('restartAdbServer'),
   pairDevice: invoke<IpcPairDevice>('pairDevice'),
+  getFileUrl: invoke<IpcGetFileUrl>('getFileUrl'),
 })

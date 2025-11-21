@@ -144,7 +144,6 @@
   "portReversing": "反向代理",
   "local": "本地",
   "remote": "远程",
-  "commonErr": "出错了",
   "adbCli": "ADB 命令行接口",
   "remoteController": "遥控器",
   "layout": "布局",
@@ -180,5 +179,6 @@
   "transfer": "传输",
   "source": "源",
   "destination": "目标",
-  "duration": "时长"
+  "duration": "时长",
+  "preview": "预览"
 }

@@ -47,6 +47,7 @@ export interface IFileStat {
 
 export interface IFile extends IFileStat {
   name: string
+  mime?: string
 }
 
 export interface IWebview {
@@ -166,3 +167,8 @@ export type IpcGetWebviews = (
   pid: number
 ) => Promise<IWebview[]>
 export type IpcGetProcesses = (deviceId: string) => Promise<IProcess[]>
+export type IpcGetFileUrl = (
+  deviceId: string,
+  path: string,
+  port?: number
+) => Promise<string>

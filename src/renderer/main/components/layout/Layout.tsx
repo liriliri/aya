@@ -30,6 +30,7 @@ import ImageViewer from 'luna-image-viewer'
 import DomViewer from 'luna-dom-viewer'
 import isEmpty from 'licia/isEmpty'
 import filter from 'licia/filter'
+import LunaSplitPane, { LunaSplitPaneItem } from 'luna-split-pane/react'
 
 export default observer(function Layout() {
   const [image, setImage] = useState<IImage>({
@@ -44,17 +45,19 @@ export default observer(function Layout() {
   const [selected, setSelected] = useState<Element | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  const { device, layout } = store
+
   useEffect(() => {
     refresh()
   }, [])
 
   async function refresh() {
-    if (!store.device || isLoading) {
+    if (!device || isLoading) {
       return
     }
 
     setIsLoading(true)
-    const data = await main.screencap(store.device.id)
+    const data = await main.screencap(device.id)
     const url = dataUrl.stringify(data, 'image/png')
     setHierarchy(null)
     setSelected(null)
@@ -65,7 +68,7 @@ export default observer(function Layout() {
         height: img.height,
       })
     })
-    windowHierarchyRef.current = await main.dumpWindowHierarchy(store.device.id)
+    windowHierarchyRef.current = await main.dumpWindowHierarchy(device.id)
     const doc = xmlToDom(windowHierarchyRef.current)
     transformHierarchy(doc, windowHierarchyRef.current)
     setHierarchy(doc)
@@ -92,7 +95,7 @@ export default observer(function Layout() {
           icon="refresh"
           title={t('refresh')}
           onClick={refresh}
-          disabled={!store.device}
+          disabled={!device}
         />
         <ToolbarIcon
           icon="save"
@@ -125,8 +128,8 @@ export default observer(function Layout() {
         <LunaToolbarCheckbox
           keyName="attribute"
           label={t('showAttr')}
-          value={store.layout.attribute}
-          onChange={(value) => (store.layout.attribute = value)}
+          value={layout.attribute}
+          onChange={(value) => (layout.attribute = value)}
         />
         <LunaToolbarSeparator />
         <ToolbarIcon
@@ -168,8 +171,8 @@ export default observer(function Layout() {
         <LunaToolbarCheckbox
           keyName="border"
           label={t('showBorder')}
-          value={store.layout.border}
-          onChange={(value) => (store.layout.border = value)}
+          value={layout.border}
+          onChange={(value) => (layout.border = value)}
         />
         <LunaToolbarSpace />
         <LunaToolbarText
@@ -177,26 +180,34 @@ export default observer(function Layout() {
         />
       </LunaToolbar>
       <div className={className('panel-body', Style.body)}>
-        <Tree
-          hierarchy={hierarchy}
-          isLoading={isLoading}
-          onSelect={select}
-          selected={selected}
-          onDomViewerCreate={(domViewer) => {
-            domViewer.expand()
-            domViewerRef.current = domViewer
-          }}
-        />
-        <Screenshot
-          image={image}
-          hierarchy={hierarchy}
-          selected={selected}
-          onImageViewerCreate={(imageViewer) =>
-            (imageViewerRef.current = imageViewer)
-          }
-          onSelect={select}
-        />
-        <Detail selected={selected} />
+        <LunaSplitPane onResize={(weights) => layout.set('weights', weights)}>
+          <LunaSplitPaneItem minSize={250} weight={layout.weights[0]}>
+            <Tree
+              hierarchy={hierarchy}
+              isLoading={isLoading}
+              onSelect={select}
+              selected={selected}
+              onDomViewerCreate={(domViewer) => {
+                domViewer.expand()
+                domViewerRef.current = domViewer
+              }}
+            />
+          </LunaSplitPaneItem>
+          <LunaSplitPaneItem minSize={200} weight={layout.weights[1]}>
+            <Screenshot
+              image={image}
+              hierarchy={hierarchy}
+              selected={selected}
+              onImageViewerCreate={(imageViewer) =>
+                (imageViewerRef.current = imageViewer)
+              }
+              onSelect={select}
+            />
+          </LunaSplitPaneItem>
+          <LunaSplitPaneItem minSize={250} weight={layout.weights[2]}>
+            <Detail selected={selected} />
+          </LunaSplitPaneItem>
+        </LunaSplitPane>
       </div>
     </div>
   )

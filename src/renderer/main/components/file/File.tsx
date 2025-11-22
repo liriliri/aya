@@ -37,8 +37,7 @@ export default observer(function File() {
   const [selectedUrl, setSelectedUrl] = useState<string>('')
   const draggingRef = useRef(0)
 
-  const { device } = store
-  const { file } = store
+  const { device, file } = store
 
   useEffect(() => {
     go('/')

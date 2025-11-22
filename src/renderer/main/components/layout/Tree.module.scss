@@ -2,19 +2,9 @@
 
 .container {
   border-right: 1px solid var(--color-border);
-  min-width: 300px;
-  width: 400px;
-  position: relative;
-  max-width: calc(100vw - 450px);
-}
-
-.resizer {
-  position: absolute;
+  width: 100%;
   height: 100%;
-  right: -8px;
-  top: 0;
-  cursor: col-resize;
-  z-index: 80;
+  position: relative;
 }
 
 .tree {

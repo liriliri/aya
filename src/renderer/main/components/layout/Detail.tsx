@@ -8,6 +8,7 @@ import map from 'licia/map'
 import filter from 'licia/filter'
 import contain from 'licia/contain'
 import className from 'licia/className'
+import { JSX } from 'react'
 
 interface IProps {
   selected: Element | null

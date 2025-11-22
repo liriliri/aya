@@ -4,7 +4,7 @@ import LunaDomViewer from 'luna-dom-viewer/react'
 import DomViewer from 'luna-dom-viewer'
 import store from '../../store'
 import contain from 'licia/contain'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { JSX, useEffect, useRef, useState } from 'react'
 import uuid from 'licia/uuid'
 import xpath from 'licia/xpath'
 import copy from 'licia/copy'
@@ -24,40 +24,10 @@ interface IProps {
 export default observer(function Tree(props: IProps) {
   const treeRef = useRef<HTMLDivElement>(null)
   const [key, setKey] = useState(uuid())
-  const [resizerStyle, setResizerStyle] = useState<any>({
-    width: '10px',
-  })
 
   useEffect(() => {
     setKey(uuid())
   }, [props.hierarchy])
-
-  const onMouseDown = useCallback((e: React.MouseEvent) => {
-    const startX = e.clientX
-    const width = treeRef.current!.offsetWidth
-    setResizerStyle({
-      position: 'fixed',
-      width: '100%',
-      height: '100%',
-    })
-
-    const onMouseMove = (e: MouseEvent) => {
-      const deltaX = startX - e.clientX
-      treeRef.current!.style.width = `${width - deltaX}px`
-    }
-
-    const onMouseUp = (e: MouseEvent) => {
-      setResizerStyle({
-        width: '10px',
-      })
-      const deltaX = startX - e.clientX
-      store.layout.set('treeWidth', width - deltaX)
-      document.removeEventListener('mousemove', onMouseMove)
-      document.removeEventListener('mouseup', onMouseUp)
-    }
-    document.addEventListener('mousemove', onMouseMove)
-    document.addEventListener('mouseup', onMouseUp)
-  }, [])
 
   const path = props.selected
     ? xpath(props.selected as any, true).replace(/@id=/g, '@resource-id=')
@@ -93,16 +63,7 @@ export default observer(function Tree(props: IProps) {
   }
 
   return (
-    <div
-      className={Style.container}
-      style={{ width: store.layout.treeWidth }}
-      ref={treeRef}
-    >
-      <div
-        className={Style.resizer}
-        style={resizerStyle}
-        onMouseDown={onMouseDown}
-      />
+    <div className={Style.container} ref={treeRef}>
       <div className={Style.tree} key={key}>
         {content}
       </div>

@@ -1,5 +1,6 @@
-import builder from 'electron-builder'
+import builder, { publish } from 'electron-builder'
 import isMac from 'licia/isMac.js'
+import isWindows from 'licia/isWindows.js'
 
 cd('dist')
 
@@ -78,6 +79,23 @@ if (isMac) {
     config.mas = {
       ...entitlements,
       provisioningProfile: 'build/mas.provisionprofile',
+    }
+  }
+}
+
+if (isWindows) {
+  const args = process.argv.slice(2)
+  if (args.includes('--appx')) {
+    config.win.target = [
+      {
+        target: 'appx',
+      },
+    ]
+    config.appx = {
+      identityName: 'LiriLiri.AYAAndroidManager',
+      publisher: 'CN=B8CA87F2-EAEA-4C05-B38C-AAA50D3CBA24',
+      publisherDisplayName: 'surunzi',
+      displayName: 'AYA Android Manager',
     }
   }
 }

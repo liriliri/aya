@@ -1,13 +1,12 @@
 import { BrowserWindow } from 'electron'
 import * as window from 'share/main/lib/window'
-import { getScreencastStore, getSettingsStore } from '../lib/store'
+import { getScreencastStore } from '../lib/store'
 import once from 'licia/once'
 import { handleEvent } from 'share/main/lib/util'
 import { IpcGetStore, IpcSetStore } from 'share/common/types'
 import { IpcSetScreencastAlwaysOnTop } from 'common/types'
 
 const store = getScreencastStore()
-const settingsStore = getSettingsStore()
 
 let win: BrowserWindow | null = null
 
@@ -25,7 +24,6 @@ export function showWin() {
     minHeight: 640,
     width: 430,
     height: 640,
-    customTitlebar: !settingsStore.get('useNativeTitlebar'),
   })
 
   win.on('close', () => {

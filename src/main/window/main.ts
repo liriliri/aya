@@ -32,7 +32,6 @@ export function showWin() {
     name: 'main',
     minWidth: 960,
     minHeight: 640,
-    customTitlebar: !settingsStore.get('useNativeTitlebar'),
     width: 960,
     height: 640,
     menu: true,

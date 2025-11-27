@@ -1,12 +1,11 @@
 import { BrowserWindow } from 'electron'
-import { getDevicesStore, getSettingsStore } from '../lib/store'
+import { getDevicesStore } from '../lib/store'
 import * as window from 'share/main/lib/window'
 import once from 'licia/once'
 import { handleEvent } from 'share/main/lib/util'
 import { IpcGetStore, IpcSetStore } from 'share/common/types'
 
 const store = getDevicesStore()
-const settingsStore = getSettingsStore()
 
 let win: BrowserWindow | null = null
 
@@ -24,7 +23,6 @@ export function showWin() {
     minHeight: 640,
     width: 960,
     height: 640,
-    customTitlebar: !settingsStore.get('useNativeTitlebar'),
   })
 
   win.on('close', () => {

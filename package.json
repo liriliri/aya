@@ -2,7 +2,7 @@
   "name": "aya",
   "productName": "AYA",
   "appId": "io.liriliri.aya",
-  "version": "1.14.0",
+  "version": "1.14.1",
   "description": "Android adb desktop app",
   "main": "dist/main/index.js",
   "scripts": {

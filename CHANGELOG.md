@@ -1,3 +1,9 @@
+## v1.14.1 (28 Nov 2025)
+
+* fix: native titlebar not working for some windows
+* fix: disable linux spell checker dict download [#150](https://github.com/liriliri/aya/issues/150)
+* fix: windows font blur on low resolution displays [#97](https://github.com/liriliri/aya/issues/97)
+
 ## v1.14.0 (21 Nov 2025)
 
 * feat: show file transfer

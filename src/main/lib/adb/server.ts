@@ -124,19 +124,24 @@ const getPackageInfos: IpcGetPackageInfos = singleton(async function (
   })
   const { packageInfos } = result
   const serverPort = await getFileServerPort(deviceId)
-  if (!isEmpty(packageInfos) && isUndef(packageInfos[0].appSize)) {
-    const packageDiskStats = await getPackageDiskStats(deviceId)
+  if (!isEmpty(packageInfos)) {
     for (let i = 0, len = packageInfos.length; i < len; i++) {
       const info: IPackageInfo = packageInfos[i]
       if (info.icon) {
         info.icon = await getFileUrl(deviceId, info.icon, serverPort)
       }
-      if (info.packageName && packageDiskStats[info.packageName]) {
-        extend(info, packageDiskStats[info.packageName])
-      } else {
-        info.appSize = 0
-        info.dataSize = 0
-        info.cacheSize = 0
+    }
+    if (isUndef(packageInfos[0].appSize)) {
+      const packageDiskStats = await getPackageDiskStats(deviceId)
+      for (let i = 0, len = packageInfos.length; i < len; i++) {
+        const info: IPackageInfo = packageInfos[i]
+        if (info.packageName && packageDiskStats[info.packageName]) {
+          extend(info, packageDiskStats[info.packageName])
+        } else {
+          info.appSize = 0
+          info.dataSize = 0
+          info.cacheSize = 0
+        }
       }
     }
   }

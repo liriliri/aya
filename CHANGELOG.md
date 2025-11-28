@@ -1,3 +1,7 @@
+## v1.14.2 (28 Nov 2025)
+
+* fix: application icon display error [#151](https://github.com/liriliri/aya/issues/151)
+
 ## v1.14.1 (28 Nov 2025)
 
 * fix: native titlebar not working for some windows

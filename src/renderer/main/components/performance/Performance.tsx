@@ -109,7 +109,7 @@ export default observer(function Performance() {
   const batteryLevel = data.batteryLevel + '%'
   const batteryVoltage = `${(data.batteryVoltage / 1000).toFixed(2)}V`
   const batteryTemperature = `${data.batteryTemperature / 10}°C`
-  const batteryTitle = `${batteryVoltage} ${batteryTemperature}`
+  const batteryInfo = `${batteryVoltage} ${batteryTemperature}`
 
   return (
     <div className={className('panel-with-toolbar', Style.container)}>
@@ -119,7 +119,8 @@ export default observer(function Performance() {
         />
         <LunaToolbarSpace />
         <LunaToolbarHtml>
-          <div className={Style.batteryContainer} title={batteryTitle}>
+          <div className={Style.batteryContainer}>
+            <span className={Style.batteryInfo}>{batteryInfo}</span>
             <span className={Style.batteryLevel}>{batteryLevel}</span>
             <div className={Style.battery}>
               <div className={Style.batteryHead} />

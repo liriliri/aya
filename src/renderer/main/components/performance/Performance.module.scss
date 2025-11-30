@@ -1,7 +1,7 @@
-@use '../../../theme' as theme;
+@use '../../../theme' as *;
 
 .charts {
-  padding: 0 #{theme.$padding-x-x-s}px;
+  padding: 0 #{$padding-x-x-s}px;
 }
 
 .cpu-container {
@@ -13,12 +13,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 #{theme.$padding-x-s}px;
+  padding: 0 #{$padding-x-s}px;
 }
 
-.battery-level {
-  margin-right: #{theme.$margin-x-x-s}px;
-  font-size: #{theme.$font-size-s-m}px;
+.battery-level,
+.battery-info {
+  font-size: #{$font-size-s-m}px;
+  margin-right: #{$margin-x-x-s}px;
 }
 
 .battery {

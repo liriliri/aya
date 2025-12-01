@@ -1,7 +1,11 @@
 import { app } from 'electron'
 import Adb, { Client, Device } from '@devicefarmer/adbkit'
 import androidDeviceList from 'android-device-list'
-import { resolveResources, handleEvent } from 'share/main/lib/util'
+import {
+  resolveResources,
+  handleEvent,
+  getUserDataPath,
+} from 'share/main/lib/util'
 import map from 'licia/map'
 import types from 'licia/types'
 import filter from 'licia/filter'
@@ -315,6 +319,13 @@ async function openAdbCli() {
   const adbPath = settingsStore.get('adbPath')
   if (!isStrBlank(adbPath) && fs.existsSync(adbPath)) {
     cwd = path.dirname(adbPath)
+  } else if (isWindows) {
+    // Microsoft store app permission issue workaround
+    const newCwd = getUserDataPath('adb')
+    if (!(await fs.existsSync(newCwd))) {
+      await fs.copy(cwd, newCwd)
+    }
+    cwd = newCwd
   }
 
   if (isMac) {

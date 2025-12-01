@@ -41,6 +41,7 @@ export default observer(function Performance() {
     batteryVoltage: 0,
     cpuLoads: [],
     cpus: [],
+    cpuTemperature: 0,
     fps: 0,
   })
 
@@ -134,7 +135,7 @@ export default observer(function Performance() {
       </LunaToolbar>
       <div className={className('panel-body', Style.charts)}>
         <LunaPerformanceMonitor
-          title="CPU"
+          title={`CPU ${data.cpuTemperature}°C`}
           data={cpuData}
           theme={store.theme}
           max={100}

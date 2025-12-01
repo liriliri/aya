@@ -5,6 +5,10 @@ import trim from 'licia/trim'
 import toNum from 'licia/toNum'
 import startWith from 'licia/startWith'
 import { shell } from './base'
+import types from 'licia/types'
+import average from 'licia/average'
+import identity from 'licia/identity'
+import stripNum from 'licia/stripNum'
 
 const DEFAULT_PERIOD = 50
 
@@ -104,4 +108,27 @@ export async function getCpus(deviceId: string, speed = true) {
   }
 
   return cpus
+}
+
+const regTemperature =
+  /Temperature\{mValue=([\d.]+),\s*mType=(\d+),\s*mName=(\w+)/
+export async function getCpuTemperature(deviceId: string) {
+  const thermal = await shell(deviceId, 'dumpsys thermalservice')
+  const lines = thermal.split('\n')
+
+  const cpuTemperatures: types.PlainObj<number> = {}
+
+  for (let i = 0, len = lines.length; i < len; i++) {
+    const line = lines[i]
+    const match = line.match(regTemperature)
+    if (match) {
+      const name = match[3]
+      const value = toNum(match[1])
+      if (startWith(name, 'CPU')) {
+        cpuTemperatures[name] = value
+      }
+    }
+  }
+
+  return stripNum(average(...map(cpuTemperatures, identity)), 3)
 }

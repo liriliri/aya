@@ -30,7 +30,7 @@ import * as file from './adb/file'
 import * as fps from './adb/fps'
 import * as webview from './adb/webview'
 import * as port from './adb/port'
-import { getCpuLoads, getCpus } from './adb/cpu'
+import { getCpuLoads, getCpus, getCpuTemperature } from './adb/cpu'
 import log from 'share/common/log'
 import {
   IpcConnectDevice,
@@ -186,6 +186,7 @@ async function getPerformance(deviceId: string) {
   return {
     cpus,
     cpuLoads: await getCpuLoads(deviceId, cpus),
+    cpuTemperature: await getCpuTemperature(deviceId),
     ...(await getMemory(deviceId)),
     ...(await getBattery(deviceId)),
   }

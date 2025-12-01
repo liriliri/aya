@@ -50,7 +50,6 @@ const pullFile: IpcPullFile = async function (deviceId, src, dest) {
     const pulls: Promise<void>[] = []
     for (let i = 0, len = files.length; i < len; i++) {
       const file = files[i]
-      console.log(src, file.name, dest, file.name)
       pulls.push(
         pullFile(deviceId, src + '/' + file.name, path.join(dest, file.name))
       )

@@ -84,7 +84,7 @@ const getDevices: IpcGetDevices = async function () {
 async function getOverview(deviceId: string) {
   const device = await client.getDevice(deviceId)
   const properties = await device.getProperties()
-  const cpus = await getCpus(deviceId)
+  const cpus = await getCpus(deviceId, false)
   const [kernelVersion, fontScale, wifi] = await shell(deviceId, [
     'uname -r',
     'settings get system font_scale',

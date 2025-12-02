@@ -28,6 +28,4 @@ const langs = {
   es: lang(es),
 }
 
-console.log(defaults(es, enUS).appearance)
-
 initI18n(langs)

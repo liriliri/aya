@@ -85,8 +85,6 @@
   "ipAddress": "IP 地址",
   "macAddress": "MAC 地址",
   "signature": "签名",
-  "ok": "确定",
-  "cancel": "取消",
   "back": "返回",
   "forward": "前进",
   "up": "上一级",

@@ -1,5 +1,5 @@
 import { app, BrowserWindow, session } from 'electron'
-import { getMainStore, getSettingsStore } from '../lib/store'
+import { getMainStore } from '../lib/store'
 import { getOpenFileFromArgv, handleEvent } from 'share/main/lib/util'
 import * as window from 'share/main/lib/window'
 import * as screencast from './screencast'
@@ -13,7 +13,6 @@ import endWith from 'licia/endWith'
 const logger = log('mainWin')
 
 const store = getMainStore()
-const settingsStore = getSettingsStore()
 
 let win: BrowserWindow | null = null
 
@@ -70,12 +69,6 @@ const initIpc = once(() => {
   store.on('change', (name, val) => {
     window.sendAll('changeMainStore', name, val)
   })
-  handleEvent('setSettingsStore', <IpcSetStore>((name, val) => {
-    settingsStore.set(name, val)
-  }))
-  handleEvent('getSettingsStore', <IpcGetStore>(
-    ((name) => settingsStore.get(name))
-  ))
   handleEvent('showScreencast', () => screencast.showWin())
   handleEvent('closeScreencast', () => screencast.closeWin())
   handleEvent('restartScreencast', () => {

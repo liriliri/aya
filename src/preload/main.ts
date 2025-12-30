@@ -92,6 +92,7 @@ export default Object.assign(mainObj, {
   startPackage: invoke<IpcStartPackage>('startPackage'),
   installPackage: invoke<IpcInstallPackage>('installPackage'),
   uninstallPackage: invoke<IpcUninstallPackage>('uninstallPackage'),
+  uninstallUser0Package: invoke<IpcUninstallPackage>('uninstallUser0Package'),
   getPackages: invoke<IpcGetPackages>('getPackages'),
   getPackageInfos: invoke<IpcGetPackageInfos>('getPackageInfos'),
   disablePackage: invoke<IpcDisablePackage>('disablePackage'),

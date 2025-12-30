@@ -272,6 +272,18 @@ export default observer(function Application() {
           }
         },
       },
+      {
+        label: t('uninstallUser0'),
+        click: async () => {
+          const result = await LunaModal.confirm(
+            confirmText('uninstallUser0Confirm', info)
+          )
+          if (result) {
+            await main.uninstallUser0Package(device.id, info.packageName)
+            refresh()
+          }
+        },
+      },
     ]
 
     contextMenu(e, template)

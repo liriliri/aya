@@ -65,6 +65,11 @@ const uninstallPackage: IpcUninstallPackage = async function (deviceId, pkg) {
   await device.uninstall(pkg)
 }
 
+const uninstallUser0Package: IpcUninstallPackage = async function (deviceId, pkg) {
+  const device = await client.getDevice(deviceId)
+  await device.uninstall(`--user 0 ${pkg}`)
+}
+
 async function getMainComponent(deviceId: string, pkg: string) {
   const result = await shell(
     deviceId,
@@ -131,6 +136,7 @@ export async function init(c: Client) {
   handleEvent('startPackage', startPackage)
   handleEvent('installPackage', installPackage)
   handleEvent('uninstallPackage', uninstallPackage)
+  handleEvent('uninstallUser0Package', uninstallUser0Package)
   handleEvent('getTopPackage', getTopPackage)
   handleEvent('clearPackage', clearPackage)
   handleEvent('disablePackage', disablePackage)

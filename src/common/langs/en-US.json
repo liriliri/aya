@@ -57,6 +57,8 @@
   "installPackageErr": "Failed to install package",
   "uninstall": "Uninstall",
   "uninstallConfirm": "Are you sure you want to uninstall {{name}}?",
+  "uninstallUser0": "Uninstall User 0",
+  "uninstallUser0Confirm": "Are you sure you want to uninstall {{name}} for user 0 (the system user)?",
   "clearData": "Clear Data",
   "clearDataConfirm": "Are you sure you want to clear data for {{name}}?",
   "dataCleared": "Data cleared",

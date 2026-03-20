@@ -7,15 +7,18 @@ import LunaToolbar, {
   LunaToolbarSpace,
   LunaToolbarText,
 } from 'luna-toolbar/react'
+import LunaSplitPane, { LunaSplitPaneItem } from 'luna-split-pane/react'
 import { useEffect, useRef, useState } from 'react'
 import { t } from 'common/util'
 import toEl from 'licia/toEl'
 import LunaDataGrid from 'luna-data-grid/react'
 import map from 'licia/map'
+import copy from 'licia/copy'
 import store from '../../store'
 import ToolbarIcon from 'share/renderer/components/ToolbarIcon'
 import DataGrid from 'luna-data-grid'
 import { useWindowResize } from 'share/renderer/lib/hooks'
+import { notify } from 'share/renderer/lib/util'
 import { IWebview } from 'common/types'
 
 export default observer(function Webview() {
@@ -28,6 +31,7 @@ export default observer(function Webview() {
   })
   const dataGridRef = useRef<DataGrid>(null)
   const [filter, setFilter] = useState('')
+  const [weights, setWeights] = useState([75, 25])
 
   const { device } = store
 
@@ -84,6 +88,15 @@ export default observer(function Webview() {
 
   useWindowResize(() => dataGridRef.current?.fit())
 
+  function copyUrl() {
+    if (!selected) {
+      return
+    }
+
+    copy(selected.url)
+    notify(t('copied'), { icon: 'info' })
+  }
+
   return (
     <div className="panel-with-toolbar">
       <LunaToolbar className="panel-toolbar">
@@ -127,20 +140,54 @@ export default observer(function Webview() {
           onClick={() => main.openExternal(selected!.url)}
         />
       </LunaToolbar>
-      <LunaDataGrid
-        onSelect={async (node) => setSelected(node.data as any)}
-        onDeselect={() => setSelected(null)}
-        className={Style.webviews}
-        filter={filter}
-        columns={columns}
-        data={webviews}
-        selectable={true}
-        uniqueId="id"
-        onCreate={(dataGrid) => {
-          dataGridRef.current = dataGrid
-          dataGrid.fit()
-        }}
-      />
+      <div className={Style.content}>
+        <LunaSplitPane
+          direction="vertical"
+          onResize={(newWeights) => {
+            setWeights(newWeights)
+            dataGridRef.current?.fit()
+          }}
+        >
+          <LunaSplitPaneItem minSize={180} weight={weights[0]}>
+            <LunaDataGrid
+              onSelect={async (node) => setSelected(node.data as any)}
+              onDeselect={() => setSelected(null)}
+              className={Style.webviews}
+              filter={filter}
+              columns={columns}
+              data={webviews}
+              selectable={true}
+              uniqueId="id"
+              onCreate={(dataGrid) => {
+                dataGridRef.current = dataGrid
+                dataGrid.fit()
+              }}
+            />
+          </LunaSplitPaneItem>
+          <LunaSplitPaneItem minSize={96} weight={weights[1]}>
+            <div className={Style.detail}>
+              <div className={Style.detailHeader}>
+                <div className={Style.detailTitle}>URL</div>
+                <button
+                  type="button"
+                  className={Style.copyButton}
+                  disabled={selected === null}
+                  onClick={copyUrl}
+                >
+                  {t('copy')}
+                </button>
+              </div>
+              <div
+                className={`${Style.detailBody} ${
+                  selected ? '' : Style.detailBodyEmpty
+                }`}
+              >
+                {selected ? selected.url : '-'}
+              </div>
+            </div>
+          </LunaSplitPaneItem>
+        </LunaSplitPane>
+      </div>
     </div>
   )
 })

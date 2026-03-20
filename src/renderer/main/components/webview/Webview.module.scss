@@ -1,3 +1,10 @@
+@use '../../../theme' as *;
+
+.content {
+  height: 100%;
+  overflow: hidden;
+}
+
 .webviews {
   height: 100%;
   border: none !important;
@@ -10,4 +17,60 @@
     flex-shrink: 0;
     vertical-align: top;
   }
+}
+
+.detail {
+  height: 100%;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-container);
+  padding: #{$padding-s-m}px;
+  display: flex;
+  flex-direction: column;
+  gap: #{$margin-x-x-s}px;
+  overflow: hidden;
+}
+
+.detailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: #{$margin-s-m}px;
+}
+
+.detailTitle {
+  font-size: #{$font-size-s-m}px;
+  color: var(--color-text-secondary);
+}
+
+.copyButton {
+  border: 1px solid var(--color-border);
+  border-radius: #{$border-radius-s-m}px;
+  background: var(--color-bg-container);
+  color: inherit;
+  cursor: pointer;
+  padding: #{$padding-x-x-s}px #{$padding-x-s}px;
+  font-size: #{$font-size-s-m}px;
+  &:hover:not(:disabled) {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.detailBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  user-select: text;
+  font-size: #{$font-size-s-m}px;
+  line-height: 1.5;
+}
+
+.detailBodyEmpty {
+  color: var(--color-text-secondary);
 }

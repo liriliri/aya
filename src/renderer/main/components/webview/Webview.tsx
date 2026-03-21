@@ -20,6 +20,7 @@ import DataGrid from 'luna-data-grid'
 import { useWindowResize } from 'share/renderer/lib/hooks'
 import { notify } from 'share/renderer/lib/util'
 import { IWebview } from 'common/types'
+import { parseWebviewUrl } from './urlParser'
 
 export default observer(function Webview() {
   const [webviews, setWebviews] = useState<IWebview[]>([])
@@ -32,8 +33,22 @@ export default observer(function Webview() {
   const dataGridRef = useRef<DataGrid>(null)
   const [filter, setFilter] = useState('')
   const [weights, setWeights] = useState([75, 25])
+  const [detailWeights, setDetailWeights] = useState([56, 44])
 
   const { device } = store
+  const parsedUrl = selected ? parseWebviewUrl(selected.url) : null
+  const basicInfo = parsedUrl
+    ? [
+        { label: t('protocol'), value: parsedUrl.basic.protocol },
+        { label: t('hostname'), value: parsedUrl.basic.hostname },
+        { label: t('port'), value: parsedUrl.basic.port },
+        { label: t('origin'), value: parsedUrl.basic.origin },
+        { label: t('pathname'), value: parsedUrl.basic.pathname },
+        { label: t('query'), value: parsedUrl.basic.search },
+        { label: t('hashPath'), value: parsedUrl.basic.hashPath },
+        { label: t('hashQuery'), value: parsedUrl.basic.hashQuery },
+      ]
+    : []
 
   useEffect(() => {
     let destroyed = false
@@ -166,24 +181,134 @@ export default observer(function Webview() {
           </LunaSplitPaneItem>
           <LunaSplitPaneItem minSize={96} weight={weights[1]}>
             <div className={Style.detail}>
-              <div className={Style.detailHeader}>
-                <div className={Style.detailTitle}>URL</div>
-                <button
-                  type="button"
-                  className={Style.copyButton}
-                  disabled={selected === null}
-                  onClick={copyUrl}
-                >
-                  {t('copy')}
-                </button>
-              </div>
-              <div
-                className={`${Style.detailBody} ${
-                  selected ? '' : Style.detailBodyEmpty
-                }`}
+              <LunaSplitPane
+                className={Style.detailSplit}
+                direction="horizontal"
+                onResize={setDetailWeights}
               >
-                {selected ? selected.url : '-'}
-              </div>
+                <LunaSplitPaneItem minSize={220} weight={detailWeights[0]}>
+                  <div className={Style.detailPanel}>
+                    <div className={Style.detailHeader}>
+                      <div className={Style.detailTitle}>URL</div>
+                      <button
+                        type="button"
+                        className={Style.copyButton}
+                        disabled={selected === null}
+                        onClick={copyUrl}
+                      >
+                        {t('copy')}
+                      </button>
+                    </div>
+                    <div
+                      className={`${Style.detailBody} ${
+                        selected ? '' : Style.detailBodyEmpty
+                      }`}
+                    >
+                      {selected ? selected.url : t('noWebviewSelected')}
+                    </div>
+                  </div>
+                </LunaSplitPaneItem>
+                <LunaSplitPaneItem minSize={220} weight={detailWeights[1]}>
+                  <div className={Style.detailPanel}>
+                    <div className={Style.detailHeader}>
+                      <div className={Style.detailTitle}>
+                        {t('urlAnalysis')}
+                      </div>
+                    </div>
+                    <div className={Style.analysisBody}>
+                      {!selected && (
+                        <div
+                          className={`${Style.detailBody} ${Style.detailBodyEmpty}`}
+                        >
+                          {t('noWebviewSelected')}
+                        </div>
+                      )}
+                      {selected && parsedUrl && (
+                        <>
+                          {parsedUrl.error && (
+                            <div
+                              className={`${Style.message} ${Style.messageError}`}
+                            >
+                              <div className={Style.messageTitle}>
+                                {t('urlParseError')}
+                              </div>
+                              <div className={Style.messageText}>
+                                {parsedUrl.error}
+                              </div>
+                            </div>
+                          )}
+                          {parsedUrl.warnings.length > 0 && (
+                            <div
+                              className={`${Style.message} ${Style.messageWarning}`}
+                            >
+                              <div className={Style.messageTitle}>
+                                {t('warnings')}
+                              </div>
+                              <div className={Style.messageList}>
+                                {map(parsedUrl.warnings, (warning, index) => (
+                                  <div key={index} className={Style.messageText}>
+                                    {warning}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {!parsedUrl.error && (
+                            <>
+                              <section className={Style.section}>
+                                <div className={Style.sectionTitle}>
+                                  {t('basicInfo')}
+                                </div>
+                                <div className={Style.infoList}>
+                                  {map(basicInfo, (item) => (
+                                    <div
+                                      key={item.label}
+                                      className={Style.infoRow}
+                                    >
+                                      <div className={Style.infoLabel}>
+                                        {item.label}
+                                      </div>
+                                      <div className={Style.infoValue}>
+                                        {item.value || '-'}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </section>
+                              <section className={Style.section}>
+                                <div className={Style.sectionTitle}>
+                                  {t('params')}
+                                </div>
+                                {parsedUrl.params.length > 0 ? (
+                                  <div className={Style.paramList}>
+                                    {map(parsedUrl.params, (param, index) => (
+                                      <div
+                                        key={`${param.source}-${param.key}-${index}`}
+                                        className={Style.paramItem}
+                                      >
+                                        <div className={Style.paramKey}>
+                                          {param.key}
+                                        </div>
+                                        <div className={Style.paramValue}>
+                                          {param.value || '-'}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <div className={Style.emptyText}>
+                                    {t('noParams')}
+                                  </div>
+                                )}
+                              </section>
+                            </>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </LunaSplitPaneItem>
+              </LunaSplitPane>
             </div>
           </LunaSplitPaneItem>
         </LunaSplitPane>

@@ -21,6 +21,7 @@ import { useWindowResize } from 'share/renderer/lib/hooks'
 import { notify } from 'share/renderer/lib/util'
 import { IWebview } from 'common/types'
 import { parseWebviewUrl } from './urlParser'
+import { buildUrlAnalysisViewModel } from './urlAnalysisPanel'
 
 export default observer(function Webview() {
   const [webviews, setWebviews] = useState<IWebview[]>([])
@@ -34,21 +35,15 @@ export default observer(function Webview() {
   const [filter, setFilter] = useState('')
   const [weights, setWeights] = useState([75, 25])
   const [detailWeights, setDetailWeights] = useState([56, 44])
+  const [isBasicInfoCollapsed, setIsBasicInfoCollapsed] = useState(true)
+  const [expandedParams, setExpandedParams] = useState<string[]>([])
 
   const { device } = store
   const parsedUrl = selected ? parseWebviewUrl(selected.url) : null
-  const basicInfo = parsedUrl
-    ? [
-        { label: t('protocol'), value: parsedUrl.basic.protocol },
-        { label: t('hostname'), value: parsedUrl.basic.hostname },
-        { label: t('port'), value: parsedUrl.basic.port },
-        { label: t('origin'), value: parsedUrl.basic.origin },
-        { label: t('pathname'), value: parsedUrl.basic.pathname },
-        { label: t('query'), value: parsedUrl.basic.search },
-        { label: t('hashPath'), value: parsedUrl.basic.hashPath },
-        { label: t('hashQuery'), value: parsedUrl.basic.hashQuery },
-      ]
-    : []
+  const analysisViewModel =
+    parsedUrl && !parsedUrl.error
+      ? buildUrlAnalysisViewModel(parsedUrl.basic, parsedUrl.params)
+      : null
 
   useEffect(() => {
     let destroyed = false
@@ -101,6 +96,14 @@ export default observer(function Webview() {
     }
   }, [])
 
+  useEffect(() => {
+    setIsBasicInfoCollapsed(analysisViewModel?.basicInfoCollapsedByDefault ?? true)
+  }, [analysisViewModel?.basicInfoCollapsedByDefault, selected?.url])
+
+  useEffect(() => {
+    setExpandedParams([])
+  }, [selected?.url])
+
   useWindowResize(() => dataGridRef.current?.fit())
 
   function copyUrl() {
@@ -110,6 +113,14 @@ export default observer(function Webview() {
 
     copy(selected.url)
     notify(t('copied'), { icon: 'info' })
+  }
+
+  function toggleParam(key: string) {
+    setExpandedParams((current) =>
+      current.includes(key)
+        ? current.filter((item) => item !== key)
+        : [...current, key]
+    )
   }
 
   return (
@@ -211,8 +222,13 @@ export default observer(function Webview() {
                 <LunaSplitPaneItem minSize={220} weight={detailWeights[1]}>
                   <div className={Style.detailPanel}>
                     <div className={Style.detailHeader}>
-                      <div className={Style.detailTitle}>
-                        {t('urlAnalysis')}
+                      <div className={Style.detailHeading}>
+                        <div className={Style.detailTitle}>{t('urlAnalysis')}</div>
+                        {analysisViewModel && (
+                          <div className={Style.sectionCount}>
+                            {analysisViewModel.params.length} {t('params')}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className={Style.analysisBody}>
@@ -253,47 +269,129 @@ export default observer(function Webview() {
                               </div>
                             </div>
                           )}
-                          {!parsedUrl.error && (
+                          {!parsedUrl.error && analysisViewModel && (
                             <>
-                              <section className={Style.section}>
-                                <div className={Style.sectionTitle}>
-                                  {t('basicInfo')}
-                                </div>
-                                <div className={Style.infoList}>
-                                  {map(basicInfo, (item) => (
-                                    <div
-                                      key={item.label}
-                                      className={Style.infoRow}
-                                    >
-                                      <div className={Style.infoLabel}>
-                                        {item.label}
-                                      </div>
-                                      <div className={Style.infoValue}>
-                                        {item.value || '-'}
-                                      </div>
+                              <section className={`${Style.section} ${Style.basicInfoSection}`}>
+                                <button
+                                  type="button"
+                                  className={Style.sectionToggle}
+                                  onClick={() =>
+                                    setIsBasicInfoCollapsed(!isBasicInfoCollapsed)
+                                  }
+                                >
+                                  <div>
+                                    <div className={Style.sectionTitle}>
+                                      {t('basicInfo')}
                                     </div>
-                                  ))}
-                                </div>
-                              </section>
-                              <section className={Style.section}>
-                                <div className={Style.sectionTitle}>
-                                  {t('params')}
-                                </div>
-                                {parsedUrl.params.length > 0 ? (
-                                  <div className={Style.paramList}>
-                                    {map(parsedUrl.params, (param, index) => (
+                                    <div className={Style.sectionSubtitle}>
+                                      {analysisViewModel.basicInfoItems.length}{' '}
+                                      {t('basicInfoItems')}
+                                    </div>
+                                  </div>
+                                  <div className={Style.sectionToggleText}>
+                                    {isBasicInfoCollapsed
+                                      ? t('expand')
+                                      : t('collapse')}
+                                  </div>
+                                </button>
+                                {!isBasicInfoCollapsed && (
+                                  <div className={Style.infoList}>
+                                    {map(analysisViewModel.basicInfoItems, (item) => (
                                       <div
-                                        key={`${param.source}-${param.key}-${index}`}
-                                        className={Style.paramItem}
+                                        key={item.key}
+                                        className={Style.infoRow}
                                       >
-                                        <div className={Style.paramKey}>
-                                          {param.key}
+                                        <div className={Style.infoLabel}>
+                                          {t(item.key)}
                                         </div>
-                                        <div className={Style.paramValue}>
-                                          {param.value || '-'}
+                                        <div className={Style.infoValue}>
+                                          {item.value}
                                         </div>
                                       </div>
                                     ))}
+                                  </div>
+                                )}
+                              </section>
+                              <section className={Style.section}>
+                                <div className={Style.sectionHeader}>
+                                  <div>
+                                    <div className={Style.sectionTitle}>
+                                      {t('params')}
+                                    </div>
+                                    <div className={Style.sectionSubtitle}>
+                                      {t('paramFocusTip')}
+                                    </div>
+                                  </div>
+                                  <div className={Style.sectionCount}>
+                                    {analysisViewModel.params.length}
+                                  </div>
+                                </div>
+                                {analysisViewModel.params.length > 0 ? (
+                                  <div className={Style.paramList}>
+                                    {map(analysisViewModel.params, (param, index) => {
+                                      const paramId = `${param.source}-${param.key}-${index}`
+                                      const isExpanded = expandedParams.includes(paramId)
+                                      const value =
+                                        param.collapsible && !isExpanded
+                                          ? param.preview
+                                          : param.value
+
+                                      return (
+                                        <div
+                                          key={paramId}
+                                          className={`${Style.paramItem} ${
+                                            param.emphasis === 'featured'
+                                              ? Style.paramItemFeatured
+                                              : ''
+                                          } ${
+                                            param.emphasis === 'long'
+                                              ? Style.paramItemLong
+                                              : ''
+                                          }`}
+                                        >
+                                          <div className={Style.paramHeader}>
+                                            <div className={Style.paramKey}>
+                                              {param.key}
+                                            </div>
+                                            <div className={Style.paramHeaderMeta}>
+                                              <div className={Style.paramSource}>
+                                                {param.source}
+                                              </div>
+                                              {param.collapsible && (
+                                                <button
+                                                  type="button"
+                                                  className={Style.paramToggle}
+                                                  onClick={() =>
+                                                    toggleParam(paramId)
+                                                  }
+                                                >
+                                                  {isExpanded
+                                                    ? t('collapse')
+                                                    : t('expand')}
+                                                </button>
+                                              )}
+                                            </div>
+                                          </div>
+                                          <div
+                                            className={`${Style.paramValue} ${
+                                              param.emphasis === 'featured'
+                                                ? Style.paramValueFeatured
+                                                : ''
+                                            } ${
+                                              param.emphasis === 'long'
+                                                ? Style.paramValueLong
+                                                : ''
+                                            } ${
+                                              param.collapsible && !isExpanded
+                                                ? Style.paramValueCollapsed
+                                                : ''
+                                            }`}
+                                          >
+                                            {value || '-'}
+                                          </div>
+                                        </div>
+                                      )
+                                    })}
                                   </div>
                                 ) : (
                                   <div className={Style.emptyText}>

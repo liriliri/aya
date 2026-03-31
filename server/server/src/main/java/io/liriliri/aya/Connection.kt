@@ -31,9 +31,12 @@ class Connection(private val client: LocalSocket) : Thread() {
     }
 
     override fun run() {
-        while (!isInterrupted && client.isConnected) {
+        while (!isInterrupted) {
             try {
                 val request = Wire.Request.parseDelimitedFrom(client.inputStream)
+                if (request == null) {
+                    break
+                }
                 val params = request.params.ifEmpty { "{}" }
                 handleRequest(request.id, request.method, params)
             } catch (e: Exception) {

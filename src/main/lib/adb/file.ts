@@ -33,6 +33,7 @@ import splitPath from 'licia/splitPath'
 import mime from 'licia/mime'
 
 let client: Client
+const rootFallbackPaths = ['/sdcard/', '/storage/emulated/0/', '/data/']
 
 const fileSemaphore = new Semaphore(5)
 const waitFileSemaphore = function (): Promise<void> {
@@ -228,7 +229,19 @@ const readDir: IpcReadDir = async function (deviceId, path) {
   }
 
   const device = await client.getDevice(deviceId)
-  const files: any[] = await device.readdir(path)
+  let files: any[] = []
+  try {
+    files = await device.readdir(path)
+  } catch (err) {
+    if (path === '/') {
+      const fallbackEntries = await getRootFallbackEntries(deviceId)
+      if (fallbackEntries.length > 0) {
+        return fallbackEntries
+      }
+    }
+
+    throw err
+  }
 
   const ret: any[] = []
   for (let i = 0, len = files.length; i < len; i++) {
@@ -249,7 +262,77 @@ const readDir: IpcReadDir = async function (deviceId, path) {
     ret.push(item)
   }
 
+  if (path === '/' && ret.length === 0) {
+    const fallbackEntries = await getRootFallbackEntries(deviceId)
+    if (fallbackEntries.length > 0) {
+      return fallbackEntries
+    }
+  }
+
   return ret
+}
+
+async function getRootFallbackEntries(deviceId: string) {
+  if (!(await canReadDirectory(deviceId, '/sdcard/'))) {
+    return []
+  }
+
+  const entries: IFile[] = []
+  for (let i = 0, len = rootFallbackPaths.length; i < len; i++) {
+    const entry = await getRootFallbackEntry(deviceId, rootFallbackPaths[i])
+    if (entry) {
+      entries.push(entry)
+    }
+  }
+
+  return entries
+}
+
+async function canReadDirectory(deviceId: string, path: string) {
+  try {
+    await readDirectoryProbe(deviceId, path)
+    return true
+  } catch {
+    return false
+  }
+}
+
+async function readDirectoryProbe(deviceId: string, path: string) {
+  if (startWith(path, '/data/') && !startWith(path, '/data/local/tmp/')) {
+    if (!(await isRooted(deviceId))) {
+      await readDataDir(deviceId, path)
+      return
+    }
+  }
+
+  const device = await client.getDevice(deviceId)
+  await device.readdir(path)
+}
+
+async function getRootFallbackEntry(
+  deviceId: string,
+  fullPath: string
+): Promise<IFile | null> {
+  try {
+    await readDirectoryProbe(deviceId, fullPath)
+  } catch {
+    return null
+  }
+
+  let stat: Awaited<ReturnType<typeof statFile>> | null = null
+  try {
+    stat = await statFile(deviceId, fullPath)
+  } catch {
+    // ignore
+  }
+
+  return {
+    name: fullPath.replace(/^\/|\/$/g, ''),
+    directory: true,
+    mtime: stat?.mtime || new Date(0),
+    mode: stat?.mode || 'drwxrwxr-x',
+    size: stat?.size,
+  }
 }
 
 async function readDataDir(deviceId: string, path: string) {
@@ -398,7 +481,7 @@ async function fileShell(
     }
   }
 
-  return shell(deviceId, `${cmd} "${path}"`)
+  return shell(deviceId, `${cmd} "${path}"${dest ? ` "${dest}"` : ''}`)
 }
 
 const statFile: IpcStatFile = async function (deviceId, path) {

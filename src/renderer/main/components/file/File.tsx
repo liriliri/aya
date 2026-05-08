@@ -62,6 +62,12 @@ export default observer(function File() {
           }
         }
       }
+      files.sort((a, b) => {
+        if (a.directory !== b.directory) {
+          return a.directory ? -1 : 1
+        }
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+      })
       setPath(path)
       setCustomPath(path)
       setFileList(files)

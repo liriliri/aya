@@ -36,12 +36,197 @@ export default observer(function File() {
   const [selected, setSelected] = useState<IFile | undefined>()
   const [selectedUrl, setSelectedUrl] = useState<string>('')
   const draggingRef = useRef(0)
+  const fileListContainerRef = useRef<HTMLDivElement>(null)
+  const selectedRef = useRef<IFile | undefined>(undefined)
+  selectedRef.current = selected
 
   const { device, file } = store
 
   useEffect(() => {
     go('/')
   }, [])
+
+  useEffect(() => {
+    const container = fileListContainerRef.current
+    if (!container) {
+      return
+    }
+    const scrollables = container.querySelectorAll<HTMLElement>(
+      '.luna-data-grid-data-container, .luna-icon-list'
+    )
+    for (const el of scrollables) {
+      el.scrollTop = 0
+    }
+  }, [path])
+
+  useEffect(() => {
+    if (!device) {
+      return
+    }
+    const filterLower = filter.trim().toLowerCase()
+    const filteredFileList = filterLower
+      ? fileList.filter((f) => f.name.toLowerCase().includes(filterLower))
+      : fileList
+
+    let lastKey = ''
+    let lastIdx = -1
+
+    function clickMatchedRow(container: HTMLElement, target: IFile) {
+      const rows = container.querySelectorAll<HTMLElement>(
+        '.luna-data-grid-node'
+      )
+      for (const el of rows) {
+        if (el.offsetParent === null) {
+          continue
+        }
+        const node = (el as any).dataGridNode
+        if (node?.data?.file === target) {
+          el.scrollIntoView({ block: 'nearest' })
+          el.click()
+          return true
+        }
+      }
+      return false
+    }
+
+    function selectFile(container: HTMLElement, target: IFile): boolean {
+      const icons = container.querySelectorAll<HTMLElement>(
+        '.luna-icon-list-item'
+      )
+      for (const el of icons) {
+        if (el.offsetParent === null) {
+          continue
+        }
+        const icon = (el as any).icon
+        if (icon?.data?.file === target) {
+          el.scrollIntoView({ block: 'nearest' })
+          el.click()
+          return true
+        }
+      }
+      if (clickMatchedRow(container, target)) {
+        return true
+      }
+      // LunaDataGrid virtualizes off-screen rows; scroll the target into view
+      // first (ROW_HEIGHT is 20px in luna-data-grid), then retry after rAF.
+      const dataContainer = container.querySelector<HTMLElement>(
+        '.luna-data-grid-data-container'
+      )
+      if (dataContainer) {
+        const idx = filteredFileList.indexOf(target)
+        if (idx >= 0) {
+          dataContainer.scrollTop = idx * 20
+          requestAnimationFrame(() => {
+            clickMatchedRow(container, target)
+          })
+          return true
+        }
+      }
+      return false
+    }
+
+    async function deleteSelected(target: IFile) {
+      const result = await LunaModal.confirm(
+        t('deleteFileConfirm', { name: target.name })
+      )
+      if (!result) {
+        return
+      }
+      const filePath = path + target.name
+      if (target.directory) {
+        await main.deleteDir(device!.id, filePath)
+      } else {
+        await main.deleteFile(device!.id, filePath)
+      }
+      await getFiles(path)
+    }
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.ctrlKey || e.altKey || e.metaKey) {
+        return
+      }
+      const target = e.target as HTMLElement | null
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.tagName === 'SELECT' ||
+          target.isContentEditable)
+      ) {
+        return
+      }
+      if (e.key === 'Delete') {
+        const sel = selectedRef.current
+        if (!sel) {
+          return
+        }
+        e.preventDefault()
+        void deleteSelected(sel)
+        return
+      }
+      if (e.key === 'Backspace') {
+        if (!device || path === '/') {
+          return
+        }
+        e.preventDefault()
+        void up()
+        return
+      }
+      if (e.key === 'Enter') {
+        const sel = selectedRef.current
+        if (!sel || !sel.directory) {
+          return
+        }
+        e.preventDefault()
+        void open(sel)
+        return
+      }
+      const key = e.key
+      if (key.length !== 1 || !/[a-z]/i.test(key)) {
+        return
+      }
+      const lower = key.toLowerCase()
+      const len = filteredFileList.length
+      if (len === 0) {
+        return
+      }
+      // Pressing the same key repeatedly cycles to the next matching file
+      // (wrapping around at the end); a different key restarts from the top.
+      let startIdx: number
+      if (lower === lastKey && lastIdx >= 0) {
+        startIdx = lastIdx + 1
+      } else {
+        lastKey = lower
+        startIdx = 0
+      }
+      let matchIdx = -1
+      let match: IFile | undefined
+      for (let i = 0; i < len; i++) {
+        const idx = (startIdx + i) % len
+        const f = filteredFileList[idx]
+        if (f.name.toLowerCase().startsWith(lower)) {
+          match = f
+          matchIdx = idx
+          break
+        }
+      }
+      if (!match) {
+        lastIdx = -1
+        return
+      }
+      lastIdx = matchIdx
+      const container = fileListContainerRef.current
+      if (!container) {
+        return
+      }
+      if (selectFile(container, match)) {
+        e.preventDefault()
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [device, fileList, filter, path])
 
   async function getFiles(path: string) {
     if (device) {
@@ -212,6 +397,10 @@ export default observer(function File() {
           click: uploadFiles,
         },
         {
+          label: t('uploadFolder'),
+          click: uploadFolder,
+        },
+        {
           label: t('newFolder'),
           click: async () => {
             const name = await LunaModal.prompt(t('newFolderName'))
@@ -269,7 +458,34 @@ export default observer(function File() {
 
     await getFiles(path)
   }
+  async function uploadFolder(files?: string[]) {
+    if (!device) {
+      return
+    }
 
+    if (!files) {
+      const { filePaths } = await main.showOpenDialog({
+        properties: ['openDirectory', 'multiSelections'],
+      })
+      if (isEmpty(filePaths)) {
+        return
+      }
+      files = filePaths
+    }
+
+    for (let i = 0, len = files!.length; i < len; i++) {
+      const file = files![i]
+      const { name } = splitPath(file)
+      notify(t('fileUploading', { path: file }), { icon: 'info' })
+      try {
+        await main.pushFile(device.id, file, path + name)
+      } catch {
+        notify(t('uploadFileErr'), { icon: 'error' })
+      }
+    }
+
+    await getFiles(path)
+  }
   async function goCustomPath(p: string) {
     if (!endWith(p, '/')) {
       p = p + '/'
@@ -392,6 +608,7 @@ export default observer(function File() {
           <LunaSplitPane onResize={(weights) => file.set('weights', weights)}>
             <LunaSplitPaneItem minSize={400} weight={file.weights[0]}>
               <div
+                ref={fileListContainerRef}
                 onDrop={onDrop}
                 onDragEnter={() => {
                   draggingRef.current++
@@ -424,12 +641,16 @@ export default observer(function File() {
                   onDoubleClick={(e: MouseEvent, file: IFile) => open(file)}
                   onContextMenu={onContextMenu}
                   onSelect={async (file: IFile) => {
-                    const url = await main.getFileUrl(
-                      device!.id,
-                      path + file.name
-                    )
-                    setSelectedUrl(url)
                     setSelected(file)
+                    try {
+                      const url = await main.getFileUrl(
+                        device!.id,
+                        path + file.name
+                      )
+                      setSelectedUrl(url)
+                    } catch {
+                      setSelectedUrl('')
+                    }
                   }}
                   onDeselect={() => {
                     setSelectedUrl('')

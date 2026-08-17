@@ -94,6 +94,7 @@
   "dateModified": "Date Modified",
   "directory": "Directory",
   "upload": "Upload",
+  "uploadFolder": "Upload Folder",
   "fileUploading": "Uploading file {{path}}",
   "uploadFileErr": "Failed to upload file",
   "fileDownloading": "Downloading file {{path}}",

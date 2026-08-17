@@ -94,6 +94,7 @@
   "dateModified": "修改日期",
   "directory": "文件夹",
   "upload": "上传",
+  "uploadFolder": "上传文件夹",
   "fileUploading": "正在上传文件 {{path}}",
   "uploadFileErr": "上传文件失败",
   "fileDownloading": "正在下载文件 {{path}}",

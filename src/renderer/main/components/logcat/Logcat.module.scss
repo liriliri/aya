@@ -1,0 +1,231 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.toolbar {
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  height: auto;
+  min-height: 31px;
+  overflow: visible !important;
+}
+
+.search {
+  align-items: center;
+  gap: 4px;
+  flex: 1 1 240px;
+  max-width: 420px;
+  min-width: 220px;
+  height: 30px;
+}
+
+.history-field {
+  align-items: center;
+  width: 150px;
+  height: 30px;
+}
+
+.history-input {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 22px;
+}
+
+.keyword-history-input {
+  flex: 1;
+  min-width: 0;
+  width: 0;
+}
+
+.history-input-control {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: 22px;
+  padding: 2px 26px 2px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  background: var(--color-bg-container);
+  color: var(--color-text);
+  font: inherit;
+  outline: none;
+
+  &:focus {
+    border-color: var(--color-primary);
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--color-error);
+  }
+
+  &::-webkit-search-cancel-button {
+    display: none;
+  }
+}
+
+.history-input-clear {
+  position: absolute;
+  z-index: 1;
+  top: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  line-height: 18px;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--color-fill-secondary);
+    color: var(--color-text);
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--color-primary);
+  }
+}
+
+.history-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 3px);
+  left: 0;
+  width: max(100%, 220px);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  background: var(--color-bg-container);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 18%);
+  color: var(--color-text);
+}
+
+.history-items {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+}
+
+.history-item:hover,
+.history-item-active {
+  background: var(--color-fill-secondary);
+}
+
+.history-value,
+.history-delete,
+.history-clear {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.history-value {
+  flex: 1;
+  overflow: hidden;
+  padding: 5px 8px;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-delete {
+  flex: 0 0 28px;
+  align-self: stretch;
+  padding: 0;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+
+  &:hover {
+    color: var(--color-error);
+  }
+}
+
+.history-clear {
+  width: 100%;
+  padding: 6px 8px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  text-align: center;
+
+  &:hover {
+    background: var(--color-fill-secondary);
+    color: var(--color-text);
+  }
+}
+
+@media (max-width: 480px) {
+  .history-menu {
+    width: 100%;
+  }
+}
+
+.search-button {
+  height: 22px;
+  min-width: 26px;
+  padding: 0 4px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--color-fill-secondary);
+  }
+
+  &[aria-pressed='true'] {
+    border-color: var(--color-primary);
+    background: var(--color-primary-bg);
+    color: var(--color-primary);
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--color-primary);
+    outline-offset: 1px;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
+
+.search-error {
+  flex-shrink: 0;
+  padding: 4px 8px;
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+  font-size: 12px;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+
+  :global(mark[data-logcat-search]) {
+    padding: 0;
+    border-radius: 2px;
+    background: #ffe58f;
+    color: #262626;
+  }
+}
+
+:global(.-theme-with-dark-background) .body :global(mark[data-logcat-search]) {
+  background: #d4b106;
+  color: #141414;
+}

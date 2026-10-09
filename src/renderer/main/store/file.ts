@@ -1,9 +1,16 @@
 import { action, makeObservable, observable, runInAction, toJS } from 'mobx'
 import extend from 'licia/extend'
-import { TransferType } from 'common/types'
+import { IFile, TransferType } from 'common/types'
 import filter from 'licia/filter'
 import now from 'licia/now'
 import splitPath from 'licia/splitPath'
+
+export interface IFileClipboard {
+  action: 'copy' | 'cut'
+  file: IFile
+  srcPath: string
+  parentPath: string
+}
 
 export class File {
   listView = false
@@ -12,6 +19,7 @@ export class File {
   weights = [70, 30]
   transferWeight = 30
   transfers: Transfer[] = []
+  clipboard: IFileClipboard | null = null
   constructor() {
     makeObservable(this, {
       listView: observable,
@@ -20,6 +28,8 @@ export class File {
       transferWeight: observable,
       transfers: observable,
       weights: observable,
+      clipboard: observable,
+      setClipboard: action,
     })
 
     this.init()
@@ -42,6 +52,9 @@ export class File {
       showPreview: this.showPreview,
       weights: toJS(this.weights),
     })
+  }
+  setClipboard(clipboard: IFileClipboard | null) {
+    this.clipboard = clipboard
   }
   private bindEvent() {
     main.on('startTransfer', (id, type, src, dest, size) => {

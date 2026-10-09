@@ -66,6 +66,8 @@ export interface IProcess {
 export enum TransferType {
   Upload,
   Download,
+  Copy,
+  Move,
 }
 
 export type IpcGetFps = (deviceId: string, pkg: string) => Promise<number>
@@ -125,6 +127,7 @@ export type IpcMoveFile = (
   src: string,
   dest: string
 ) => Promise<void>
+export type IpcCopyFile = IpcMoveFile
 export type IpcStatFile = (deviceId: string, path: string) => Promise<IFileStat>
 export type IpcReadDir = (deviceId: string, path: string) => Promise<IFile[]>
 export type IpcCreateDir = (deviceId: string, path: string) => Promise<void>

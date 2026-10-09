@@ -19,6 +19,13 @@
   background: var(--color-primary-bg);
 }
 
+.cut-item,
+.cutItem {
+  opacity: 0.45;
+  filter: grayscale(0.4);
+  transition: opacity 0.2s ease;
+}
+
 .transfer {
   border-top: 1px solid var(--color-border);
 }

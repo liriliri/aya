@@ -11,6 +11,22 @@ module.exports = tseslint.config(
   ...tseslint.configs.recommended,
   eslintConfigPrettier,
   {
+    files: ['eslint.config.js'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
+  {
+    files: ['script/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        $: 'readonly',
+        cd: 'readonly',
+        fs: 'readonly',
+      },
+    },
+  },
+  {
     languageOptions: {
       globals: {
         ...globals.node,

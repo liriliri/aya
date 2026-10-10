@@ -5,7 +5,6 @@ import DomViewer from 'luna-dom-viewer'
 import store from '../../store'
 import contain from 'licia/contain'
 import { JSX, useEffect, useRef, useState } from 'react'
-import uuid from 'licia/uuid'
 import xpath from 'licia/xpath'
 import copy from 'licia/copy'
 import { Document, Element } from '@xmldom/xmldom'
@@ -23,10 +22,10 @@ interface IProps {
 
 export default observer(function Tree(props: IProps) {
   const treeRef = useRef<HTMLDivElement>(null)
-  const [key, setKey] = useState(uuid())
+  const [key, setKey] = useState(globalThis.crypto.randomUUID())
 
   useEffect(() => {
-    setKey(uuid())
+    setKey(globalThis.crypto.randomUUID())
   }, [props.hierarchy])
 
   const path = props.selected

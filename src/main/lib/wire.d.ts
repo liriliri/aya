@@ -1,5 +1,6 @@
 import * as $protobuf from "protobufjs";
 import Long = require("long");
+
 /** Namespace io. */
 export namespace io {
 
@@ -9,43 +10,41 @@ export namespace io {
         /** Namespace aya. */
         namespace aya {
 
-            /** Properties of a Request. */
-            interface IRequest {
-
-                /** Request id */
-                id?: (string|null);
-
-                /** Request method */
-                method?: (string|null);
-
-                /** Request params */
-                params?: (string|null);
+            /**
+             * Properties of a Request.
+             * @deprecated Use io.liriliri.aya.Request.$Properties instead.
+             */
+            interface IRequest extends io.liriliri.aya.Request.$Properties {
             }
 
             /** Represents a Request. */
-            class Request implements IRequest {
+            class Request {
 
                 /**
                  * Constructs a new Request.
                  * @param [properties] Properties to set
                  */
-                constructor(properties?: io.liriliri.aya.IRequest);
+                constructor(properties?: io.liriliri.aya.Request.$Properties);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
 
                 /** Request id. */
-                public id: string;
+                id: string;
 
                 /** Request method. */
-                public method: string;
+                method: string;
 
                 /** Request params. */
-                public params: string;
+                params: string;
 
                 /**
                  * Creates a new Request instance using the specified properties.
                  * @param [properties] Properties to set
                  * @returns Request instance
                  */
-                public static create(properties?: io.liriliri.aya.IRequest): io.liriliri.aya.Request;
+                static create(properties: io.liriliri.aya.Request.$Shape): io.liriliri.aya.Request & io.liriliri.aya.Request.$Shape;
+                static create(properties?: io.liriliri.aya.Request.$Properties): io.liriliri.aya.Request;
 
                 /**
                  * Encodes the specified Request message. Does not implicitly {@link io.liriliri.aya.Request.verify|verify} messages.
@@ -53,7 +52,7 @@ export namespace io {
                  * @param [writer] Writer to encode to
                  * @returns Writer
                  */
-                public static encode(message: io.liriliri.aya.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                static encode(message: io.liriliri.aya.Request.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
 
                 /**
                  * Encodes the specified Request message, length delimited. Does not implicitly {@link io.liriliri.aya.Request.verify|verify} messages.
@@ -61,40 +60,40 @@ export namespace io {
                  * @param [writer] Writer to encode to
                  * @returns Writer
                  */
-                public static encodeDelimited(message: io.liriliri.aya.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                static encodeDelimited(message: io.liriliri.aya.Request.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
 
                 /**
                  * Decodes a Request message from the specified reader or buffer.
                  * @param reader Reader or buffer to decode from
                  * @param [length] Message length if known beforehand
-                 * @returns Request
+                 * @returns {io.liriliri.aya.Request & io.liriliri.aya.Request.$Shape} Request
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): io.liriliri.aya.Request;
+                static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): io.liriliri.aya.Request & io.liriliri.aya.Request.$Shape;
 
                 /**
                  * Decodes a Request message from the specified reader or buffer, length delimited.
                  * @param reader Reader or buffer to decode from
-                 * @returns Request
+                 * @returns {io.liriliri.aya.Request & io.liriliri.aya.Request.$Shape} Request
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): io.liriliri.aya.Request;
+                static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): io.liriliri.aya.Request & io.liriliri.aya.Request.$Shape;
 
                 /**
                  * Verifies a Request message.
                  * @param message Plain object to verify
                  * @returns `null` if valid, otherwise the reason why it is not
                  */
-                public static verify(message: { [k: string]: any }): (string|null);
+                static verify(message: { [k: string]: any }): (string|null);
 
                 /**
                  * Creates a Request message from a plain object. Also converts values to their respective internal types.
                  * @param object Plain object
                  * @returns Request
                  */
-                public static fromObject(object: { [k: string]: any }): io.liriliri.aya.Request;
+                static fromObject(object: { [k: string]: any }): io.liriliri.aya.Request;
 
                 /**
                  * Creates a plain object from a Request message. Also converts values to other types if specified.
@@ -102,53 +101,76 @@ export namespace io {
                  * @param [options] Conversion options
                  * @returns Plain object
                  */
-                public static toObject(message: io.liriliri.aya.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                static toObject(message: io.liriliri.aya.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
                 /**
                  * Converts this Request to JSON.
                  * @returns JSON object
                  */
-                public toJSON(): { [k: string]: any };
+                toJSON(): { [k: string]: any };
 
                 /**
-                 * Gets the default type url for Request
-                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-                 * @returns The default type url
+                 * Gets the type url for Request
+                 * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+                 * @returns The type url
                  */
-                public static getTypeUrl(typeUrlPrefix?: string): string;
+                static getTypeUrl(prefix?: string): string;
             }
 
-            /** Properties of a Response. */
-            interface IResponse {
+            namespace Request {
 
-                /** Response id */
-                id?: (string|null);
+                /** Properties of a Request. */
+                interface $Properties {
 
-                /** Response result */
-                result?: (string|null);
+                    /** Request id */
+                    id?: (string|null);
+
+                    /** Request method */
+                    method?: (string|null);
+
+                    /** Request params */
+                    params?: (string|null);
+
+                    /** Unknown fields preserved while decoding when enabled */
+                    $unknowns?: Uint8Array[];
+                }
+
+                /** Shape of a Request. */
+                type $Shape = io.liriliri.aya.Request.$Properties;
+            }
+
+            /**
+             * Properties of a Response.
+             * @deprecated Use io.liriliri.aya.Response.$Properties instead.
+             */
+            interface IResponse extends io.liriliri.aya.Response.$Properties {
             }
 
             /** Represents a Response. */
-            class Response implements IResponse {
+            class Response {
 
                 /**
                  * Constructs a new Response.
                  * @param [properties] Properties to set
                  */
-                constructor(properties?: io.liriliri.aya.IResponse);
+                constructor(properties?: io.liriliri.aya.Response.$Properties);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
 
                 /** Response id. */
-                public id: string;
+                id: string;
 
                 /** Response result. */
-                public result: string;
+                result: string;
 
                 /**
                  * Creates a new Response instance using the specified properties.
                  * @param [properties] Properties to set
                  * @returns Response instance
                  */
-                public static create(properties?: io.liriliri.aya.IResponse): io.liriliri.aya.Response;
+                static create(properties: io.liriliri.aya.Response.$Shape): io.liriliri.aya.Response & io.liriliri.aya.Response.$Shape;
+                static create(properties?: io.liriliri.aya.Response.$Properties): io.liriliri.aya.Response;
 
                 /**
                  * Encodes the specified Response message. Does not implicitly {@link io.liriliri.aya.Response.verify|verify} messages.
@@ -156,7 +178,7 @@ export namespace io {
                  * @param [writer] Writer to encode to
                  * @returns Writer
                  */
-                public static encode(message: io.liriliri.aya.IResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+                static encode(message: io.liriliri.aya.Response.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
 
                 /**
                  * Encodes the specified Response message, length delimited. Does not implicitly {@link io.liriliri.aya.Response.verify|verify} messages.
@@ -164,40 +186,40 @@ export namespace io {
                  * @param [writer] Writer to encode to
                  * @returns Writer
                  */
-                public static encodeDelimited(message: io.liriliri.aya.IResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+                static encodeDelimited(message: io.liriliri.aya.Response.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
 
                 /**
                  * Decodes a Response message from the specified reader or buffer.
                  * @param reader Reader or buffer to decode from
                  * @param [length] Message length if known beforehand
-                 * @returns Response
+                 * @returns {io.liriliri.aya.Response & io.liriliri.aya.Response.$Shape} Response
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): io.liriliri.aya.Response;
+                static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): io.liriliri.aya.Response & io.liriliri.aya.Response.$Shape;
 
                 /**
                  * Decodes a Response message from the specified reader or buffer, length delimited.
                  * @param reader Reader or buffer to decode from
-                 * @returns Response
+                 * @returns {io.liriliri.aya.Response & io.liriliri.aya.Response.$Shape} Response
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): io.liriliri.aya.Response;
+                static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): io.liriliri.aya.Response & io.liriliri.aya.Response.$Shape;
 
                 /**
                  * Verifies a Response message.
                  * @param message Plain object to verify
                  * @returns `null` if valid, otherwise the reason why it is not
                  */
-                public static verify(message: { [k: string]: any }): (string|null);
+                static verify(message: { [k: string]: any }): (string|null);
 
                 /**
                  * Creates a Response message from a plain object. Also converts values to their respective internal types.
                  * @param object Plain object
                  * @returns Response
                  */
-                public static fromObject(object: { [k: string]: any }): io.liriliri.aya.Response;
+                static fromObject(object: { [k: string]: any }): io.liriliri.aya.Response;
 
                 /**
                  * Creates a plain object from a Response message. Also converts values to other types if specified.
@@ -205,20 +227,39 @@ export namespace io {
                  * @param [options] Conversion options
                  * @returns Plain object
                  */
-                public static toObject(message: io.liriliri.aya.Response, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                static toObject(message: io.liriliri.aya.Response, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
                 /**
                  * Converts this Response to JSON.
                  * @returns JSON object
                  */
-                public toJSON(): { [k: string]: any };
+                toJSON(): { [k: string]: any };
 
                 /**
-                 * Gets the default type url for Response
-                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-                 * @returns The default type url
+                 * Gets the type url for Response
+                 * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+                 * @returns The type url
                  */
-                public static getTypeUrl(typeUrlPrefix?: string): string;
+                static getTypeUrl(prefix?: string): string;
+            }
+
+            namespace Response {
+
+                /** Properties of a Response. */
+                interface $Properties {
+
+                    /** Response id */
+                    id?: (string|null);
+
+                    /** Response result */
+                    result?: (string|null);
+
+                    /** Unknown fields preserved while decoding when enabled */
+                    $unknowns?: Uint8Array[];
+                }
+
+                /** Shape of a Response. */
+                type $Shape = io.liriliri.aya.Response.$Properties;
             }
         }
     }

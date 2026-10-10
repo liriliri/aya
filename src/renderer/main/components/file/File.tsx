@@ -135,7 +135,7 @@ export default observer(function File() {
     main.openFile(device.id, path + file.name)
   }
 
-  function onContextMenu(e: MouseEvent, file?: IFile) {
+  function onContextMenu(e: PointerEvent, file?: IFile) {
     if (!device) {
       return
     }
@@ -421,9 +421,27 @@ export default observer(function File() {
                   filter={filter}
                   columns={['name', 'mode', 'mtime', 'type', 'size']}
                   listView={file.listView}
-                  onDoubleClick={(e: MouseEvent, file: IFile) => open(file)}
-                  onContextMenu={onContextMenu}
-                  onSelect={async (file: IFile) => {
+                  onDoubleClick={(e, selection) => {
+                    const file = Array.isArray(selection)
+                      ? selection[0]
+                      : selection
+                    if (file) {
+                      open(file)
+                    }
+                  }}
+                  onContextMenu={(e, selection) => {
+                    onContextMenu(
+                      e,
+                      Array.isArray(selection) ? selection[0] : selection
+                    )
+                  }}
+                  onSelect={async (selection) => {
+                    const file = Array.isArray(selection)
+                      ? selection[0]
+                      : selection
+                    if (!file) {
+                      return
+                    }
                     const url = await main.getFileUrl(
                       device!.id,
                       path + file.name

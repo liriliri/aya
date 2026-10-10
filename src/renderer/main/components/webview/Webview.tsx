@@ -128,7 +128,10 @@ export default observer(function Webview() {
         />
       </LunaToolbar>
       <LunaDataGrid
-        onSelect={async (node) => setSelected(node.data as any)}
+        onSelect={async (selection) => {
+          const node = Array.isArray(selection) ? selection[0] : selection
+          setSelected(node?.data as any)
+        }}
         onDeselect={() => setSelected(null)}
         className={Style.webviews}
         filter={filter}

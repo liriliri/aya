@@ -15,7 +15,7 @@ interface IProps {
 }
 
 export default observer(function Detail(props: IProps) {
-  let content: JSX.Element | null = null
+  let content: JSX.Element
 
   const { selected } = props
 

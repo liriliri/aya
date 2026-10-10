@@ -1,5 +1,4 @@
 import types from 'licia/types'
-import uuid from 'licia/uuid'
 import { Client } from '@devicefarmer/adbkit'
 import { handleEvent, resolveResources } from 'share/main/lib/util'
 import singleton from 'licia/singleton'
@@ -35,7 +34,7 @@ class AyaClient {
       await this.connect()
     }
 
-    const id = uuid()
+    const id = globalThis.crypto.randomUUID()
 
     this.socket.write(
       wire.io.liriliri.aya.Request.encodeDelimited({

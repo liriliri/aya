@@ -30,10 +30,18 @@ export default observer(function AvdManager() {
     <div className={Style.container}>
       <LunaDataGrid
         className={Style.avds}
-        onSelect={(node) => store.selectAvd(node.data.id as string)}
+        onSelect={(selection) => {
+          const node = Array.isArray(selection) ? selection[0] : selection
+          if (node) {
+            store.selectAvd(node.data.id as string)
+          }
+        }}
         onDeselect={() => store.selectAvd(null)}
         onDoubleClick={(e, node) => {
-          main.startAvd(node.data.id as string)
+          const selected = Array.isArray(node) ? node[0] : node
+          if (selected) {
+            main.startAvd(selected.data.id as string)
+          }
         }}
         data={avds}
         columns={columns}

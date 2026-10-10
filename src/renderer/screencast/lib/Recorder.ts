@@ -7,7 +7,16 @@ import {
   ScrcpyVideoCodecId,
   ScrcpyVideoStreamMetadata,
 } from '@yume-chan/scrcpy'
-import { ArrayBufferTarget, Muxer as WebMMuxer } from 'webm-muxer'
+import {
+  AudioCodec,
+  BufferTarget,
+  EncodedAudioPacketSource,
+  EncodedPacket,
+  EncodedVideoPacketSource,
+  MkvOutputFormat,
+  Output,
+  VideoCodec,
+} from 'mediabunny'
 import log from 'share/common/log'
 
 const logger = log('Recorder')
@@ -61,16 +70,16 @@ function h264StreamToAvcSample(buffer: Uint8Array) {
 }
 
 // https://github.com/FFmpeg/FFmpeg/blob/adb5f7b41faf354a3e0bf722f44aeb230aefa310/libavformat/matroska.c
-const MatroskaVideoCodecNameMap: Record<ScrcpyVideoCodecId, string> = {
-  [ScrcpyVideoCodecId.H264]: 'V_MPEG4/ISO/AVC',
-  [ScrcpyVideoCodecId.H265]: 'V_MPEGH/ISO/HEVC',
-  [ScrcpyVideoCodecId.AV1]: 'V_AV1',
+const MatroskaVideoCodecNameMap: Record<ScrcpyVideoCodecId, VideoCodec> = {
+  [ScrcpyVideoCodecId.H264]: 'avc',
+  [ScrcpyVideoCodecId.H265]: 'hevc',
+  [ScrcpyVideoCodecId.AV1]: 'av1',
 }
 
-const MatroskaAudioCodecNameMap: Record<string, string> = {
-  [ScrcpyAudioCodec.Raw.mimeType]: 'A_PCM/INT/LIT',
-  [ScrcpyAudioCodec.Aac.mimeType]: 'A_AAC',
-  [ScrcpyAudioCodec.Opus.mimeType]: 'A_OPUS',
+const MatroskaAudioCodecNameMap: Record<string, AudioCodec> = {
+  [ScrcpyAudioCodec.Raw.mimeType]: 'pcm-s16',
+  [ScrcpyAudioCodec.Aac.mimeType]: 'aac',
+  [ScrcpyAudioCodec.Opus.mimeType]: 'opus',
 }
 
 // https://github.com/tango-adb/old-demo/blob/main/packages/demo/src/components/scrcpy/recorder.ts
@@ -78,52 +87,88 @@ export default class Recorder {
   running = false
   videoMetadata?: ScrcpyVideoStreamMetadata
   audioCodec?: ScrcpyAudioCodec
-  private muxer?: WebMMuxer<ArrayBufferTarget>
+  private output?: Output<MkvOutputFormat, BufferTarget>
+  private videoSource?: EncodedVideoPacketSource
+  private audioSource?: EncodedAudioPacketSource
+  private outputReady?: Promise<void>
+  private writeQueue: Promise<void> = Promise.resolve()
   private videoCodecDescription?: Uint8Array
+  private videoCodecString?: string
   private configurationWritten = false
+  private audioConfigurationWritten = false
   private _firstTimestamp = -1
+  private pendingVideo?: {
+    data: Uint8Array
+    type: 'key' | 'delta'
+    timestamp: number
+  }
+  private pendingAudio?: { data: Uint8Array; timestamp: number }
+  private lastVideoDuration = 1 / 30
+  private lastAudioDuration = 1024 / 48000
+
   start() {
     if (!this.videoMetadata) {
       throw new Error('videoMetadata must be set')
     }
 
     this.running = true
+    this.writeQueue = Promise.resolve()
+    this.configurationWritten = false
+    this.audioConfigurationWritten = false
+    this._firstTimestamp = -1
+    this.pendingVideo = undefined
+    this.pendingAudio = undefined
+    this.lastVideoDuration = 1 / 30
+    this.lastAudioDuration = 1024 / 48000
 
-    const options: ConstructorParameters<typeof WebMMuxer>[0] = {
-      target: new ArrayBufferTarget(),
-      type: 'matroska',
-      firstTimestampBehavior: 'permissive',
-      video: {
-        codec: MatroskaVideoCodecNameMap[this.videoMetadata.codec!],
-        width: this.videoMetadata.width ?? 0,
-        height: this.videoMetadata.height ?? 0,
-      },
-    }
+    const target = new BufferTarget()
+    const output = new Output({ format: new MkvOutputFormat(), target })
+    const videoSource = new EncodedVideoPacketSource(
+      MatroskaVideoCodecNameMap[this.videoMetadata.codec]
+    )
+    output.addVideoTrack(videoSource)
+    this.output = output
+    this.videoSource = videoSource
 
     if (this.audioCodec) {
-      options.audio = {
-        codec: MatroskaAudioCodecNameMap[this.audioCodec.mimeType!],
-        sampleRate: 48000,
-        numberOfChannels: 2,
-        bitDepth: this.audioCodec === ScrcpyAudioCodec.Raw ? 16 : undefined,
-      }
+      const audioSource = new EncodedAudioPacketSource(
+        MatroskaAudioCodecNameMap[this.audioCodec.mimeType]
+      )
+      output.addAudioTrack(audioSource)
+      this.audioSource = audioSource
     }
 
-    this.muxer = new WebMMuxer(options as any)
+    this.outputReady = output.start()
   }
-  stop() {
-    if (!this.muxer) {
+  async stop() {
+    const output = this.output
+    if (!output) {
       return
     }
 
-    this.muxer.finalize()!
-    const buf = this.muxer.target.buffer
+    if (this.pendingVideo) {
+      this.enqueueVideoPacket(this.pendingVideo, this.lastVideoDuration)
+    }
+    if (this.pendingAudio) {
+      this.enqueueAudioPacket(this.pendingAudio, this.lastAudioDuration)
+    }
 
-    this.muxer = undefined
+    await this.writeQueue
+    await output.finalize()
+    const buf = output.target.buffer ?? undefined
+
+    this.output = undefined
+    this.videoSource = undefined
+    this.audioSource = undefined
+    this.outputReady = undefined
     this.videoCodecDescription = undefined
+    this.videoCodecString = undefined
     this.configurationWritten = false
+    this.audioConfigurationWritten = false
     this.running = false
     this._firstTimestamp = -1
+    this.pendingVideo = undefined
+    this.pendingAudio = undefined
 
     return buf
   }
@@ -143,56 +188,134 @@ export default class Recorder {
               sequenceParameterSet,
               pictureParameterSet
             )
+          this.videoCodecString = `avc1.${Array.from(
+            this.videoCodecDescription.subarray(1, 4),
+            (byte) => byte.toString(16).padStart(2, '0')
+          ).join('')}`
           this.configurationWritten = false
           break
       }
       return
     }
 
-    if (!this.muxer) {
+    if (!this.videoSource || packet.pts === undefined) {
       return
     }
 
-    this.addVideoChunk(packet)
+    const packetTimestamp = Number(packet.pts)
+    if (this._firstTimestamp === -1) {
+      this._firstTimestamp = packetTimestamp
+    }
+    const timestamp = (packetTimestamp - this._firstTimestamp) / 1_000_000
+    const currentPacket = {
+      data: h264StreamToAvcSample(packet.data),
+      type: packet.keyframe ? ('key' as const) : ('delta' as const),
+      timestamp,
+    }
+
+    if (this.pendingVideo) {
+      const duration = timestamp - this.pendingVideo.timestamp
+      if (duration > 0 && duration < 1) {
+        this.lastVideoDuration = duration
+      }
+      this.enqueueVideoPacket(
+        this.pendingVideo,
+        duration > 0 ? duration : this.lastVideoDuration
+      )
+    }
+    this.pendingVideo = currentPacket
   }
   addAudioPacket(packet: ScrcpyMediaStreamDataPacket) {
-    this.addAudioChunk(packet)
-  }
-  private addVideoChunk(packet: ScrcpyMediaStreamDataPacket) {
-    if (this._firstTimestamp === -1) {
-      this._firstTimestamp = Number(packet.pts!)
-    }
-
-    const sample = h264StreamToAvcSample(packet.data)
-    this.muxer!.addVideoChunkRaw(
-      sample,
-      packet.keyframe ? 'key' : 'delta',
-      Number(packet.pts) - this._firstTimestamp,
-      this.configurationWritten
-        ? undefined
-        : {
-            decoderConfig: {
-              codec: '',
-              description: this.videoCodecDescription,
-            },
-          }
-    )
-    this.configurationWritten = true
-  }
-  private addAudioChunk(chunk: ScrcpyMediaStreamDataPacket) {
-    if (this._firstTimestamp === -1) {
+    if (!this.audioSource || packet.pts === undefined || this._firstTimestamp === -1) {
       return
     }
 
-    const timestamp = Number(chunk.pts) - this._firstTimestamp
+    const timestamp = (Number(packet.pts) - this._firstTimestamp) / 1_000_000
     if (timestamp < 0) {
       return
     }
 
-    if (!this.muxer) {
-      return
+    const currentPacket = { data: packet.data, timestamp }
+    if (this.pendingAudio) {
+      const duration = timestamp - this.pendingAudio.timestamp
+      if (duration > 0 && duration < 1) {
+        this.lastAudioDuration = duration
+      }
+      this.enqueueAudioPacket(
+        this.pendingAudio,
+        duration > 0 ? duration : this.lastAudioDuration
+      )
     }
 
-    this.muxer.addAudioChunkRaw(chunk.data, 'key', timestamp)
+    this.pendingAudio = currentPacket
+  }
+
+  private enqueueVideoPacket(
+    packet: { data: Uint8Array; type: 'key' | 'delta'; timestamp: number },
+    duration: number
+  ) {
+    const source = this.videoSource
+    if (!source) {
+      return
+    }
+    const metadata = this.configurationWritten || !this.videoCodecDescription
+      ? undefined
+      : {
+          decoderConfig: {
+            codec: this.videoCodecString!,
+            codedWidth: this.videoMetadata?.width,
+            codedHeight: this.videoMetadata?.height,
+            description: this.videoCodecDescription,
+          },
+        }
+    this.configurationWritten = true
+    this.enqueueWrite(() =>
+      source.add(
+        new EncodedPacket(
+          packet.data,
+          packet.type,
+          packet.timestamp,
+          duration
+        ),
+        metadata
+      )
+    )
+  }
+
+  private enqueueAudioPacket(
+    packet: { data: Uint8Array; timestamp: number },
+    duration: number
+  ) {
+    const source = this.audioSource
+    if (!source || !this.audioCodec) {
+      return
+    }
+    const metadata = this.audioConfigurationWritten
+      ? undefined
+      : {
+          decoderConfig: {
+            codec: this.audioCodec.webCodecId,
+            sampleRate: 48000,
+            numberOfChannels: 2,
+          },
+        }
+    this.audioConfigurationWritten = true
+    this.enqueueWrite(() =>
+      source.add(
+        new EncodedPacket(packet.data, 'key', packet.timestamp, duration),
+        metadata
+      )
+    )
+  }
+
+  private enqueueWrite(write: () => Promise<void>) {
+    this.writeQueue = this.writeQueue
+      .then(async () => {
+        await this.outputReady
+        await write()
+      })
+      .catch((error) => {
+        logger.error(error)
+      })
   }
 }

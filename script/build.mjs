@@ -22,4 +22,4 @@ await fs.writeJson('package.json', pkg, {
   spaces: 2,
 })
 
-await $`npm i --production`
+await $`npm i --omit=dev`

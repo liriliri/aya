@@ -1,6 +1,7 @@
+import com.android.build.api.artifact.SingleArtifact
+
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
     id 'com.google.protobuf'
 }
 
@@ -12,7 +13,11 @@ dependencies {
 android {
     namespace 'io.liriliri.aya'
 
-    compileSdk = 34
+    compileSdk = 36
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     def pkgFilePath = "$rootDir/../package.json"
     def pkgFile = new File(pkgFilePath)
@@ -31,30 +36,36 @@ android {
         }
     }
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
-android.applicationVariants.all { variant ->
-    variant.outputs.all {
-        outputFileName = "aya-server-v${versionName}.apk"
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.outputs.each { output ->
+            output.outputFileName.set("aya-server-v${output.versionName.get()}.apk")
+        }
 
-        def dexPath = rootProject.rootDir.path
-        variant.assembleProvider.get().doLast {
-            copy {
-                def file = zipTree(file(outputFile)).matching { include 'classes*.dex' }.singleFile
+        def apkDirectory = variant.artifacts.get(SingleArtifact.APK.INSTANCE)
+        def extractDex = tasks.register("extract${variant.name.capitalize()}Dex") {
+            inputs.dir(apkDirectory)
+            outputs.file(rootProject.file('aya.dex'))
 
-                from file
-                into dexPath
-                rename { String fileName ->
-                    fileName.replace(file.getName(), "aya.dex")
+            doLast {
+                def apk = fileTree(apkDirectory.get().asFile) { include '*.apk' }.singleFile
+                copy {
+                    from zipTree(apk).matching { include 'classes.dex' }
+                    into rootProject.rootDir
+                    rename { 'aya.dex' }
                 }
+            }
+        }
+
+        tasks.configureEach {
+            if (name == "assemble${variant.name.capitalize()}") {
+                finalizedBy(extractDex)
             }
         }
     }

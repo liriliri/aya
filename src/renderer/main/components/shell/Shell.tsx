@@ -8,7 +8,6 @@ import store from '../../store'
 import Style from './Shell.module.scss'
 import className from 'licia/className'
 import { useEffect, useRef, useState } from 'react'
-import uuid from 'licia/uuid'
 import map from 'licia/map'
 import filter from 'licia/filter'
 import LunaCommandPalette from 'luna-command-palette/react'
@@ -38,7 +37,7 @@ export default observer(function Shell() {
   useEffect(() => add(), [])
 
   function add() {
-    const id = uuid()
+    const id = globalThis.crypto.randomUUID()
     const shell = {
       id,
       name: `${t('shell')} ${numRef.current++}`,

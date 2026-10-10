@@ -51,11 +51,11 @@ export default class ScrcpyClient extends Emitter {
   private video: any
   private audio: any
   private control: any
-  private options: ScrcpyOptions3_1
+  private options: ScrcpyOptions3_1<true>
   private readiness = new Readiness()
   private recorder = new Recorder()
   private keyboard = new Keyboard(this)
-  constructor(deviceId: string, options: ScrcpyOptions3_1) {
+  constructor(deviceId: string, options: ScrcpyOptions3_1<true>) {
     super()
 
     this.options = options
@@ -87,7 +87,7 @@ export default class ScrcpyClient extends Emitter {
     this.recorder.start()
   }
   async stopRecording() {
-    const buf = this.recorder.stop()
+    const buf = await this.recorder.stop()
     if (buf) {
       const { canceled, filePath } = await main.showSaveDialog({
         defaultPath: `recording-${dateFormat('yyyymmddHHMM')}.mkv`,
@@ -339,8 +339,8 @@ export default class ScrcpyClient extends Emitter {
     const pointerY = percentageY * screenHeight
 
     return {
-      screenWidth,
-      screenHeight,
+      videoWidth: screenWidth,
+      videoHeight: screenHeight,
       pointerX,
       pointerY,
     }
@@ -484,13 +484,13 @@ export default class ScrcpyClient extends Emitter {
           const result = await buffered.readExactly(1)
           type = result[0]!
         } catch {
-          this.options.endDeviceMessageStream()
+          this.options.deviceMessageParsers.close()
           break
         }
-        await this.options.parseDeviceMessage(type, buffered)
+        await this.options.deviceMessageParsers.parse(type, buffered)
       }
     } catch (e) {
-      this.options.endDeviceMessageStream(e)
+      this.options.deviceMessageParsers.error(e)
       buffered.cancel(e).catch(() => {})
     }
   }

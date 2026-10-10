@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, macos-13, ubuntu-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v4
@@ -18,15 +18,18 @@ jobs:
         submodules: true
     - uses: actions/setup-node@v4
       with:
-        node-version: '18.x'
+        node-version: '24.x'
     - uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
-    - uses: android-actions/setup-android@v3
-    - if: matrix.os == 'ubuntu'
+    - uses: android-actions/setup-android@v4
+      with:
+        accept-android-sdk-licenses: true
+        packages: 'platform-tools platforms;android-36'
+    - if: startsWith(matrix.os, 'ubuntu')
       run: |
-        sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils
+        sudo apt-get update && sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick squashfs-tools xz-utils libarchive-tools
     - run: |
         npm i
         npm run adb
@@ -40,12 +43,21 @@ jobs:
         APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         CSC_LINK: ${{ secrets.CSC_LINK }}
         CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}  
-    - uses: actions/upload-artifact@v4
+    - if: startsWith(matrix.os, 'ubuntu')
+      name: Build Arch pacman package
+      run: npm run pack:pacman
+    - if: startsWith(matrix.os, 'ubuntu')
+      name: Rebuild AppImage with latest appimagetool
+      run: npm run repack:appimage
+    - if: always()
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.os }}
         path: |
           release/**/*.dmg
           release/**/*.exe
           release/**/*.AppImage
+          release/**/*.pkg.tar.zst
+          release/**/*.pacman
           release/**/*-lates*.yml
           !release/**/win-unpacked/

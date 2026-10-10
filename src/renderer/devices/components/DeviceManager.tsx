@@ -32,15 +32,21 @@ export default observer(function DeviceManager() {
     <div ref={containerRef} className={Style.container}>
       <LunaDataGrid
         className={Style.devices}
-        onSelect={(node) => store.selectDevice(node.data.id as string)}
+        onSelect={(selection) => {
+          const node = Array.isArray(selection) ? selection[0] : selection
+          if (node) {
+            store.selectDevice(node.data.id as string)
+          }
+        }}
         onDeselect={() => store.selectDevice(null)}
         columns={columns}
         data={devices}
         selectable={true}
         filter={store.filter}
         onDoubleClick={(e, node) => {
-          if (node.data.type !== 'offline') {
-            main.sendToWindow('main', 'selectDevice', node.data.id)
+          const selected = Array.isArray(node) ? node[0] : node
+          if (selected && selected.data.type !== 'offline') {
+            main.sendToWindow('main', 'selectDevice', selected.data.id)
           }
         }}
         uniqueId="id"

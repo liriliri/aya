@@ -3,10 +3,18 @@
     .luna-data-grid-data-container {
       .luna-data-grid-node.luna-data-grid-selected,
       .luna-data-grid-node.luna-data-grid-selectable:hover {
-        background-color: if($class == ':root', #ddd, #393939);
+        @if $class == ':root' {
+          background-color: #ddd;
+        } @else {
+          background-color: #393939;
+        }
       }
       tr:nth-child(even) {
-        background-color: if($class == ':root', #ededed, #1e1e1e);
+        @if $class == ':root' {
+          background-color: #ededed;
+        } @else {
+          background-color: #1e1e1e;
+        }
       }
     }
     .luna-data-grid:focus {

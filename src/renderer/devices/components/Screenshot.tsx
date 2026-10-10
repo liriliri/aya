@@ -9,12 +9,10 @@ import { LoadingBar } from 'share/renderer/components/loading'
 export default observer(function Screenshot() {
   const containerRef = useRef<HTMLDivElement>(null)
 
-  let body: JSX.Element | null = null
-
-  if (store.device && store.screenshot) {
-    body = <LunaImageViewer image={store.screenshot} />
-  } else {
-    body = (
+  const body: JSX.Element =
+    store.device && store.screenshot ? (
+      <LunaImageViewer image={store.screenshot} />
+    ) : (
       <div className={Style.noScreenshot}>
         {store.device && store.device.type !== 'offline' ? (
           <LoadingBar />
@@ -23,7 +21,6 @@ export default observer(function Screenshot() {
         )}
       </div>
     )
-  }
 
   return (
     <div className={Style.container} ref={containerRef}>

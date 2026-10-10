@@ -308,13 +308,22 @@ export default observer(function Application() {
             store.application.set('dataGridColumns', jsonClone(columns))
           }}
           onClick={(e: any, node) => {
-            showInfo((node.data as any).packageName)
+            const selected = Array.isArray(node) ? node[0] : node
+            if (selected) {
+              showInfo((selected.data as any).packageName)
+            }
           }}
           onDoubleClick={(e: any, node) => {
-            open((node.data as any).packageName)
+            const selected = Array.isArray(node) ? node[0] : node
+            if (selected) {
+              open((selected.data as any).packageName)
+            }
           }}
           onContextMenu={(e: any, node) => {
-            onContextMenu(e, (node.data as any).info)
+            const selected = Array.isArray(node) ? node[0] : node
+            if (selected) {
+              onContextMenu(e, (selected.data as any).info)
+            }
           }}
           headerContextMenu={true}
           filter={filter}
@@ -362,12 +371,19 @@ export default observer(function Application() {
           size={store.application.itemSize}
           filter={filter}
           onClick={(e: any, icon) => {
-            const info = (icon.data as any).info
-            showInfo(info.packageName)
+            const selected = Array.isArray(icon) ? icon[0] : icon
+            if (selected) {
+              const info = (selected.data as any).info
+              showInfo(info.packageName)
+            }
           }}
           onDoubleClick={(e: any, icon) => {
-            const info = (icon.data as any).info
-            const container: HTMLElement = icon.container
+            const selected = Array.isArray(icon) ? icon[0] : icon
+            if (!selected) {
+              return
+            }
+            const info = (selected.data as any).info
+            const container: HTMLElement = selected.container
             const clientRect = container.getBoundingClientRect()
             setOpenEffectStyle({
               left: clientRect.left,
@@ -379,7 +395,10 @@ export default observer(function Application() {
             setIsOpenEffectAnimating(true)
           }}
           onContextMenu={(e: any, icon) => {
-            onContextMenu(e, (icon.data as any).info)
+            const selected = Array.isArray(icon) ? icon[0] : icon
+            if (selected) {
+              onContextMenu(e, (selected.data as any).info)
+            }
           }}
         />
       )}

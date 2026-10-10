@@ -104,7 +104,7 @@ export default class Keyboard {
         break
     }
   }
-  private getMetaState(): number {
+  private getMetaState(): AndroidKeyEventMeta {
     let metaState = 0
 
     if (this.altLeft) {
@@ -138,7 +138,7 @@ export default class Keyboard {
       metaState |= AndroidKeyEventMeta.NumLock
     }
 
-    return metaState
+    return metaState as AndroidKeyEventMeta
   }
   private getKeyCode(e: KeyboardEvent): AndroidKeyCode | undefined {
     let code = ''

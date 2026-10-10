@@ -1,4 +1,4 @@
-import builder, { publish } from 'electron-builder'
+import builder from 'electron-builder'
 import isMac from 'licia/isMac.js'
 import isWindows from 'licia/isWindows.js'
 
@@ -10,6 +10,8 @@ let publishChannel = '${productName}-latest'
 if (isMac && process.arch !== 'arm64') {
   publishChannel = '${productName}-latest-${arch}'
 }
+
+const args = process.argv.slice(2)
 
 const config = {
   appId: pkg.appId,
@@ -44,6 +46,15 @@ const config = {
     ],
     icon: 'build/icon.icns',
   },
+  linux: {
+    target: ['AppImage'],
+    category: 'Utility',
+    syncDesktopName: true,
+  },
+  pacman: {
+    maintainer: pkg.author,
+    compression: 'zstd',
+  },
   publish: {
     provider: 'generic',
     url: 'https://release.liriliri.io/',
@@ -51,8 +62,16 @@ const config = {
   },
 }
 
+if (args.includes('--pacman')) {
+  config.linux.target = ['pacman']
+} else if (args.includes('--appimage')) {
+  config.linux.target = ['AppImage']
+} else if (args.includes('--linux')) {
+  const linuxTargets = process.argv.slice(process.argv.indexOf('--linux') + 1)
+  config.linux.target = linuxTargets.length ? linuxTargets : ['AppImage']
+}
+
 if (isMac) {
-  const args = process.argv.slice(2)
   const entitlements = {
     entitlements: 'build/entitlements.mas.plist',
     entitlementsInherit: 'build/entitlements.mas.inherit.plist',

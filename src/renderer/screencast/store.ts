@@ -65,7 +65,7 @@ class Store extends BaseStore {
 
       this.scrcpyClient = new ScrcpyClient(
         device.id,
-        new ScrcpyOptions3_1({
+        new ScrcpyOptions3_1<true>({
           audio: true,
           videoBitRate: settings.videoBitRate,
           maxSize: settings.maxSize,

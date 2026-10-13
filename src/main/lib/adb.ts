@@ -30,6 +30,7 @@ import * as file from './adb/file'
 import * as fps from './adb/fps'
 import * as webview from './adb/webview'
 import * as port from './adb/port'
+import * as xspace from './adb/xspace'
 import { getCpuLoads, getCpus, getCpuTemperature } from './adb/cpu'
 import log from 'share/common/log'
 import {
@@ -416,6 +417,7 @@ export async function init() {
   fps.init()
   webview.init()
   port.init(client)
+  xspace.init()
 
   handleEvent('getDevices', getDevices)
   handleEvent('getOverview', getOverview)

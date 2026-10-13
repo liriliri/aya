@@ -125,4 +125,7 @@ export default Object.assign(mainObj, {
   restartAdbServer: invoke('restartAdbServer'),
   pairDevice: invoke<IpcPairDevice>('pairDevice'),
   getFileUrl: invoke<IpcGetFileUrl>('getFileUrl'),
+  xspaceList: invoke('xspaceList'),
+  xspaceFileUrl: invoke('xspaceFileUrl'),
+  xspaceEdit: invoke('xspaceEdit'),
 })

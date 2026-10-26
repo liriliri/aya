@@ -10,6 +10,8 @@ export default observer(function Panels() {
     [
       'overview',
       'file',
+      'album',
+      'xspace',
       'application',
       'process',
       'performance',

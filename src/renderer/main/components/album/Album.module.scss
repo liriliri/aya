@@ -1,0 +1,386 @@
+.root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  color: var(--color-text);
+}
+
+.noDevice,
+.empty {
+  padding: 32px;
+  text-align: center;
+  color: var(--color-text);
+  opacity: 0.65;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.sourceSwitch {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+.viewBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.viewTitle {
+  font-weight: 600;
+  max-width: 30%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viewMeta {
+  font-size: 12px;
+  opacity: 0.7;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viewControls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn {
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-bg-container);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.4;
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.btnActive {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btnDanger {
+  border-color: var(--color-error, #ff4d4f);
+  color: var(--color-error, #ff4d4f);
+
+  &:hover:not(:disabled) {
+    background: var(--color-error, #ff4d4f);
+    border-color: var(--color-error, #ff4d4f);
+    color: #fff;
+  }
+}
+
+.sizeSep {
+  display: inline-block;
+  width: 1px;
+  height: 16px;
+  background: var(--color-border);
+  margin: 0 2px;
+}
+
+.btnPrimary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    color: #fff;
+    opacity: 0.88;
+  }
+}
+
+.select,
+.input {
+  padding: 4px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-bg-container);
+  color: var(--color-text);
+  font-size: 12px;
+}
+
+.scanProgress {
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--color-primary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sourceError {
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--color-error, #ff4d4f);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.albumScroll {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.albumGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  padding: 12px;
+}
+
+.albumCard {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg-container);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--color-primary);
+  }
+}
+
+.cardCover {
+  width: 84px;
+  height: 84px;
+  flex-shrink: 0;
+}
+
+.cardInfo {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardName {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardPath {
+  font-size: 11px;
+  opacity: 0.6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardMeta {
+  font-size: 12px;
+  opacity: 0.75;
+  margin-top: auto;
+}
+
+.thumb {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--color-primary-bg, rgba(128, 128, 128, 0.12));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.thumbSelected {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.thumbCheck {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 2;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  user-select: none;
+}
+
+.thumbClickable {
+  cursor: zoom-in;
+}
+
+.thumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.thumbPlaceholder {
+  opacity: 0.45;
+  font-size: 18px;
+  user-select: none;
+}
+
+.gridWrap {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: flex;
+}
+
+.gridViewport {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  position: relative;
+}
+
+.gridInner {
+  position: relative;
+}
+
+.cell {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.viewer {
+  /* 只覆盖缩略图网格区域(包含块为 gridWrap),相册工具栏及其上方的一切
+     (标签栏、标题栏、各种弹层)都不被遮挡;纯黑背景避免底下内容透出 */
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+}
+
+.viewerBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  color: #fff;
+
+  .btn {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #fff;
+  }
+}
+
+.viewerName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viewerBody {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+
+  :global(.luna-image-viewer) {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.viewerLoading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.modalMask {
+  position: fixed;
+  inset: 0;
+  /* 高于查看器(z1),仍低于应用其他弹层(1000+) */
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  width: 420px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  background: var(--color-bg-container);
+  color: var(--color-text);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modalTitle {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.formRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.formLabel {
+  flex-shrink: 0;
+}
+
+.input {
+  width: 220px;
+}
+
+.modalHint {
+  font-size: 12px;
+  opacity: 0.65;
+  line-height: 1.5;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

@@ -10,3 +10,10 @@ server/**/build/
 local.properties
 
 build/*.provisionprofile
+
+# Temp log files
+*.log
+final-test.log
+startbat-output.log
+electron-output.log
+tmp/
